@@ -25,11 +25,11 @@ import uk.gov.hmrc.failuremodule.FailureResponseService.{ errorResponseJson, err
 class FailureResponseServiceSpec extends PlaySpec {
   "The FailureResponseService" must {
     "for Quadient return NO_ERROR_MAPPING_FOUND ErrorMessage if now mapping found and don't show error ID" in {
-      Json.stringify(errorResponseJson("Invalid Data", showErrorID = true)) mustEqual """[500,"Invalid Data","SERVER_ERROR"]"""
+      Json.stringify(errorResponseJson("Invalid Data", showErrorID = true)) mustEqual """{"failureId":"SERVER_ERROR","reason":"Invalid Data"}"""
     }
 
     "for non Quadient not return NO_ERROR_MAPPING_FOUND ErrorMessage if now mapping found and don't show error ID" in {
-      Json.stringify(errorResponseJson("Invalid Data")) mustEqual """[500,"Invalid Data"]"""
+      Json.stringify(errorResponseJson("Invalid Data")) mustEqual """"Invalid Data""""
     }
 
     "for Quadient return INVALID_PAYLOAD for Submission has not passed validation. Invalid payload." in {
@@ -38,7 +38,7 @@ class FailureResponseServiceSpec extends PlaySpec {
     }
 
     "for non Quadient not return INVALID_PAYLOAD for Submission has not passed validation. Invalid payload." in {
-      Json.stringify(errorResponseJson("Submission has not passed validation. Invalid payload.")) mustEqual """[400,"Submission has not passed validation. Invalid payload."]"""
+      Json.stringify(errorResponseJson("Submission has not passed validation. Invalid payload.")) mustEqual """"Submission has not passed validation. Invalid payload.""""
     }
 
     "for Quadient return INVALID_CORRELATIONID for Submission has not passed validation. Invalid header CorrelationId." in {
@@ -48,7 +48,7 @@ class FailureResponseServiceSpec extends PlaySpec {
     }
 
     "for non Quadient not return INVALID_CORRELATIONID for Submission has not passed validation. Invalid header CorrelationId." in {
-      Json.stringify(errorResponseJson("Submission has not passed validation. Invalid header CorrelationId.")) mustEqual """[400,"Submission has not passed validation. Invalid header CorrelationId."]"""
+      Json.stringify(errorResponseJson("Submission has not passed validation. Invalid header CorrelationId.")) mustEqual """"Submission has not passed validation. Invalid header CorrelationId.""""
     }
 
     "for Quadient return UNKNOWN_TAX_IDENTIFIER for The backend has rejected the message due to an unknown tax identifier." in {
@@ -58,7 +58,7 @@ class FailureResponseServiceSpec extends PlaySpec {
     }
 
     "for non Quadient not return UNKNOWN_TAX_IDENTIFIER for The backend has rejected the message due to an unknown tax identifier." in {
-      Json.stringify(errorResponseJson("The backend has rejected the message due to an unknown tax identifier.")) mustEqual """[400,"The backend has rejected the message due to an unknown tax identifier."]"""
+      Json.stringify(errorResponseJson("The backend has rejected the message due to an unknown tax identifier.")) mustEqual """"The backend has rejected the message due to an unknown tax identifier.""""
     }
 
     "for Quadient return MISSING_DETAILS for details not provided where it is required" in {
@@ -76,7 +76,7 @@ class FailureResponseServiceSpec extends PlaySpec {
 
     "for non Quadient not return EMAIL_NOT_VERIFIED for The backend has rejected the message due to the email address being undeliverable." in {
       Json.stringify(errorResponseJson(
-        "The backend has rejected the message due to the email address being undeliverable.")) mustEqual """[400,"The backend has rejected the message due to the email address being undeliverable."]"""
+        "The backend has rejected the message due to the email address being undeliverable.")) mustEqual """"The backend has rejected the message due to the email address being undeliverable.""""
     }
 
     "for Quadient return MISSING_DETAILS for details: details not provided where it is required" in {
@@ -85,7 +85,7 @@ class FailureResponseServiceSpec extends PlaySpec {
     }
 
     "for non Quadient not return MISSING_DETAILS for details: details not provided where it is required" in {
-      Json.stringify(errorResponseJson("details: details not provided where it is required")) mustEqual """[400,"details: details not provided where it is required"]"""
+      Json.stringify(errorResponseJson("details: details not provided where it is required")) mustEqual """"details: details not provided where it is required""""
     }
 
     "for Quadient return INVALID_PAYLOAD for sourceData: invalid source data provided" in {
@@ -94,7 +94,7 @@ class FailureResponseServiceSpec extends PlaySpec {
     }
 
     "for non Quadient not return INVALID_PAYLOAD for sourceData: invalid source data provided" in {
-      Json.stringify(errorResponseJson("sourceData: invalid source data provided")) mustEqual """[400,"sourceData: invalid source data provided"]"""
+      Json.stringify(errorResponseJson("sourceData: invalid source data provided")) mustEqual """"sourceData: invalid source data provided""""
     }
 
     "for Quadient return INVALID_PAYLOAD for Invalid Message" in {
@@ -102,7 +102,7 @@ class FailureResponseServiceSpec extends PlaySpec {
     }
 
     "for non Quadient not return INVALID_PAYLOAD for Invalid Message" in {
-      Json.stringify(errorResponseJson("Invalid Message")) mustEqual """[400,"Invalid Message"]"""
+      Json.stringify(errorResponseJson("Invalid Message")) mustEqual """"Invalid Message""""
     }
 
     "for Quadient return EMAIL_NOT_VERIFIED for email: invalid email address provided" in {
@@ -111,7 +111,7 @@ class FailureResponseServiceSpec extends PlaySpec {
     }
 
     "for non Quadient not return EMAIL_NOT_VERIFIED for email: invalid email address provided" in {
-      Json.stringify(errorResponseJson("email: invalid email address provided")) mustEqual """[400,"email: invalid email address provided"]"""
+      Json.stringify(errorResponseJson("email: invalid email address provided")) mustEqual """"email: invalid email address provided""""
     }
 
     "for Quadient return INVALID_PAYLOAD for alertQueue: invalid alert queue provided" in {
@@ -120,7 +120,7 @@ class FailureResponseServiceSpec extends PlaySpec {
     }
 
     "for non Quadient not return INVALID_PAYLOAD for alertQueue: invalid alert queue provided" in {
-      Json.stringify(errorResponseJson("alertQueue: invalid alert queue provided")) mustEqual """[400,"alertQueue: invalid alert queue provided"]"""
+      Json.stringify(errorResponseJson("alertQueue: invalid alert queue provided")) mustEqual """"alertQueue: invalid alert queue provided""""
     }
 
     "for Quadient return INVALID_PAYLOAD for Issue date after the valid from date" in {
@@ -129,7 +129,7 @@ class FailureResponseServiceSpec extends PlaySpec {
     }
 
     "for non Quadient not return INVALID_PAYLOAD for Issue date after the valid from date" in {
-      Json.stringify(errorResponseJson("Issue date after the valid from date")) mustEqual """[400,"Issue date after the valid from date"]"""
+      Json.stringify(errorResponseJson("Issue date after the valid from date")) mustEqual """"Issue date after the valid from date""""
     }
 
     "for Quadient return EMAIL_NOT_VERIFIED for email address not provided" in {
@@ -138,7 +138,7 @@ class FailureResponseServiceSpec extends PlaySpec {
     }
 
     "for non Quadient not return EMAIL_NOT_VERIFIED for email address not provided" in {
-      Json.stringify(errorResponseJson("email: email address not provided")) mustEqual """[400,"email: email address not provided"]"""
+      Json.stringify(errorResponseJson("email: email address not provided")) mustEqual """"email: email address not provided""""
     }
 
     "for Quadient return INVALID_PAYLOAD for Invalid alert queue submitted" in {
@@ -147,7 +147,7 @@ class FailureResponseServiceSpec extends PlaySpec {
     }
 
     "for non Quadient not return INVALID_PAYLOAD for Invalid alert queue submitted" in {
-      Json.stringify(errorResponseJson("Invalid alert queue submitted")) mustEqual """[400,"Invalid alert queue submitted"]"""
+      Json.stringify(errorResponseJson("Invalid alert queue submitted")) mustEqual """"Invalid alert queue submitted""""
     }
 
     "for Quadient return TAXPAYER_NOT_FOUND for The backend has rejected the message due to not being able to find the tax payer" in {
@@ -162,7 +162,7 @@ class FailureResponseServiceSpec extends PlaySpec {
       Json.stringify(
         errorResponseJson(
           "The backend has rejected the message due to not being able to find the tax payer",
-          NOT_FOUND)) mustEqual """[404,"The backend has rejected the message due to not being able to find the tax payer"]"""
+          NOT_FOUND)) mustEqual """"The backend has rejected the message due to not being able to find the tax payer""""
     }
 
     "for Quadient return EMAIL_NOT_VERIFIED for The backend has rejected the message due to not being able to verify the email address." in {
@@ -177,7 +177,7 @@ class FailureResponseServiceSpec extends PlaySpec {
       Json.stringify(
         errorResponseJson(
           "The backend has rejected the message due to not being able to verify the email address.",
-          NOT_FOUND)) mustEqual """[404,"The backend has rejected the message due to not being able to verify the email address."]"""
+          NOT_FOUND)) mustEqual """"The backend has rejected the message due to not being able to verify the email address.""""
     }
 
     "for Quadient return SERVER_ERROR for Unauthorised" in {
@@ -185,7 +185,7 @@ class FailureResponseServiceSpec extends PlaySpec {
     }
 
     "for non Quadient not return SERVER_ERROR for Unauthorised" in {
-      Json.stringify(errorResponseJson("Unauthorised", UNAUTHORIZED)) mustEqual """[401,"Unauthorised"]"""
+      Json.stringify(errorResponseJson("Unauthorised", UNAUTHORIZED)) mustEqual """"Unauthorised""""
     }
 
     "for Quadient return CONFLICT for The backend has rejected the message due to duplicated message content or external reference ID." in {
@@ -200,7 +200,7 @@ class FailureResponseServiceSpec extends PlaySpec {
       Json.stringify(
         errorResponseJson(
           "The backend has rejected the message due to duplicated message content or external reference ID.",
-          CONFLICT)) mustEqual """[409,"The backend has rejected the message due to duplicated message content or external reference ID."]"""
+          CONFLICT)) mustEqual """"The backend has rejected the message due to duplicated message content or external reference ID.""""
     }
 
     "for Quadient return SERVER_ERROR for IF is currently experiencing problems that require live service intervention." in {
@@ -215,7 +215,7 @@ class FailureResponseServiceSpec extends PlaySpec {
       Json.stringify(
         errorResponseJson(
           "IF is currently experiencing problems that require live service intervention.",
-          INTERNAL_SERVER_ERROR)) mustEqual """[500,"IF is currently experiencing problems that require live service intervention."]"""
+          INTERNAL_SERVER_ERROR)) mustEqual """"IF is currently experiencing problems that require live service intervention.""""
     }
 
     "for Quadient return SERVICE_UNAVAILABLE for Dependent systems are currently not responding." in {
@@ -226,7 +226,7 @@ class FailureResponseServiceSpec extends PlaySpec {
     }
 
     "for Non Quadient not return SERVICE_UNAVAILABLE for Dependent systems are currently not responding." in {
-      Json.stringify(errorResponseJson("Dependent systems are currently not responding.", INTERNAL_SERVER_ERROR)) mustEqual """[500,"Dependent systems are currently not responding."]"""
+      Json.stringify(errorResponseJson("Dependent systems are currently not responding.", INTERNAL_SERVER_ERROR)) mustEqual """"Dependent systems are currently not responding.""""
     }
     "for Submission has not passed validation. Invalid payload. return BAD_REQUEST status code " in {
       val t: Result = errorResponseResult("Submission has not passed validation. Invalid payload.")

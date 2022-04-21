@@ -20,16 +20,19 @@ import play.api.http.Status._
 import play.api.http.Status
 import play.api.libs.json.{ JsValue, Json, Writes }
 import play.api.mvc.{ Result, Results }
-import play.api.mvc.Results.{ BadRequest, InternalServerError, NotFound, Unauthorized }
+import play.api.mvc.Results.{ BadRequest, InternalServerError, NotFound, Ok, Unauthorized }
 
-final case class FailureResponseService(failureId: String, reason: String)
+final case class FailureResponse(failureId: String, reason: String)
+
+object FailureResponse {
+  implicit val errorWrites: Writes[FailureResponse] = Json.writes[FailureResponse]
+}
 
 object FailureResponseService {
 
-  implicit val errorWrites: Writes[FailureResponseService] = Json.writes[FailureResponseService]
-
   val INVALID_PAYLOAD = "INVALID_PAYLOAD"
   val INVALID_CORRELATIONID = "INVALID_CORRELATIONID"
+  val INVALID_REQUEST = "INVALID_REQUEST"
   val UNKNOWN_TAX_IDENTIFIER = "UNKNOWN_TAX_IDENTIFIER"
   val MISSING_DETAILS = "MISSING_DETAILS"
   val EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED"
@@ -40,6 +43,19 @@ object FailureResponseService {
 
   val errorMessageMapping: Map[(Int, String), ErrorMessage] =
     Map(
+      (OK, "Submission has not passed validation. Invalid payload.") -> ErrorMessage(
+        OK,
+        "Submission has not passed validation. Invalid payload.",
+        INVALID_PAYLOAD),
+      (OK, "Submission has not passed validation. Invalid header CorrelationId.") -> ErrorMessage(
+        OK,
+        "Submission has not passed validation. Invalid header CorrelationId.",
+        INVALID_CORRELATIONID),
+      (OK, "The remote endpoint has indicated that the request is invalid.") -> ErrorMessage(
+        OK,
+        "The remote endpoint has indicated that the request is invalid.",
+        INVALID_REQUEST),
+      (OK, "Unknown eis error") -> ErrorMessage(OK, "Unknown eis error", SERVER_ERROR),
       (BAD_REQUEST, "Submission has not passed validation. Invalid payload.") -> ErrorMessage(
         BAD_REQUEST,
         "Submission has not passed validation. Invalid payload.",
@@ -48,6 +64,11 @@ object FailureResponseService {
         BAD_REQUEST,
         "Submission has not passed validation. Invalid header CorrelationId.",
         INVALID_CORRELATIONID),
+      (BAD_REQUEST, "The remote endpoint has indicated that the request is invalid.") -> ErrorMessage(
+        BAD_REQUEST,
+        "The remote endpoint has indicated that the request is invalid.",
+        INVALID_REQUEST),
+      (BAD_REQUEST, "Unknown eis error") -> ErrorMessage(BAD_REQUEST, "Unknown eis error", SERVER_ERROR),
       (BAD_REQUEST, "The backend has rejected the message due to an unknown tax identifier.") -> ErrorMessage(
         BAD_REQUEST,
         "The backend has rejected the message due to an unknown tax identifier.",
@@ -147,27 +168,33 @@ object FailureResponseService {
       (INTERNAL_SERVER_ERROR, "Failed to parse message") -> ErrorMessage(
         INTERNAL_SERVER_ERROR,
         "Failed to parse message",
+        SERVER_ERROR),
+      (INTERNAL_SERVER_ERROR, "Unknown eis error") -> ErrorMessage(
+        INTERNAL_SERVER_ERROR,
+        "Unknown eis error",
         SERVER_ERROR)
     )
 
   def errorResponseJson(
-    errorMessage: String,
-    responseCode: Int = BAD_REQUEST,
-    showErrorID: Boolean = false): JsValue = {
+                         errorMessage: String,
+                         responseCode: Int = BAD_REQUEST,
+                         showErrorID: Boolean = false): JsValue = {
     def helper(err: ErrorMessage): JsValue =
-      if (showErrorID) Json.toJson(err.errorCode, err.errorDescription, err.errorID)
-      else Json.toJson(err.errorCode, err.errorDescription)
+      if (showErrorID) Json.toJson(FailureResponse(err.errorID, err.errorDescription))
+      else Json.toJson(err.errorDescription)
     helper(getFailureId(responseCode, errorMessage))
   }
 
   def errorResponseResult(
-    errorMessage: String,
-    responseCode: Int = BAD_REQUEST,
-    showErrorID: Boolean = false): Result = {
+                           errorMessage: String,
+                           responseCode: Int = BAD_REQUEST,
+                           showErrorID: Boolean = false): Result = {
     def getJson(err: ErrorMessage): JsValue =
-      if (showErrorID) Json.toJson(err.errorCode, err.errorDescription, err.errorID)
-      else Json.toJson(err.errorCode, err.errorDescription)
+      if (showErrorID) Json.toJson(FailureResponse(err.errorID, err.errorDescription))
+      else Json.toJson((err.errorDescription))
+
     getFailureId(responseCode, errorMessage) match {
+      case e @ ErrorMessage(OK, _, _)                    => Ok(getJson(e))
       case e @ ErrorMessage(BAD_REQUEST, _, _)           => BadRequest(getJson(e))
       case e @ ErrorMessage(NOT_FOUND, _, _)             => NotFound(getJson(e))
       case e @ ErrorMessage(UNAUTHORIZED, _, _)          => Unauthorized(getJson(e))
@@ -181,8 +208,8 @@ object FailureResponseService {
     errorMessageMapping
       .collectFirst {
         case ((x, y), value)
-            if x == responseCode
-              && message.toLowerCase.matches(s".*${y.toLowerCase}.*") =>
+          if x == responseCode
+            && message.toLowerCase.matches(s".*${y.toLowerCase}.*") =>
           value
       }
       .getOrElse(ErrorMessage(INTERNAL_SERVER_ERROR, message, SERVER_ERROR))
