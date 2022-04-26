@@ -176,9 +176,9 @@ object FailureResponseService {
     )
 
   def errorResponseJson(
-                         errorMessage: String,
-                         responseCode: Int = BAD_REQUEST,
-                         showErrorID: Boolean = false): JsValue = {
+    errorMessage: String,
+    responseCode: Int = BAD_REQUEST,
+    showErrorID: Boolean = false): JsValue = {
     def helper(err: ErrorMessage): JsValue =
       if (showErrorID) Json.toJson(FailureResponse(err.errorID, err.errorDescription))
       else Json.toJson(err.errorDescription)
@@ -186,9 +186,9 @@ object FailureResponseService {
   }
 
   def errorResponseResult(
-                           errorMessage: String,
-                           responseCode: Int = BAD_REQUEST,
-                           showErrorID: Boolean = false): Result = {
+    errorMessage: String,
+    responseCode: Int = BAD_REQUEST,
+    showErrorID: Boolean = false): Result = {
     def getJson(err: ErrorMessage): JsValue =
       if (showErrorID) Json.toJson(FailureResponse(err.errorID, err.errorDescription))
       else Json.toJson((err.errorDescription))
@@ -208,8 +208,8 @@ object FailureResponseService {
     errorMessageMapping
       .collectFirst {
         case ((x, y), value)
-          if x == responseCode
-            && message.toLowerCase.matches(s".*${y.toLowerCase}.*") =>
+            if x == responseCode
+              && message.toLowerCase.matches(s".*${y.toLowerCase}.*") =>
           value
       }
       .getOrElse(ErrorMessage(INTERNAL_SERVER_ERROR, message, SERVER_ERROR))
