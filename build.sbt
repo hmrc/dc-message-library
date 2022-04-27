@@ -4,7 +4,6 @@ lazy val appDependencies: Seq[ModuleID] = Seq(
   "uk.gov.hmrc"       %% "domain"             % "6.2.0-play-28",
   "uk.gov.hmrc"       %% "work-item-repo"     % "8.1.0-play-28",
   "com.typesafe.play" %% "play-json"          % "2.8.2",
-  "uk.gov.hmrc"       %% "http-verbs-play-28" % "13.8.0",
   "com.beachape"      %% "enumeratum"         % "1.6.0",
   "com.beachape"      %% "enumeratum-play-json" % "1.6.0",
   "com.typesafe.play" %% "play-json-joda"       % "2.6.13",
@@ -15,13 +14,10 @@ lazy val appDependencies: Seq[ModuleID] = Seq(
   "org.scalatestplus"     %% "mockito-3-4"         % "3.2.8.0" % "test"
 )
 lazy val messageLib = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(majorVersion := 0)
   .settings(isPublicArtefact := true)
   .settings(
     scalaVersion := "2.12.12",
     libraryDependencies ++= appDependencies,
-    Test / parallelExecution := false,
-    Test / fork := false
   )
 val appName = "dc-message-library"
