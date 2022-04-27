@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.model
+package uk.gov.hmrc.message.library.model
 
-import org.joda.time.DateTime
+import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-// TODO it would be good to have different types for success and failure...
-case class EmailAlert(
-  emailAddress: Option[String],
-  alertTime: DateTime,
-  success: Boolean,
-  failureReason: Option[String]
-)
+case class ExternalRef(id: String, source: String)
 
-object EmailAlert {
-  implicit def alertFormat(implicit dtf: Format[DateTime]): OFormat[EmailAlert] =
-    Json.format[EmailAlert]
+object ExternalRef {
+  implicit val reads =
+    ((__ \ "id").readNullable[String] and (__ \ "source").readNullable[String]).tupled.flatMap[ExternalRef] {
+      case (Some(id), Some(source)) if !(id.isEmpty || source.isEmpty) =>
+        Reads[ExternalRef] { _ =>
+          JsSuccess(ExternalRef(id, source))
+        }
+      case _ =>
+        Reads[ExternalRef] { _ =>
+          JsError("Missing or empty externalRef id or source")
+        }
+    }
+
+  implicit val writes = Json.writes[ExternalRef]
 }

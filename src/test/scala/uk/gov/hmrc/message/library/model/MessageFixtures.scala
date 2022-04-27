@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.model
+package uk.gov.hmrc.message.library.model
 
 import org.joda.time.{ DateTime, DateTimeZone, LocalDate }
 import play.api.libs.json._
@@ -22,7 +22,7 @@ import reactivemongo.bson.BSONObjectID
 import uk.gov.hmrc.domain.TaxIds._
 import uk.gov.hmrc.domain._
 import uk.gov.hmrc.time.DateTimeUtils
-import uk.gov.hmrc.model.TimeSource
+import uk.gov.hmrc.message.library.model.TimeSource
 import uk.gov.hmrc.workitem.{ ProcessingStatus, ToDo }
 
 import java.util.UUID

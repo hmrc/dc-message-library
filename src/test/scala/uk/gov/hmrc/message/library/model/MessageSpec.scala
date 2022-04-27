@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.model
+package uk.gov.hmrc.message.library.model
 
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 import reactivemongo.bson.BSONObjectID
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
-import uk.gov.hmrc.model.Message._
-import uk.gov.hmrc.model.MessageRESTFormats
+import uk.gov.hmrc.message.library.model.Message._
+import uk.gov.hmrc.message.library.model.MessageRESTFormats
 
 class MessageSpec extends PlaySpec {
   "message creation from two-way-message" must {

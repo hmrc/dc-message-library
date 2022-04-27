@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.validationmodule
+package uk.gov.hmrc.message.library.validationmodule
 
 import org.apache.commons.codec.binary.Base64
 import uk.gov.hmrc.emailaddress.EmailAddress
-import uk.gov.hmrc.model.{ AlertQueueTypes, ExternalRef, Message }
+import uk.gov.hmrc.message.library.model._
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 
 object MessageValidator {
 

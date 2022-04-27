@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.failuremodule
+package uk.gov.hmrc.message.library.failuremodule
 
 import play.api.http.Status._
 import play.api.http.Status

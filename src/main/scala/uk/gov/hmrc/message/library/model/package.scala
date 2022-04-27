@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc
+package uk.gov.hmrc.message.library
 
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat

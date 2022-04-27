@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.validationmodule
+package uk.gov.hmrc.message.library.validationmodule
 
 import junit.framework.TestCase
 import org.joda.time.LocalDate
@@ -24,7 +24,8 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.mockito.MockitoSugar
 import reactivemongo.bson.BSONObjectID
 import uk.gov.hmrc.domain.SaUtr
-import uk.gov.hmrc.model._
+import uk.gov.hmrc.message.library.model._
+import uk.gov.hmrc.message.library.model.Regime
 
 class MessageValidatorSpec extends AnyWordSpecLike with MockitoSugar with Matchers with ScalaFutures {
 

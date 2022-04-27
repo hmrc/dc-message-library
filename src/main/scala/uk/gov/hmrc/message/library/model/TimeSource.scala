@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.model
+package uk.gov.hmrc.message.library.model
 
 import org.joda.time.{ DateTime, LocalDate }
 import uk.gov.hmrc.time.DateTimeUtils

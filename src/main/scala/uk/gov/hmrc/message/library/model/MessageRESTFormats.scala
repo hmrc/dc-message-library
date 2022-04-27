@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.model
+package uk.gov.hmrc.message.library.model
 
 import java.security.MessageDigest
 import org.apache.commons.codec.binary.Base64

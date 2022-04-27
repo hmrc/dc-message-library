@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.model
+package uk.gov.hmrc.message.library.model
 
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.domain._
-import uk.gov.hmrc.model.TaxEntity.{ Epaye, HmceVatdecOrg, HmrcCusOrg, HmrcPptOrg, forAudit }
+import uk.gov.hmrc.message.library.model.TaxEntity._
+import uk.gov.hmrc.message.library.model._
 
 class TaxEntitySpec extends PlaySpec {
   "forAudit" must {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.model
+package uk.gov.hmrc.message.library.model
 
 import uk.gov.hmrc.domain.{ Generator, Nino, SaUtr, SaUtrGenerator }
 

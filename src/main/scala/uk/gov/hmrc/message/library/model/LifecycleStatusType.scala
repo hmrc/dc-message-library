@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.model
+package uk.gov.hmrc.message.library.model
 
 import enumeratum.EnumEntry.UpperSnakecase
 import enumeratum.{ Enum, EnumEntry, PlayJsonEnum }
