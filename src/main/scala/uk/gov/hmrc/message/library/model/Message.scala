@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.message.library.model
 
-import enumeratum.{Enum, EnumEntry, PlayJsonEnum}
-import org.joda.time.{DateTime, LocalDate}
+import enumeratum.{ Enum, EnumEntry, PlayJsonEnum }
+import org.joda.time.{ DateTime, LocalDate }
 import play.api.libs.json._
 import reactivemongo.bson.BSONObjectID
 import uk.gov.hmrc.domain.TaxIds._
 import uk.gov.hmrc.mongo.json.BSONObjectIdFormats
-import uk.gov.hmrc.workitem.{ProcessingStatus, ToDo}
+import uk.gov.hmrc.workitem.{ ProcessingStatus, ToDo }
 import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
-import play.api.libs.json.JodaWrites.{JodaDateTimeWrites => _, _}
+import play.api.libs.json.JodaWrites.{ JodaDateTimeWrites => _, _ }
 
 case class MessageContentParameters(data: ContentParameters, templateId: String)
 object MessageContentParameters {

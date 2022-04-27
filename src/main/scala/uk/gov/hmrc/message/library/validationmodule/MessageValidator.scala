@@ -20,7 +20,7 @@ import org.apache.commons.codec.binary.Base64
 import uk.gov.hmrc.emailaddress.EmailAddress
 import uk.gov.hmrc.message.library.model._
 
-import scala.util.{Failure, Success, Try}
+import scala.util.{ Failure, Success, Try }
 
 object MessageValidator {
 

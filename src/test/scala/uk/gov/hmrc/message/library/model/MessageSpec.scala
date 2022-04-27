@@ -20,8 +20,7 @@ import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 import reactivemongo.bson.BSONObjectID
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
-import uk.gov.hmrc.message.library.model.Message._
-import uk.gov.hmrc.message.library.model.MessageRESTFormats
+import uk.gov.hmrc.message.library.model.MessageRESTFormats._
 
 class MessageSpec extends PlaySpec {
   "message creation from two-way-message" must {
@@ -117,6 +116,7 @@ class MessageSpec extends PlaySpec {
 
   "taxIdWithNameWrites" must {
     "serialize TaxIdWithName to json" in {
+      import uk.gov.hmrc.message.library.model.Message._
       val saUtr: TaxIdWithName = GenerateRandom.utrGenerator.nextSaUtr
       val expectedResult = Json.obj("name" -> "sautr", "value" -> saUtr.value)
       Json.toJson(saUtr) mustBe expectedResult
@@ -125,6 +125,7 @@ class MessageSpec extends PlaySpec {
 
   "bsonObjectIdWrites" must {
     "serialize BSONObjectID to json" in {
+      import uk.gov.hmrc.message.library.model.Message._
       val bsonId: BSONObjectID = BSONObjectID.generate()
 
       Json.toJson(bsonId)(bsonObjectIdWrites) mustBe Json.toJson(bsonId.stringify)
