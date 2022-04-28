@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.failuremodule
+package uk.gov.hmrc.message.library.failuremodule
 
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.failuremodule.FailureResponseService.{ errorResponseJson, errorResponseResult }
+import uk.gov.hmrc.message.library.failuremodule.FailureResponseService.{ errorResponseJson, errorResponseResult }
 
 class FailureResponseServiceSpec extends PlaySpec {
   "The FailureResponseService" must {
