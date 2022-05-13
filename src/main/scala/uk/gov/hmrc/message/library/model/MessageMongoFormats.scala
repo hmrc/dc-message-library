@@ -24,7 +24,6 @@ import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.domain._
 import TaxEntity.{ Epaye, HmceVatdecOrg, HmrcCusOrg, HmrcPptOrg }
 import uk.gov.hmrc.mongo.json.ReactiveMongoFormats
-import uk.gov.hmrc.workitem.ProcessingStatus
 import play.api.libs.json.JodaReads._
 import play.api.libs.json.JodaWrites.{ JodaDateTimeWrites => _, _ }
 
