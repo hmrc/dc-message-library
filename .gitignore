@@ -2,6 +2,7 @@ logs
 project/project
 project/target
 target
+.bsp/sbt.json
 lib_managed
 tmp
 .history
