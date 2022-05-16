@@ -22,8 +22,6 @@ import reactivemongo.bson.BSONObjectID
 import uk.gov.hmrc.domain.TaxIds._
 import uk.gov.hmrc.domain._
 import uk.gov.hmrc.time.DateTimeUtils
-import uk.gov.hmrc.message.library.model.TimeSource
-import uk.gov.hmrc.workitem.{ ProcessingStatus, ToDo }
 
 import java.util.UUID
 
@@ -111,7 +109,8 @@ object MessageFixtures {
     verificationBrake: Option[Boolean] = None,
     issueDate: Option[LocalDate] = None,
     id: BSONObjectID = BSONObjectID.generate,
-    tags: Option[Map[String, String]] = None
+    tags: Option[Map[String, String]] = None,
+    deliveredOn: Option[DateTime] = None
   ): Message = {
 
     val details = issueDate.fold(
@@ -163,7 +162,8 @@ object MessageFixtures {
       sourceData = sourceData,
       verificationBrake = verificationBrake,
       emailAlertEventUrl = emailAlertEventUrl,
-      tags = tags
+      tags = tags,
+      deliveredOn = deliveredOn
     )
   }
 
