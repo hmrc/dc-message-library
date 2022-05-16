@@ -18,7 +18,7 @@ package uk.gov.hmrc.message.library.model
 
 import java.security.MessageDigest
 import org.apache.commons.codec.binary.Base64
-import org.joda.time.LocalDate
+import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import reactivemongo.bson.BSONObjectID
@@ -35,6 +35,7 @@ object MessageRESTFormats extends RestFormats with BSONObjectIdFormats with Aler
       (__ \ "messageType").read[String] and
       (__ \ "subject").read[String] and
       (__ \ "validFrom").readNullable[LocalDate](jodaDateReads("validFrom")) and
+      (__ \ "deliveredOn").readNullable[DateTime] and
       (__ \ "content").read[String] and
       (__ \ "details").readNullable[MessageDetails] and
       (__ \ "alertQueue").readNullable[String] and
@@ -50,7 +51,7 @@ object MessageRESTFormats extends RestFormats with BSONObjectIdFormats with Aler
             .map(Some.apply)
             .orElse(JsError("tags : invalid data provided"))
           case JsUndefined() => JsSuccess(None)})) {
-      (externalRef, recipient, messageType, subject, vf, content, messageDetails, alertQueue, emailAlertEventUrl, alertDetailsData, tags) =>
+      (externalRef, recipient, messageType, subject, vf, deliveredOn, content, messageDetails, alertQueue, emailAlertEventUrl, alertDetailsData, tags) =>
         val issueDate = messageDetails.flatMap(_.issueDate).getOrElse(LocalDate.now)
 
         val validFrom = vf.filter(_.isAfter(issueDate)).getOrElse(issueDate)

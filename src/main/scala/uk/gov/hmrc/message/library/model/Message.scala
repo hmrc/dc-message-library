@@ -22,7 +22,6 @@ import play.api.libs.json._
 import reactivemongo.bson.BSONObjectID
 import uk.gov.hmrc.domain.TaxIds._
 import uk.gov.hmrc.mongo.json.BSONObjectIdFormats
-import uk.gov.hmrc.workitem.{ ProcessingStatus, ToDo }
 import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
 import play.api.libs.json.JodaWrites.{ JodaDateTimeWrites => _, _ }
 
@@ -73,7 +72,8 @@ case class Message(
   emailAlertEventUrl: Option[String] = None,
   verificationBrake: Option[Boolean] = None,
   lifecycle: Option[Lifecycle] = None,
-  tags: Option[Map[String, String]] = None
+  tags: Option[Map[String, String]] = None,
+  deliveredOn: Option[DateTime] = None
 )
 
 object Message {
