@@ -97,11 +97,13 @@ object MessageMongoFormats {
         (__ \ "content").readNullable[String]
     ).tupled
 
-    val reads22to24: Reads[(Option[String], Option[Boolean], Option[Lifecycle], Option[Map[String, String]])] = (
+    val reads22to26
+      : Reads[(Option[String], Option[Boolean], Option[Lifecycle], Option[Map[String, String]], Option[DateTime])] = (
       (__ \ "emailAlertEventUrl").readNullable[String] and
         (__ \ "verificationBrake").readNullable[Boolean] and
         (__ \ "lifecycle").readNullable[Lifecycle] and
-        (__ \ "tags").readNullable[Map[String, String]]
+        (__ \ "tags").readNullable[Map[String, String]] and
+        (__ \ "deliveredOn").readNullable[DateTime]
     ).tupled
 
     val tupleToMessage: (
@@ -128,7 +130,7 @@ object MessageMongoFormats {
         Option[ExternalRef],
         Option[String]
       ),
-      (Option[String], Option[Boolean], Option[Lifecycle], Option[Map[String, String]])
+      (Option[String], Option[Boolean], Option[Lifecycle], Option[Map[String, String]], Option[DateTime])
     ) => Message = {
       case (
           (
@@ -154,7 +156,7 @@ object MessageMongoFormats {
             externalRef,
             content
           ),
-          (emailAlertEventUrl, verificationBrake, lifecycle, tags)
+          (emailAlertEventUrl, verificationBrake, lifecycle, tags, deliveredOn)
           ) =>
         Message(
           id,
@@ -181,7 +183,8 @@ object MessageMongoFormats {
           emailAlertEventUrl,
           verificationBrake,
           lifecycle,
-          tags
+          tags,
+          deliveredOn
         )
     }
 
@@ -209,7 +212,7 @@ object MessageMongoFormats {
         Option[ExternalRef],
         Option[String]
       ),
-      (Option[String], Option[Boolean], Option[Lifecycle], Option[Map[String, String]])
+      (Option[String], Option[Boolean], Option[Lifecycle], Option[Map[String, String]], Option[DateTime])
     ) = { message =>
       (
         (
@@ -235,11 +238,11 @@ object MessageMongoFormats {
           message.externalRef,
           message.content
         ),
-        (message.emailAlertEventUrl, message.verificationBrake, message.lifecycle, message.tags)
+        (message.emailAlertEventUrl, message.verificationBrake, message.lifecycle, message.tags, message.deliveredOn)
       )
     }
 
-    val reads: Reads[Message] = (reads1to21 and reads22to24) { tupleToMessage }
+    val reads: Reads[Message] = (reads1to21 and reads22to26) { tupleToMessage }
 
     val writes1to21: OWrites[
       (
@@ -289,14 +292,16 @@ object MessageMongoFormats {
         (__ \ "content").writeNullable[String]
     ).tupled
 
-    val writes22to24: OWrites[(Option[String], Option[Boolean], Option[Lifecycle], Option[Map[String, String]])] = (
+    val writes22to26
+      : OWrites[(Option[String], Option[Boolean], Option[Lifecycle], Option[Map[String, String]], Option[DateTime])] = (
       (__ \ "emailAlertEventUrl").writeNullable[String] and
         (__ \ "verificationBrake").writeNullable[Boolean] and
         (__ \ "lifecycle").writeNullable[Lifecycle] and
-        (__ \ "tags").writeNullable[Map[String, String]]
+        (__ \ "tags").writeNullable[Map[String, String]] and
+        (__ \ "deliveredOn").writeNullable[DateTime]
     ).tupled
 
-    val writes: OWrites[Message] = (writes1to21 ~ writes22to24) { messageToTuple }
+    val writes: OWrites[Message] = (writes1to21 ~ writes22to26) { messageToTuple }
 
     Format(reads, writes)
   }
