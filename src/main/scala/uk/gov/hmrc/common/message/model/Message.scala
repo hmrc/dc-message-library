@@ -24,6 +24,7 @@ import uk.gov.hmrc.domain.TaxIds._
 import uk.gov.hmrc.mongo.json.BSONObjectIdFormats
 import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
 import play.api.libs.json.JodaWrites.{ JodaDateTimeWrites => _, _ }
+import uk.gov.hmrc.workitem._
 
 case class MessageContentParameters(data: ContentParameters, templateId: String)
 object MessageContentParameters {
@@ -73,11 +74,14 @@ case class Message(
   verificationBrake: Option[Boolean] = None,
   lifecycle: Option[Lifecycle] = None,
   tags: Option[Map[String, String]] = None,
-  deliveredOn: Option[DateTime] = None
+  deliveredOn: Option[DateTime] = None,
+  mailgunStatus: Option[String] = None
 )
 
 object Message {
   import MessageMongoFormats._
+
+  val mailgunDeliveredStatus = "delivered"
 
   implicit val taxIdWithNameWrites = new Writes[TaxIdWithName] {
     override def writes(taxId: TaxIdWithName): JsValue =

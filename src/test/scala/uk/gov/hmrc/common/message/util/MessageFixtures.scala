@@ -23,6 +23,7 @@ import uk.gov.hmrc.common.message.model._
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.domain._
 import uk.gov.hmrc.time.DateTimeUtils
+import uk.gov.hmrc.workitem._
 
 import java.util.UUID
 
