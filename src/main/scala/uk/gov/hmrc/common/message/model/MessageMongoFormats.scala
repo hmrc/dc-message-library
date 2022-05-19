@@ -104,13 +104,13 @@ object MessageMongoFormats {
       Option[Lifecycle],
       Option[Map[String, String]],
       Option[DateTime],
-      Option[String])] = (
+      Option[MailgunStatus])] = (
       (__ \ "emailAlertEventUrl").readNullable[String] and
         (__ \ "verificationBrake").readNullable[Boolean] and
         (__ \ "lifecycle").readNullable[Lifecycle] and
         (__ \ "tags").readNullable[Map[String, String]] and
         (__ \ "deliveredOn").readNullable[DateTime] and
-        (__ \ "mailgunStatus").readNullable[String]
+        (__ \ "mailgunStatus").readNullable[MailgunStatus]
     ).tupled
 
     val tupleToMessage: (
@@ -143,7 +143,7 @@ object MessageMongoFormats {
         Option[Lifecycle],
         Option[Map[String, String]],
         Option[DateTime],
-        Option[String])
+        Option[MailgunStatus])
     ) => Message = {
       case (
           (
@@ -232,7 +232,7 @@ object MessageMongoFormats {
         Option[Lifecycle],
         Option[Map[String, String]],
         Option[DateTime],
-        Option[String])
+        Option[MailgunStatus])
     ) = { message =>
       (
         (
@@ -324,13 +324,13 @@ object MessageMongoFormats {
       Option[Lifecycle],
       Option[Map[String, String]],
       Option[DateTime],
-      Option[String])] = (
+      Option[MailgunStatus])] = (
       (__ \ "emailAlertEventUrl").writeNullable[String] and
         (__ \ "verificationBrake").writeNullable[Boolean] and
         (__ \ "lifecycle").writeNullable[Lifecycle] and
         (__ \ "tags").writeNullable[Map[String, String]] and
         (__ \ "deliveredOn").writeNullable[DateTime] and
-        (__ \ "mailgunStatus").writeNullable[String]
+        (__ \ "mailgunStatus").writeNullable[MailgunStatus]
     ).tupled
 
     val writes: OWrites[Message] = (writes1to21 ~ writes22to27) { messageToTuple }
