@@ -20,8 +20,11 @@ import enumeratum.{ Enum, EnumEntry, PlayJsonEnum }
 import org.joda.time.{ DateTime, LocalDate }
 import play.api.libs.json._
 import reactivemongo.bson.BSONObjectID
+
+import org.apache.commons.codec.binary.Base64
 import uk.gov.hmrc.domain.TaxIds._
 import uk.gov.hmrc.mongo.json.BSONObjectIdFormats
+import uk.gov.hmrc.common.message.model.Rescindment.Type.GeneratedInError
 import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
 import play.api.libs.json.JodaWrites.{ JodaDateTimeWrites => _, _ }
 import uk.gov.hmrc.workitem._
@@ -46,6 +49,32 @@ object Rescindment {
 
 object AlertQueueTypes {
   val alertQueueTypes = List("PRIORITY", "DEFAULT", "BACKGROUND")
+}
+
+trait Alertable {
+  def alertParams: Map[String, String]
+
+  def recipient: TaxEntity
+
+  def alertTemplateName: String
+
+  def auditData: Map[String, String]
+
+  def id: BSONObjectID
+
+  def externalRef: Option[ExternalRef]
+
+  def statutory: Boolean
+
+  def validFrom: LocalDate
+
+  def hardCopyAuditData: Map[String, String]
+
+  def taxPayerName: Option[TaxpayerName]
+
+  def alertQueue: Option[String]
+
+  def source: Option[String]
 }
 
 case class Message(
@@ -76,7 +105,29 @@ case class Message(
   tags: Option[Map[String, String]] = None,
   deliveredOn: Option[DateTime] = None,
   mailgunStatus: Option[String] = None
-)
+) extends Alertable {
+
+  def alertParams: Map[String, String] = alertDetails.data
+
+  @deprecated("We should remove this and replace with just rescindment", "28/7/15")
+  def sentInError: Option[Boolean] = rescindment.map(_.`type` == GeneratedInError)
+
+  override def alertTemplateName: String = alertDetails.templateId
+
+  def source: Option[String] = externalRef.map(_.source)
+
+  override def taxPayerName: Option[TaxpayerName] = alertDetails.recipientName
+
+  override def auditData: Map[String, String] =
+    body.map(_.toMap).getOrElse(Map.empty) ++ Map("messageId" -> id.stringify)
+
+  override def hardCopyAuditData: Map[String, String] =
+    Map(
+      "messageId" -> id.stringify,
+      "utr"       -> recipient.identifier.value,
+      "validFrom" -> validFrom.toString
+    ) ++ body.map(_.toMap).getOrElse(Map.empty)
+}
 
 object Message {
   import MessageMongoFormats._
@@ -107,6 +158,15 @@ case class ConversationItem(
 )
 
 object ConversationItem {
+
+  def apply(message: Message): ConversationItem =
+    ConversationItem(
+      message.id.stringify,
+      message.subject,
+      message.body,
+      message.validFrom,
+      Some(Base64.encodeBase64String(message.content.getOrElse("").getBytes("UTF-8")))
+    )
   implicit val messageListItemWrites = Json.writes[ConversationItem]
 }
 
