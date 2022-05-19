@@ -24,6 +24,7 @@ import uk.gov.hmrc.domain.TaxIds._
 import uk.gov.hmrc.mongo.json.BSONObjectIdFormats
 import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
 import play.api.libs.json.JodaWrites.{ JodaDateTimeWrites => _, _ }
+import uk.gov.hmrc.workitem._
 
 case class MessageContentParameters(data: ContentParameters, templateId: String)
 object MessageContentParameters {
@@ -73,7 +74,8 @@ case class Message(
   verificationBrake: Option[Boolean] = None,
   lifecycle: Option[Lifecycle] = None,
   tags: Option[Map[String, String]] = None,
-  deliveredOn: Option[DateTime] = None
+  deliveredOn: Option[DateTime] = None,
+  mailgunStatus: Option[MailgunStatus] = None
 )
 
 object Message {
@@ -190,4 +192,25 @@ case class MessageStatus(
 
 object MessageStatus {
   implicit val format: OFormat[MessageStatus] = Json.format[MessageStatus]
+}
+
+sealed trait MailgunStatus {
+  val name = toString.toLowerCase
+}
+
+case object Delivered extends MailgunStatus
+
+object MailgunStatus {
+  implicit val reads: Reads[MailgunStatus] = new Reads[MailgunStatus] {
+    override def reads(json: JsValue): JsResult[MailgunStatus] =
+      json match {
+        case JsString(status) if status == Delivered.name => JsSuccess(Delivered)
+        case other                                        => JsError(s"Could not convert to ProcessingStatus from $other")
+      }
+  }
+
+  implicit val writes: Writes[MailgunStatus] = new Writes[MailgunStatus] {
+    override def writes(status: MailgunStatus): JsValue = JsString(status.name)
+  }
+
 }
