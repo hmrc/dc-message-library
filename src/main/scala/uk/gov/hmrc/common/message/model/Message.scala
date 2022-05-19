@@ -75,13 +75,11 @@ case class Message(
   lifecycle: Option[Lifecycle] = None,
   tags: Option[Map[String, String]] = None,
   deliveredOn: Option[DateTime] = None,
-  mailgunStatus: Option[String] = None
+  mailgunStatus: Option[MailgunStatus] = None
 )
 
 object Message {
   import MessageMongoFormats._
-
-  val mailgunDeliveredStatus = "delivered"
 
   implicit val taxIdWithNameWrites = new Writes[TaxIdWithName] {
     override def writes(taxId: TaxIdWithName): JsValue =
@@ -194,4 +192,25 @@ case class MessageStatus(
 
 object MessageStatus {
   implicit val format: OFormat[MessageStatus] = Json.format[MessageStatus]
+}
+
+sealed trait MailgunStatus {
+  val name = toString.toLowerCase
+}
+
+case object Delivered extends MailgunStatus
+
+object MailgunStatus {
+  implicit val reads: Reads[MailgunStatus] = new Reads[MailgunStatus] {
+    override def reads(json: JsValue): JsResult[MailgunStatus] =
+      json match {
+        case JsString(status) if status == Delivered.name => JsSuccess(Delivered)
+        case other                                        => JsError(s"Could not convert to ProcessingStatus from $other")
+      }
+  }
+
+  implicit val writes: Writes[MailgunStatus] = new Writes[MailgunStatus] {
+    override def writes(status: MailgunStatus): JsValue = JsString(status.name)
+  }
+
 }
