@@ -200,6 +200,9 @@ object FailureResponseService {
       case e @ ErrorMessage(UNAUTHORIZED, _, _)          => Unauthorized(getJson(e))
       case e @ ErrorMessage(Status.CONFLICT, _, _)       => Results.Conflict(getJson(e))
       case e @ ErrorMessage(INTERNAL_SERVER_ERROR, _, _) => InternalServerError(getJson(e))
+      case e: ErrorMessage                               =>
+        // should never happen - just for pattern matching exhaustivity
+        InternalServerError(getJson(e))
     }
 
   }
