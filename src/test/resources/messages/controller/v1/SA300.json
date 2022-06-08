@@ -1,0 +1,35 @@
+{
+  "id": "5eb06ea601000073b2a51fe5",
+  "recipient": {
+    "regime": "sa",
+    "identifier": {
+      "sautr": "8000092998"
+    }
+  },
+  "subject": "Test subject",
+  "body": {
+    "type": "print-suppression-notification",
+    "form": "SA300",
+    "suppressedAt": "2020-05-04",
+    "detailsId": "C0123456781234568"
+  },
+  "validFrom": "2020-05-04",
+  "alertDetails": {
+    "alertFrom": "2020-05-04",
+    "data": {},
+    "templateId": "testAlertTemplate",
+    "recipientName": {
+      "title": "Dr",
+      "forename": "Bruce",
+      "secondForename": "Hulk",
+      "surname": "Banner",
+      "honours": "Green"
+    }
+  },
+  "hash": "a9289fa5-9b6b-4508-aa5c-fa125710f37a",
+  "statutory": false,
+  "renderUrl": {
+    "service": "serviceAbc",
+    "url": "urlAbc"
+  }
+}
