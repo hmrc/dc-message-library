@@ -19,6 +19,7 @@ package uk.gov.hmrc.common.message.validationmodule
 import org.apache.commons.codec.binary.Base64
 import uk.gov.hmrc.emailaddress.EmailAddress
 import uk.gov.hmrc.common.message.model._
+import uk.gov.hmrc.domain.HmrcMtdVat
 
 import scala.util.{ Failure, Success, Try }
 
@@ -34,6 +35,7 @@ object MessageValidator {
       _ <- checkInvalidEmailAddress(message)
       _ <- checkEmailAbsentIfInvalidTaxId(message)
       _ <- checkValidAlertQueue(message)
+      _ <- checkEmailPresentForVat(message)
     } yield message
 
   def checkDetailsIsPresent(message: Message): Try[Message] = message match {
@@ -77,6 +79,12 @@ object MessageValidator {
 
   def checkEmailAbsentIfInvalidTaxId(message: Message): Try[Message] = message.recipient.email match {
     case None if !isValidTaxIdentifier(message.recipient.identifier.name) =>
+      Failure(MessageValidationException("email: email address not provided"))
+    case _ => Success(message)
+  }
+
+  def checkEmailPresentForVat(message: Message): Try[Message] = message.recipient.email match {
+    case None if message.recipient.identifier.isInstanceOf[HmrcMtdVat] =>
       Failure(MessageValidationException("email: email address not provided"))
     case _ => Success(message)
   }
