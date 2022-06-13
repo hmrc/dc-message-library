@@ -44,7 +44,7 @@ object TaxEntity {
       case TaxEntity(Regime.fhdds, id, _)                 => s"HMRC-OBTDS-ORG~FH.ETMPREGISTRATIONNUMBER~${id.value}"
       case TaxEntity(Regime.vat, HmrcMtdVat(value), _)    => s"HMRC-MTD-VAT~VRN~$value"
       case TaxEntity(Regime.vat, HmceVatdecOrg(value), _) => s"HMRC-VATDEC-ORG~VATREGNO~$value"
-      case TaxEntity(Regime.epaye, id, _)                 => s"IR-PAYE~TAXOFFICEREFERENCE~${id.value}"
+      case TaxEntity(Regime.epaye, id, _)                 => s"IR-PAYE~ACCOUNTSREF~${id.value}"
       case TaxEntity(Regime.cds, id, _)                   => s"HMRC-CUS-ORG~EORINUMBER~${id.value}"
       case TaxEntity(Regime.ppt, id, _)                   => s"HMRC-PPT-ORG~ETMPREGISTRATIONNUMBER~${id.value}"
       case TaxEntity(Regime.itsa, id, _)                  => s"HMRC-MTD-IT~MTDITID~${id.value}"
@@ -70,16 +70,24 @@ object TaxEntity {
       case x                                             => throw new RuntimeException(s"unsupported identifier $x")
     }
 
-  def forAudit(entity: TaxEntity): Map[String, String] = {
-    val id = entity.identifier
-    Map(id.name -> id.value)
+  def forAudit(entity: TaxEntity): Map[String, String] = entity.identifier match {
+    case x: TaxIdWithName => Map(x.name -> x.value)
+    case _                => Map.empty
   }
 
   implicit def taxEntityFormat(implicit taxId: Format[TaxIdWithName]): Format[TaxEntity] = Json.format[TaxEntity]
 
   case class Epaye(value: String) extends TaxIdentifier with SimpleName {
+    require(Epaye.isValid(value), s"failed to validate $value")
     override def toString = value
-    val name = "empRef"
+    val name = "AccountsRef"
+  }
+
+  object Epaye extends (String => Epaye) {
+    private val validFormat = """^\d{3}P[a-zA-Z]\d{8}$"""
+    def isValid(value: String): Boolean = value.matches(validFormat)
+    implicit val orgWrite: Writes[Epaye] = new SimpleObjectWrites[Epaye](_.value)
+    implicit val orgRead: Reads[Epaye] = new SimpleObjectReads[Epaye]("IR-PAYE", Epaye.apply)
   }
 
   case class HmceVatdecOrg(value: String) extends TaxIdentifier with SimpleName {
@@ -87,9 +95,21 @@ object TaxEntity {
     val name = "HMCE-VATDEC-ORG"
   }
 
+  object HmceVatdecOrg extends (String => HmceVatdecOrg) {
+    implicit val orgWrite: Writes[HmceVatdecOrg] = new SimpleObjectWrites[HmceVatdecOrg](_.value)
+    implicit val orgRead: Reads[HmceVatdecOrg] =
+      new SimpleObjectReads[HmceVatdecOrg]("HMCE-VATDEC-ORG", HmceVatdecOrg.apply)
+  }
+
   case class HmrcCusOrg(value: String) extends TaxIdentifier with SimpleName {
     override def toString = value
     val name = "HMRC-CUS-ORG"
+  }
+
+  object HmrcCusOrg extends (String => HmrcCusOrg) {
+    implicit val orgWrite: Writes[HmrcCusOrg] = new SimpleObjectWrites[HmrcCusOrg](_.value)
+    implicit val orgRead: Reads[HmrcCusOrg] =
+      new SimpleObjectReads[HmrcCusOrg]("HMRC-CUS-ORG", HmrcCusOrg.apply)
   }
 
   case class HmrcPptOrg(value: String) extends TaxIdentifier with SimpleName {
@@ -97,14 +117,32 @@ object TaxEntity {
     val name = "ETMPREGISTRATIONNUMBER"
   }
 
+  object HmrcPptOrg extends (String => HmrcPptOrg) {
+    implicit val orgWrite: Writes[HmrcPptOrg] = new SimpleObjectWrites[HmrcPptOrg](_.value)
+    implicit val orgRead: Reads[HmrcPptOrg] =
+      new SimpleObjectReads[HmrcPptOrg]("HMRC-PPT-ORG", HmrcPptOrg.apply)
+  }
+
   case class HmrcPodsOrg(value: String) extends TaxIdentifier with SimpleName {
     override def toString = value
     val name = "PSAID"
   }
 
+  object HmrcPodsOrg extends (String => HmrcPodsOrg) {
+    implicit val orgWrite: Writes[HmrcPodsOrg] = new SimpleObjectWrites[HmrcPodsOrg](_.value)
+    implicit val orgRead: Reads[HmrcPodsOrg] =
+      new SimpleObjectReads[HmrcPodsOrg]("HMRC-PODS-ORG", HmrcPodsOrg.apply)
+  }
+
   case class HmrcPodsPpOrg(value: String) extends TaxIdentifier with SimpleName {
     override def toString = value
     val name = "PSPID"
+  }
+
+  object HmrcPodsPpOrg extends (String => HmrcPodsPpOrg) {
+    implicit val orgWrite: Writes[HmrcPodsPpOrg] = new SimpleObjectWrites[HmrcPodsPpOrg](_.value)
+    implicit val orgRead: Reads[HmrcPodsPpOrg] =
+      new SimpleObjectReads[HmrcPodsPpOrg]("HMRC-PODSPP-ORG", HmrcPodsPpOrg.apply)
   }
 
 }

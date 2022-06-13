@@ -18,6 +18,7 @@ package uk.gov.hmrc.common.message.model
 
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.domain._
+
 import uk.gov.hmrc.common.message.model.TaxEntity._
 import uk.gov.hmrc.common.message.util.MessageFixtures
 
@@ -52,7 +53,7 @@ class TaxEntitySpec extends PlaySpec {
       TaxEntity.regimeOf(HmceVatdecOrg("123412342134")) mustBe Regime.vat
     }
     "produce epaye regime from Epaye taxId" in {
-      TaxEntity.regimeOf(Epaye("foo/bar")) mustBe Regime.epaye
+      TaxEntity.regimeOf(Epaye("840Pd00123456")) mustBe Regime.epaye
     }
     """produce sdil regime from HmrcObtdsOrg taxId and "SD" in the 3-d and 4-th charaters of the value""" in {
       TaxEntity.regimeOf(HmrcObtdsOrg("XZSD00000100024")) mustBe Regime.sdil
@@ -90,7 +91,7 @@ class TaxEntitySpec extends PlaySpec {
       TaxEntity.getEnrolment(TaxEntity(Regime.vat, HmceVatdecOrg("123412342134"), None)) mustBe "HMRC-VATDEC-ORG~VATREGNO~123412342134"
     }
     "produce IR-PAYE enrolment from Epaye tax entity" in {
-      TaxEntity.getEnrolment(TaxEntity(Regime.epaye, Epaye("123456"), None)) mustBe "IR-PAYE~TAXOFFICEREFERENCE~123456"
+      TaxEntity.getEnrolment(TaxEntity(Regime.epaye, Epaye("840Pd00123456"), None)) mustBe "IR-PAYE~ACCOUNTSREF~840Pd00123456"
     }
     """produce HMRC-OBTDS-ORG enrolment from HmrcObtdsOrg SDIL tax entity""" in {
       TaxEntity.getEnrolment(TaxEntity(Regime.sdil, HmrcObtdsOrg("XZSD00000100024"), None)) mustBe "HMRC-OBTDS-ORG~SD.ETMPREGISTRATIONNUMBER~XZSD00000100024"
@@ -133,7 +134,12 @@ class TaxEntitySpec extends PlaySpec {
 
   "Epaye toString" must {
     "return value" in {
-      Epaye("123456").toString mustBe "123456"
+      Epaye("840Pd00123456").toString mustBe "840Pd00123456"
+    }
+    "throw exception if value invalid" in {
+      intercept[IllegalArgumentException] {
+        Epaye("840Pd0012345").toString
+      }.getMessage must be("requirement failed: failed to validate 840Pd0012345")
     }
   }
 
