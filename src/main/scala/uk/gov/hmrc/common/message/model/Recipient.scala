@@ -78,7 +78,7 @@ object TaxIdentifierRESTV2Formats {
           }
         case (Some("IR-PAYE.AccountsRef"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
-            JsSuccess(Epaye(value))
+            JsSuccess(Epaye(value.replace("/", "")))
           }
         case (Some("HMCE-VATDEC-ORG"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
@@ -151,7 +151,7 @@ object TaxIdentifierRESTV2Formats {
           }
         case (Some("empRef"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
-            JsSuccess(Epaye(value))
+            JsSuccess(Epaye(value.replace("/", "")))
           }
         case (Some("HMCE-VATDEC-ORG"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>

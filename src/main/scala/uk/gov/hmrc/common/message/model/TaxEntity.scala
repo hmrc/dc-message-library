@@ -84,7 +84,7 @@ object TaxEntity {
   }
 
   object Epaye extends (String => Epaye) {
-    private val validFormat = """^\d{3}\/P[a-zA-Z]\d{8}$"""
+    private val validFormat = """^\d{3}P[a-zA-Z]\d{8}$"""
     def isValid(value: String): Boolean = value.matches(validFormat)
     implicit val orgWrite: Writes[Epaye] = new SimpleObjectWrites[Epaye](_.value)
     implicit val orgRead: Reads[Epaye] = new SimpleObjectReads[Epaye]("IR-PAYE", Epaye.apply)
