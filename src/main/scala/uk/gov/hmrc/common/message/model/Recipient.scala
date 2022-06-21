@@ -116,7 +116,7 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsError("The backend has rejected the message due to an unknown tax identifier.")
           }
-        case (Some(name), _) =>
+        case (Some(_), _) =>
           Reads[TaxIdWithName] { _ =>
             JsError("The backend has rejected the message due to an unknown tax identifier.")
           }

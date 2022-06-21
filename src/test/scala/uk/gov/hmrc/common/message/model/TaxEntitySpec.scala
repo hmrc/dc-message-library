@@ -73,44 +73,63 @@ class TaxEntitySpec extends PlaySpec {
     }
   }
 
-  "getEnrolment" must {
+  "getEnrolments" must {
 
-    "produce IR-NINO enrolment from Nino tax entity" in {
-      TaxEntity.getEnrolment(TaxEntity(Regime.paye, Nino("AB123456C"), None)) mustBe "IR-NINO~NINO~AB123456C"
-    }
-    "produce IR-SA enrolment from SaUtr tax entity" in {
-      TaxEntity.getEnrolment(TaxEntity(Regime.sa, SaUtr("123412342134"), None)) mustBe "IR-SA~UTR~123412342134"
-    }
-    "produce IR-CT enrolment from CtUtr tax entity" in {
-      TaxEntity.getEnrolment(TaxEntity(Regime.ct, CtUtr("123412342134"), None)) mustBe "IR-CT~UTR~123412342134"
-    }
-    "produce HMRC-MTD-VAT enrolment from HmrcMtdVat tax entity" in {
-      TaxEntity.getEnrolment(TaxEntity(Regime.vat, HmrcMtdVat("123412342134"), None)) mustBe "HMRC-MTD-VAT~VRN~123412342134"
-    }
-    "produce HMRC-VATDEC-ORG enrolment from HmceVatdecOrg tax entity" in {
-      TaxEntity.getEnrolment(TaxEntity(Regime.vat, HmceVatdecOrg("123412342134"), None)) mustBe "HMRC-VATDEC-ORG~VATREGNO~123412342134"
-    }
-    "produce IR-PAYE enrolment from Epaye tax entity" in {
-      TaxEntity.getEnrolment(TaxEntity(Regime.epaye, Epaye("840Pd00123456"), None)) mustBe "IR-PAYE~ACCOUNTSREF~840Pd00123456"
-    }
-    """produce HMRC-OBTDS-ORG enrolment from HmrcObtdsOrg SDIL tax entity""" in {
-      TaxEntity.getEnrolment(TaxEntity(Regime.sdil, HmrcObtdsOrg("XZSD00000100024"), None)) mustBe "HMRC-OBTDS-ORG~SD.ETMPREGISTRATIONNUMBER~XZSD00000100024"
-    }
-    """produce HMRC-OBTDS-ORG enrolment from HmrcObtdsOrg FHDDS tax entity""" in {
-      TaxEntity.getEnrolment(TaxEntity(Regime.fhdds, HmrcObtdsOrg("XZFH00000100024"), None)) mustBe "HMRC-OBTDS-ORG~FH.ETMPREGISTRATIONNUMBER~XZFH00000100024"
-    }
-    """produce HMRC-CUS-ORG enrolment from HmrcCusOrg tax entity""" in {
-      TaxEntity.getEnrolment(TaxEntity(Regime.cds, HmrcCusOrg("GB123456789"), None)) mustBe "HMRC-CUS-ORG~EORINUMBER~GB123456789"
-    }
-    """produce HMRC-PPT-ORG enrolment from HmrcPptOrg tax entity""" in {
-      TaxEntity.getEnrolment(TaxEntity(Regime.ppt, HmrcPptOrg("XMPPT0000000001"), None)) mustBe "HMRC-PPT-ORG~ETMPREGISTRATIONNUMBER~XMPPT0000000001"
-    }
-    """produce HMRC-MTD-IT enrolment from HmrcMtdIt tax entity""" in {
-      TaxEntity.getEnrolment(TaxEntity(Regime.itsa, HmrcMtdItsa("GB123456789"), None)) mustBe "HMRC-MTD-IT~MTDITID~GB123456789"
+    val testCases = List(
+      ("IR-NINO", TaxEntity(Regime.paye, Nino("AB123456C"), None), "Nino", Enrolments("IR-NINO~NINO~AB123456C")),
+      ("IR-SA", TaxEntity(Regime.sa, SaUtr("123412342134"), None), "SaUtr", Enrolments("IR-SA~UTR~123412342134")),
+      ("IR-CT", TaxEntity(Regime.ct, CtUtr("123412342134"), None), "CtUtr", Enrolments("IR-CT~UTR~123412342134")),
+      (
+        "HMRC-MTD-VAT",
+        TaxEntity(Regime.vat, HmrcMtdVat("123412342134"), None),
+        "HmrcMtdVat",
+        Enrolments("HMRC-MTD-VAT~VRN~123412342134", "HMRC-OSS-ORG~VRN~123412342134")),
+      (
+        "HMRC-VATDEC-ORG",
+        TaxEntity(Regime.vat, HmceVatdecOrg("123412342134"), None),
+        "HmceVatdecOrg",
+        Enrolments("HMRC-VATDEC-ORG~VATREGNO~123412342134")),
+      (
+        "IR-PAYE",
+        TaxEntity(Regime.epaye, Epaye("840Pd00123456"), None),
+        "Epaye",
+        Enrolments("IR-PAYE~ACCOUNTSREF~840Pd00123456")),
+      (
+        "HMRC-OBTDS-ORG",
+        TaxEntity(Regime.sdil, HmrcObtdsOrg("XZSD00000100024"), None),
+        "HmrcObtdsOrg SDIL",
+        Enrolments("HMRC-OBTDS-ORG~SD.ETMPREGISTRATIONNUMBER~XZSD00000100024")),
+      (
+        "HMRC-OBTDS-ORG",
+        TaxEntity(Regime.fhdds, HmrcObtdsOrg("XZFH00000100024"), None),
+        "HmrcObtdsOrg FHDDS",
+        Enrolments("HMRC-OBTDS-ORG~FH.ETMPREGISTRATIONNUMBER~XZFH00000100024")),
+      (
+        "HMRC-CUS-ORG",
+        TaxEntity(Regime.cds, HmrcCusOrg("GB123456789"), None),
+        "HmrcCusOrg",
+        Enrolments("HMRC-CUS-ORG~EORINUMBER~GB123456789")),
+      (
+        "HMRC-PPT-ORG",
+        TaxEntity(Regime.ppt, HmrcPptOrg("XMPPT0000000001"), None),
+        "HmrcPptOrg",
+        Enrolments("HMRC-PPT-ORG~ETMPREGISTRATIONNUMBER~XMPPT0000000001")),
+      (
+        "HMRC-MTD-IT",
+        TaxEntity(Regime.itsa, HmrcMtdItsa("GB123456789"), None),
+        "HmrcMtdIt",
+        Enrolments("HMRC-MTD-IT~MTDITID~GB123456789"))
+    )
+
+    testCases.foreach {
+      case (to, taxEntity, from, expected) =>
+        s"produce $to enrolment from $from tax entity" in {
+          TaxEntity.getEnrolments(taxEntity) mustBe expected
+        }
     }
     "throw exception" in {
-      val thrown = the[RuntimeException] thrownBy TaxEntity.getEnrolment(TaxEntity(Regime.vat, HmrcObtdsOrg("foobar")))
-      thrown.getMessage must include("unsupported regime")
+      val thrown = the[RuntimeException] thrownBy TaxEntity.getEnrolments(TaxEntity(Regime.vat, HmrcObtdsOrg("foobar")))
+      thrown.getMessage must include("unsupported tax entity")
     }
   }
 
