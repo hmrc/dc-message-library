@@ -46,12 +46,14 @@ object TaxEntity {
         Enrolments(s"HMRC-MTD-VAT~VRN~$value", s"HMRC-OSS-ORG~VRN~$value")
       case TaxEntity(Regime.vat, HmrcOssOrg(value), _) =>
         Enrolments(s"HMRC-MTD-VAT~VRN~$value", s"HMRC-OSS-ORG~VRN~$value")
-      case TaxEntity(Regime.vat, HmceVatdecOrg(value), _) => Enrolments(s"HMRC-VATDEC-ORG~VATREGNO~$value")
-      case TaxEntity(Regime.epaye, id, _)                 => Enrolments(s"IR-PAYE~ACCOUNTSREF~${id.value}")
-      case TaxEntity(Regime.cds, id, _)                   => Enrolments(s"HMRC-CUS-ORG~EORINUMBER~${id.value}")
-      case TaxEntity(Regime.ppt, id, _)                   => Enrolments(s"HMRC-PPT-ORG~ETMPREGISTRATIONNUMBER~${id.value}")
-      case TaxEntity(Regime.itsa, id, _)                  => Enrolments(s"HMRC-MTD-IT~MTDITID~${id.value}")
-      case r                                              => throw new RuntimeException(s"unsupported tax entity $r")
+      case TaxEntity(Regime.vat, HmceVatdecOrg(value), _)  => Enrolments(s"HMRC-VATDEC-ORG~VATREGNO~$value")
+      case TaxEntity(Regime.epaye, id, _)                  => Enrolments(s"IR-PAYE~ACCOUNTSREF~${id.value}")
+      case TaxEntity(Regime.cds, id, _)                    => Enrolments(s"HMRC-CUS-ORG~EORINUMBER~${id.value}")
+      case TaxEntity(Regime.ppt, id, _)                    => Enrolments(s"HMRC-PPT-ORG~ETMPREGISTRATIONNUMBER~${id.value}")
+      case TaxEntity(Regime.itsa, id, _)                   => Enrolments(s"HMRC-MTD-IT~MTDITID~${id.value}")
+      case TaxEntity(Regime.pods, HmrcPodsOrg(value), _)   => Enrolments(s"HMRC-PODS-ORG~PSAID~$value")
+      case TaxEntity(Regime.pods, HmrcPodsPpOrg(value), _) => Enrolments(s"HMRC-PODSPP-ORG~PSPID~$value")
+      case r                                               => throw new RuntimeException(s"unsupported tax entity $r")
     }
 
   // https://confluence.tools.tax.service.gov.uk/pages/viewpage.action?spaceKey=DF&title=HMRC-OBTDS-ORG+GG+Service

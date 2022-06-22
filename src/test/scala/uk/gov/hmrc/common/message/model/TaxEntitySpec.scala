@@ -118,7 +118,17 @@ class TaxEntitySpec extends PlaySpec {
         "HMRC-MTD-IT",
         TaxEntity(Regime.itsa, HmrcMtdItsa("GB123456789"), None),
         "HmrcMtdIt",
-        Enrolments("HMRC-MTD-IT~MTDITID~GB123456789"))
+        Enrolments("HMRC-MTD-IT~MTDITID~GB123456789")),
+      (
+        "HMRC-PODS-ORG",
+        TaxEntity(Regime.pods, HmrcPodsOrg("AB1231232344"), None),
+        "HmrcPodsOrg",
+        Enrolments("HMRC-PODS-ORG~PSAID~AB1231232344")),
+      (
+        "HMRC-PODSPP-ORG",
+        TaxEntity(Regime.pods, HmrcPodsPpOrg("AB1231232344"), None),
+        "HmrcPodsPpOrg",
+        Enrolments("HMRC-PODSPP-ORG~PSPID~AB1231232344"))
     )
 
     testCases.foreach {
