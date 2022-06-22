@@ -44,6 +44,8 @@ object TaxEntity {
       case TaxEntity(Regime.fhdds, id, _) => Enrolments(s"HMRC-OBTDS-ORG~FH.ETMPREGISTRATIONNUMBER~${id.value}")
       case TaxEntity(Regime.vat, HmrcMtdVat(value), _) =>
         Enrolments(s"HMRC-MTD-VAT~VRN~$value", s"HMRC-OSS-ORG~VRN~$value")
+      case TaxEntity(Regime.vat, Vrn(value), _) =>
+        Enrolments(s"HMRC-MTD-VAT~VRN~$value", s"HMRC-OSS-ORG~VRN~$value")
       case TaxEntity(Regime.vat, HmrcOssOrg(value), _) =>
         Enrolments(s"HMRC-MTD-VAT~VRN~$value", s"HMRC-OSS-ORG~VRN~$value")
       case TaxEntity(Regime.vat, HmceVatdecOrg(value), _)  => Enrolments(s"HMRC-VATDEC-ORG~VATREGNO~$value")
@@ -65,6 +67,7 @@ object TaxEntity {
       case x: HmrcObtdsOrg if x.value matches "^..SD.*$" => Regime.sdil
       case x: HmrcObtdsOrg if x.value matches "^..FH.*$" => Regime.fhdds
       case _: HmrcMtdVat                                 => Regime.vat
+      case _: Vrn                                        => Regime.vat
       case _: HmrcOssOrg                                 => Regime.vat
       case _: Epaye                                      => Regime.epaye
       case _: HmceVatdecOrg                              => Regime.vat

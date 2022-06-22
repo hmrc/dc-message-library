@@ -49,6 +49,9 @@ class TaxEntitySpec extends PlaySpec {
     "produce vat regime from HmrcMtdVat taxId" in {
       TaxEntity.regimeOf(HmrcMtdVat("123412342134")) mustBe Regime.vat
     }
+    "produce vat regime from VRN taxId" in {
+      TaxEntity.regimeOf(Vrn("123412342134")) mustBe Regime.vat
+    }
     "produce vat regime from HmceVatdecOrg taxId" in {
       TaxEntity.regimeOf(HmceVatdecOrg("123412342134")) mustBe Regime.vat
     }
@@ -83,6 +86,11 @@ class TaxEntitySpec extends PlaySpec {
         "HMRC-MTD-VAT",
         TaxEntity(Regime.vat, HmrcMtdVat("123412342134"), None),
         "HmrcMtdVat",
+        Enrolments("HMRC-MTD-VAT~VRN~123412342134", "HMRC-OSS-ORG~VRN~123412342134")),
+      (
+        "HMRC-MTD-VAT.VRN",
+        TaxEntity(Regime.vat, Vrn("123412342134"), None),
+        "Vrn",
         Enrolments("HMRC-MTD-VAT~VRN~123412342134", "HMRC-OSS-ORG~VRN~123412342134")),
       (
         "HMRC-VATDEC-ORG",

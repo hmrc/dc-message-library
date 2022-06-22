@@ -76,6 +76,10 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcMtdVat(value))
           }
+        case (Some("HMRC-MTD-VAT.VRN"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(Vrn(value))
+          }
         case (Some("IR-PAYE.AccountsRef"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
             JsSuccess(Epaye(value))
@@ -148,6 +152,10 @@ object TaxIdentifierRESTV2Formats {
         case (Some("HMRC-MTD-VAT"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcMtdVat(value))
+          }
+        case (Some("HMRC-MTD-VAT.VRN"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(Vrn(value))
           }
         case (Some("empRef"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>

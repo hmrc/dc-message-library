@@ -499,6 +499,7 @@ object MessageFixtures {
     case x: CtUtr        => TaxEntity(Regime.ct, x, email)
     case x: HmrcObtdsOrg => TaxEntity(Regime.fhdds, x)
     case x: HmrcMtdVat   => TaxEntity(Regime.vat, x)
+    case x: Vrn          => TaxEntity(Regime.vat, x)
     case x               => throw new RuntimeException(s"unsupported identifier $x")
   }
 
