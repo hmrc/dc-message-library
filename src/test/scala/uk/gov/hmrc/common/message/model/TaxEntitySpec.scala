@@ -173,11 +173,6 @@ class TaxEntitySpec extends PlaySpec {
     "return value" in {
       Epaye("840Pd00123456").toString mustBe "840Pd00123456"
     }
-    "throw exception if value invalid" in {
-      intercept[IllegalArgumentException] {
-        Epaye("840Pd0012345").toString
-      }.getMessage must be("requirement failed: failed to validate 840Pd0012345")
-    }
   }
 
   "HmceVatdecOrg toString" must {
