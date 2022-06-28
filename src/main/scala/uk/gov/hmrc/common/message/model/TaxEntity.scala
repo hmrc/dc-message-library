@@ -87,14 +87,11 @@ object TaxEntity {
   implicit def taxEntityFormat(implicit taxId: Format[TaxIdWithName]): Format[TaxEntity] = Json.format[TaxEntity]
 
   case class Epaye(value: String) extends TaxIdentifier with SimpleName {
-    require(Epaye.isValid(value), s"failed to validate $value")
     override def toString = value
     val name = "AccountsRef"
   }
 
   object Epaye extends (String => Epaye) {
-    private val validFormat = """^\d{3}P[a-zA-Z]\d{8}$"""
-    def isValid(value: String): Boolean = value.matches(validFormat)
     implicit val orgWrite: Writes[Epaye] = new SimpleObjectWrites[Epaye](_.value)
     implicit val orgRead: Reads[Epaye] = new SimpleObjectReads[Epaye]("IR-PAYE", Epaye.apply)
   }
