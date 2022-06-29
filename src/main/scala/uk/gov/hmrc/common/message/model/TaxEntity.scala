@@ -35,20 +35,27 @@ object TaxEntity {
       identifier,
       email)
 
-  def getEnrolment(taxEntity: TaxEntity): String =
+  def getEnrolments(taxEntity: TaxEntity): Enrolments =
     taxEntity match {
-      case TaxEntity(Regime.paye, id, _)                  => s"IR-NINO~NINO~${id.value}"
-      case TaxEntity(Regime.sa, id, _)                    => s"IR-SA~UTR~${id.value}"
-      case TaxEntity(Regime.ct, id, _)                    => s"IR-CT~UTR~${id.value}"
-      case TaxEntity(Regime.sdil, id, _)                  => s"HMRC-OBTDS-ORG~SD.ETMPREGISTRATIONNUMBER~${id.value}"
-      case TaxEntity(Regime.fhdds, id, _)                 => s"HMRC-OBTDS-ORG~FH.ETMPREGISTRATIONNUMBER~${id.value}"
-      case TaxEntity(Regime.vat, HmrcMtdVat(value), _)    => s"HMRC-MTD-VAT~VRN~$value"
-      case TaxEntity(Regime.vat, HmceVatdecOrg(value), _) => s"HMRC-VATDEC-ORG~VATREGNO~$value"
-      case TaxEntity(Regime.epaye, id, _)                 => s"IR-PAYE~TAXOFFICEREFERENCE~${id.value}"
-      case TaxEntity(Regime.cds, id, _)                   => s"HMRC-CUS-ORG~EORINUMBER~${id.value}"
-      case TaxEntity(Regime.ppt, id, _)                   => s"HMRC-PPT-ORG~ETMPREGISTRATIONNUMBER~${id.value}"
-      case TaxEntity(Regime.itsa, id, _)                  => s"HMRC-MTD-IT~MTDITID~${id.value}"
-      case r                                              => throw new RuntimeException(s"unsupported regime $r")
+      case TaxEntity(Regime.paye, id, _)  => Enrolments(s"IR-NINO~NINO~${id.value}")
+      case TaxEntity(Regime.sa, id, _)    => Enrolments(s"IR-SA~UTR~${id.value}")
+      case TaxEntity(Regime.ct, id, _)    => Enrolments(s"IR-CT~UTR~${id.value}")
+      case TaxEntity(Regime.sdil, id, _)  => Enrolments(s"HMRC-OBTDS-ORG~SD.ETMPREGISTRATIONNUMBER~${id.value}")
+      case TaxEntity(Regime.fhdds, id, _) => Enrolments(s"HMRC-OBTDS-ORG~FH.ETMPREGISTRATIONNUMBER~${id.value}")
+      case TaxEntity(Regime.vat, HmrcMtdVat(value), _) =>
+        Enrolments(s"HMRC-MTD-VAT~VRN~$value", s"HMRC-OSS-ORG~VRN~$value")
+      case TaxEntity(Regime.vat, Vrn(value), _) =>
+        Enrolments(s"HMRC-MTD-VAT~VRN~$value", s"HMRC-OSS-ORG~VRN~$value")
+      case TaxEntity(Regime.vat, HmrcOssOrg(value), _) =>
+        Enrolments(s"HMRC-MTD-VAT~VRN~$value", s"HMRC-OSS-ORG~VRN~$value")
+      case TaxEntity(Regime.vat, HmceVatdecOrg(value), _)  => Enrolments(s"HMRC-VATDEC-ORG~VATREGNO~$value")
+      case TaxEntity(Regime.epaye, id, _)                  => Enrolments(s"IR-PAYE~ACCOUNTSREF~${id.value}")
+      case TaxEntity(Regime.cds, id, _)                    => Enrolments(s"HMRC-CUS-ORG~EORINUMBER~${id.value}")
+      case TaxEntity(Regime.ppt, id, _)                    => Enrolments(s"HMRC-PPT-ORG~ETMPREGISTRATIONNUMBER~${id.value}")
+      case TaxEntity(Regime.itsa, id, _)                   => Enrolments(s"HMRC-MTD-IT~MTDITID~${id.value}")
+      case TaxEntity(Regime.pods, HmrcPodsOrg(value), _)   => Enrolments(s"HMRC-PODS-ORG~PSAID~$value")
+      case TaxEntity(Regime.pods, HmrcPodsPpOrg(value), _) => Enrolments(s"HMRC-PODSPP-ORG~PSPID~$value")
+      case r                                               => throw new RuntimeException(s"unsupported tax entity $r")
     }
 
   // https://confluence.tools.tax.service.gov.uk/pages/viewpage.action?spaceKey=DF&title=HMRC-OBTDS-ORG+GG+Service
@@ -60,6 +67,8 @@ object TaxEntity {
       case x: HmrcObtdsOrg if x.value matches "^..SD.*$" => Regime.sdil
       case x: HmrcObtdsOrg if x.value matches "^..FH.*$" => Regime.fhdds
       case _: HmrcMtdVat                                 => Regime.vat
+      case _: Vrn                                        => Regime.vat
+      case _: HmrcOssOrg                                 => Regime.vat
       case _: Epaye                                      => Regime.epaye
       case _: HmceVatdecOrg                              => Regime.vat
       case _: HmrcCusOrg                                 => Regime.cds
@@ -70,16 +79,21 @@ object TaxEntity {
       case x                                             => throw new RuntimeException(s"unsupported identifier $x")
     }
 
-  def forAudit(entity: TaxEntity): Map[String, String] = {
-    val id = entity.identifier
-    Map(id.name -> id.value)
+  def forAudit(entity: TaxEntity): Map[String, String] = entity.identifier match {
+    case x: TaxIdWithName => Map(x.name -> x.value)
+    case _                => Map.empty
   }
 
   implicit def taxEntityFormat(implicit taxId: Format[TaxIdWithName]): Format[TaxEntity] = Json.format[TaxEntity]
 
   case class Epaye(value: String) extends TaxIdentifier with SimpleName {
     override def toString = value
-    val name = "empRef"
+    val name = "AccountsRef"
+  }
+
+  object Epaye extends (String => Epaye) {
+    implicit val orgWrite: Writes[Epaye] = new SimpleObjectWrites[Epaye](_.value)
+    implicit val orgRead: Reads[Epaye] = new SimpleObjectReads[Epaye]("IR-PAYE", Epaye.apply)
   }
 
   case class HmceVatdecOrg(value: String) extends TaxIdentifier with SimpleName {
@@ -87,9 +101,32 @@ object TaxEntity {
     val name = "HMCE-VATDEC-ORG"
   }
 
+  object HmceVatdecOrg extends (String => HmceVatdecOrg) {
+    implicit val orgWrite: Writes[HmceVatdecOrg] = new SimpleObjectWrites[HmceVatdecOrg](_.value)
+    implicit val orgRead: Reads[HmceVatdecOrg] =
+      new SimpleObjectReads[HmceVatdecOrg]("HMCE-VATDEC-ORG", HmceVatdecOrg.apply)
+  }
+
   case class HmrcCusOrg(value: String) extends TaxIdentifier with SimpleName {
     override def toString = value
     val name = "HMRC-CUS-ORG"
+  }
+
+  object HmrcCusOrg extends (String => HmrcCusOrg) {
+    implicit val orgWrite: Writes[HmrcCusOrg] = new SimpleObjectWrites[HmrcCusOrg](_.value)
+    implicit val orgRead: Reads[HmrcCusOrg] =
+      new SimpleObjectReads[HmrcCusOrg]("HMRC-CUS-ORG", HmrcCusOrg.apply)
+  }
+
+  case class HmrcOssOrg(value: String) extends TaxIdentifier with SimpleName {
+    override def toString = value
+    val name = "HMRC-OSS-ORG"
+  }
+
+  object HmrcOssOrg extends (String => HmrcOssOrg) {
+    implicit val orgWrite: Writes[HmrcOssOrg] = new SimpleObjectWrites[HmrcOssOrg](_.value)
+    implicit val orgRead: Reads[HmrcOssOrg] =
+      new SimpleObjectReads[HmrcOssOrg]("HMRC-OSS-ORG", HmrcOssOrg.apply)
   }
 
   case class HmrcPptOrg(value: String) extends TaxIdentifier with SimpleName {
@@ -97,9 +134,21 @@ object TaxEntity {
     val name = "ETMPREGISTRATIONNUMBER"
   }
 
+  object HmrcPptOrg extends (String => HmrcPptOrg) {
+    implicit val orgWrite: Writes[HmrcPptOrg] = new SimpleObjectWrites[HmrcPptOrg](_.value)
+    implicit val orgRead: Reads[HmrcPptOrg] =
+      new SimpleObjectReads[HmrcPptOrg]("HMRC-PPT-ORG", HmrcPptOrg.apply)
+  }
+
   case class HmrcPodsOrg(value: String) extends TaxIdentifier with SimpleName {
     override def toString = value
     val name = "PSAID"
+  }
+
+  object HmrcPodsOrg extends (String => HmrcPodsOrg) {
+    implicit val orgWrite: Writes[HmrcPodsOrg] = new SimpleObjectWrites[HmrcPodsOrg](_.value)
+    implicit val orgRead: Reads[HmrcPodsOrg] =
+      new SimpleObjectReads[HmrcPodsOrg]("HMRC-PODS-ORG", HmrcPodsOrg.apply)
   }
 
   case class HmrcPodsPpOrg(value: String) extends TaxIdentifier with SimpleName {
@@ -107,4 +156,21 @@ object TaxEntity {
     val name = "PSPID"
   }
 
+  object HmrcPodsPpOrg extends (String => HmrcPodsPpOrg) {
+    implicit val orgWrite: Writes[HmrcPodsPpOrg] = new SimpleObjectWrites[HmrcPodsPpOrg](_.value)
+    implicit val orgRead: Reads[HmrcPodsPpOrg] =
+      new SimpleObjectReads[HmrcPodsPpOrg]("HMRC-PODSPP-ORG", HmrcPodsPpOrg.apply)
+  }
+
+}
+
+final case class Enrolments(main: String, fallback: List[String])
+
+object Enrolments {
+
+  def apply(e: String): Enrolments =
+    Enrolments(e, Nil)
+
+  def apply(e1: String, e2: String): Enrolments =
+    Enrolments(e1, List(e2))
 }

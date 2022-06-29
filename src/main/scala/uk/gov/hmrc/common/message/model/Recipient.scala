@@ -20,7 +20,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.domain._
-import TaxEntity.{ Epaye, HmceVatdecOrg, HmrcCusOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
+import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmceVatdecOrg, HmrcCusOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
 
 sealed trait Regime
 
@@ -40,6 +40,13 @@ case class Recipient(
 
 object Recipient {
   implicit val tif: Format[TaxIdWithName] = TaxIdentifierRESTV2Formats.format
+
+  implicit val format: OFormat[Recipient] = Json.format[Recipient]
+}
+
+// TODO: To delete when getting rid of the quadient.error flag
+object RecipientNonQuadientErrorFormats {
+  implicit val tifNonQuadientError: Format[TaxIdWithName] = TaxIdentifierRESTV2Formats.nonQuadientErrorFormat
 
   implicit val format: OFormat[Recipient] = Json.format[Recipient]
 }
@@ -69,7 +76,11 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcMtdVat(value))
           }
-        case (Some("empRef"), Some(value)) =>
+        case (Some("HMRC-MTD-VAT.VRN"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(Vrn(value))
+          }
+        case (Some("IR-PAYE.AccountsRef"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
             JsSuccess(Epaye(value))
           }
@@ -119,9 +130,88 @@ object TaxIdentifierRESTV2Formats {
           }
       }
 
+  implicit val identifierNonQuadientErrorReads: Reads[TaxIdWithName] =
+    ((__ \ "name").readNullable[String] and (__ \ "value").readNullable[String]).tupled
+      .flatMap[TaxIdWithName] {
+        case (Some("sautr"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(SaUtr(value))
+          }
+        case (Some("nino"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(Nino(value))
+          }
+        case (Some("ctutr"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(CtUtr(value))
+          }
+        case (Some("HMRC-OBTDS-ORG"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(HmrcObtdsOrg(value))
+          }
+        case (Some("HMRC-MTD-VAT"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(HmrcMtdVat(value))
+          }
+        case (Some("HMRC-MTD-VAT.VRN"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(Vrn(value))
+          }
+        case (Some("empRef"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(Epaye(value))
+          }
+        case (Some("HMCE-VATDEC-ORG"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(HmceVatdecOrg(value))
+          }
+        case (Some("HMRC-CUS-ORG"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(HmrcCusOrg(value))
+          }
+        case (Some("HMRC-PPT-ORG.ETMPREGISTRATIONNUMBER"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(HmrcPptOrg(value))
+          }
+        case (Some("HMRC-MTD-IT"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(HmrcMtdItsa(value))
+          }
+        case (Some("MTDBSA"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(HmrcMtdItsa(value))
+          }
+        case (Some("MTDITID"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(HmrcMtdItsa(value))
+          }
+        case (Some("HMRC-PODS-ORG.PSAID"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(HmrcPodsOrg(value))
+          }
+        case (Some("HMRC-PODSPP-ORG.PSPID"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(HmrcPodsPpOrg(value))
+          }
+        case (_, None) =>
+          Reads[TaxIdWithName] { _ =>
+            JsError("Unknown tax identifier name (missing tax identifier value)")
+          }
+        case (Some(name), _) =>
+          Reads[TaxIdWithName] { _ =>
+            JsError(s"Unknown tax identifier name ($name)")
+          }
+        case (None, _) =>
+          Reads[TaxIdWithName] { _ =>
+            JsError("Unknown tax identifier name (missing tax identifier name)")
+          }
+      }
+
   implicit val identifierWrites: Writes[TaxIdWithName] = new Writes[TaxIdWithName] {
     override def writes(taxId: TaxIdWithName): JsValue = JsObject(Seq(taxId.name -> JsString(taxId.value)))
   }
 
   implicit val format: Format[TaxIdWithName] = Format(identifierReads, identifierWrites)
+
+  implicit val nonQuadientErrorFormat: Format[TaxIdWithName] = Format(identifierNonQuadientErrorReads, identifierWrites)
 }
