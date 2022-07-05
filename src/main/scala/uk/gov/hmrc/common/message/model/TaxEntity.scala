@@ -49,7 +49,7 @@ object TaxEntity {
       case TaxEntity(Regime.vat, HmrcOssOrg(value), _) =>
         Enrolments(s"HMRC-MTD-VAT~VRN~$value", s"HMRC-OSS-ORG~VRN~$value")
       case TaxEntity(Regime.vat, HmceVatdecOrg(value), _)  => Enrolments(s"HMRC-VATDEC-ORG~VATREGNO~$value")
-      case TaxEntity(Regime.epaye, id, _)                  => Enrolments(s"IR-PAYE~ACCOUNTSREF~${id.value}")
+      case TaxEntity(Regime.epaye, id, _)                  => Enrolments(s"IR-PAYE~EMPREF~${id.value}")
       case TaxEntity(Regime.cds, id, _)                    => Enrolments(s"HMRC-CUS-ORG~EORINUMBER~${id.value}")
       case TaxEntity(Regime.ppt, id, _)                    => Enrolments(s"HMRC-PPT-ORG~ETMPREGISTRATIONNUMBER~${id.value}")
       case TaxEntity(Regime.itsa, id, _)                   => Enrolments(s"HMRC-MTD-IT~MTDITID~${id.value}")
@@ -88,7 +88,7 @@ object TaxEntity {
 
   case class Epaye(value: String) extends TaxIdentifier with SimpleName {
     override def toString = value
-    val name = "AccountsRef"
+    val name = "EMPREF"
   }
 
   object Epaye extends (String => Epaye) {

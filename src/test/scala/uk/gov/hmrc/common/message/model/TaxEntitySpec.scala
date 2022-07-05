@@ -101,7 +101,7 @@ class TaxEntitySpec extends PlaySpec {
         "IR-PAYE",
         TaxEntity(Regime.epaye, Epaye("840Pd00123456"), None),
         "Epaye",
-        Enrolments("IR-PAYE~ACCOUNTSREF~840Pd00123456")),
+        Enrolments("IR-PAYE~EMPREF~840Pd00123456")),
       (
         "HMRC-OBTDS-ORG",
         TaxEntity(Regime.sdil, HmrcObtdsOrg("XZSD00000100024"), None),
