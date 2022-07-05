@@ -80,7 +80,7 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(Vrn(value))
           }
-        case (Some("IR-PAYE.AccountsRef"), Some(value)) =>
+        case (Some("IR-PAYE.EMPREF"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
             JsSuccess(Epaye(value))
           }
