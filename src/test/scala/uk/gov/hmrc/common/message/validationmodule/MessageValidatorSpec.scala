@@ -23,7 +23,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.mockito.MockitoSugar
 import reactivemongo.bson.BSONObjectID
-import uk.gov.hmrc.domain.SaUtr
+import uk.gov.hmrc.domain.{ HmrcMtdVat, SaUtr }
 import uk.gov.hmrc.common.message.model._
 
 class MessageValidatorSpec extends AnyWordSpecLike with MockitoSugar with Matchers with ScalaFutures {
@@ -55,5 +55,34 @@ class MessageValidatorSpec extends AnyWordSpecLike with MockitoSugar with Matche
       val messageNotGmc = message.copy(externalRef = Some(ExternalRef("another-id", "not-gmc")))
       MessageValidator.isGmc(messageNotGmc) mustBe false
     }
+  }
+
+  "checkEmailPresentForVat" must {
+
+    val message = Message(
+      id = BSONObjectID.generate(),
+      recipient = TaxEntity(Regime.sa, HmrcMtdVat("mtd-vat"), Some("test@test.com")),
+      subject = "RE: Subject",
+      body = None,
+      validFrom = LocalDate.now(),
+      alertFrom = None,
+      alertDetails = AlertDetails("template-id", None, Map()),
+      lastUpdated = None,
+      hash = "*hash*",
+      statutory = true,
+      renderUrl = RenderUrl(service = "my-service", url = "service-url"),
+      sourceData = None,
+      externalRef = None
+    )
+
+    "return Success - when tax identifier is HMRC-MTD-VAT and the email is present" in {
+      MessageValidator.checkEmailPresentForVat(message).isSuccess mustBe true
+    }
+
+    "return Failure - when tax identifier is HMRC-MTD-VAT and the email is absent" in {
+      val messageNoEmail = message.copy(recipient = TaxEntity(Regime.sa, HmrcMtdVat("mtd-vat"), None))
+      MessageValidator.checkEmailPresentForVat(messageNoEmail).isFailure mustBe true
+    }
+
   }
 }
