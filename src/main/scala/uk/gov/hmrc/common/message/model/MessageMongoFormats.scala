@@ -353,7 +353,7 @@ object MongoTaxIdentifierFormats {
   val taxIdentifierReads: Reads[TaxIdWithName] =
     ((__ \ "name").read[String] and (__ \ "value").read[String]).tupled.flatMap[TaxIdWithName] {
       case (name, value) =>
-        (TaxIds.defaultSerialisableIds :+ SerialisableTaxId("empRef", Epaye.apply)
+        (TaxIds.defaultSerialisableIds :+ SerialisableTaxId("IR-PAYE.EMPREF", Epaye.apply)
           :+ SerialisableTaxId("HMCE-VATDEC-ORG", HmceVatdecOrg.apply)
           :+ SerialisableTaxId("HMRC-CUS-ORG", HmrcCusOrg.apply)
           :+ SerialisableTaxId("ETMPREGISTRATIONNUMBERG", HmrcPptOrg.apply)

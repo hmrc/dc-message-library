@@ -164,7 +164,7 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(Vrn(value))
           }
-        case (Some("empRef"), Some(value)) =>
+        case (Some("IR-PAYE.EMPREF"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
             validateEpaye(value)
           }
