@@ -18,6 +18,7 @@ package uk.gov.hmrc.common.message.model
 
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json._
+import uk.gov.hmrc.common.message.model.TaxEntity.Epaye
 import uk.gov.hmrc.domain._
 
 class RecipientSpec extends PlaySpec {
@@ -94,6 +95,29 @@ class RecipientSpec extends PlaySpec {
         name = None,
         regime = Some(Regime.fhdds))
     }
-  }
 
+    "work with valid recipient for IR-PAYE" in {
+      val recipient = Json.parse("""{
+                                   |       "taxIdentifier":{
+                                   |           "name":"IR-PAYE.EMPREF",
+                                   |           "value":"000AB12345"
+                                   |       },
+                                   |       "regime":"epaye"
+
+       }""".stripMargin).as[Recipient]
+      recipient mustBe Recipient(taxIdentifier = Epaye("000AB12345"), name = None, regime = Some(Regime.epaye))
+    }
+
+    "return error for an invalid IR-PAYE EMPREF" in {
+      val error = intercept[JsResultException] { Json.parse("""{
+                                                              |       "taxIdentifier":{
+                                                              |           "name":"IR-PAYE.EMPREF",
+                                                              |           "value":"AB12345"
+                                                              |       },
+                                                              |       "regime":"epaye"
+       }""".stripMargin).as[Recipient] }
+
+      error.errors.head._2.head.message mustBe "The backend has rejected the message due to an invalid EMPREF value - AB12345"
+    }
+  }
 }

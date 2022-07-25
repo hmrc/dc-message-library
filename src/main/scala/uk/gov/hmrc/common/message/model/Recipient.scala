@@ -53,6 +53,13 @@ object RecipientNonQuadientErrorFormats {
 
 object TaxIdentifierRESTV2Formats {
 
+  private def validateEpaye(value: String): JsResult[Epaye] =
+    if (value.matches("""^\d{3}[A-Za-z0-9 ]{1,10}$""")) {
+      JsSuccess(Epaye(value))
+    } else {
+      JsError(s"The backend has rejected the message due to an invalid EMPREF value - $value")
+    }
+
   implicit val identifierReads: Reads[TaxIdWithName] =
     ((__ \ "name").readNullable[String] and (__ \ "value").readNullable[String]).tupled
       .flatMap[TaxIdWithName] {
@@ -82,7 +89,7 @@ object TaxIdentifierRESTV2Formats {
           }
         case (Some("IR-PAYE.EMPREF"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
-            JsSuccess(Epaye(value))
+            validateEpaye(value)
           }
         case (Some("HMCE-VATDEC-ORG"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
@@ -157,9 +164,9 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(Vrn(value))
           }
-        case (Some("empRef"), Some(value)) =>
+        case (Some("IR-PAYE.EMPREF"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
-            JsSuccess(Epaye(value))
+            validateEpaye(value)
           }
         case (Some("HMCE-VATDEC-ORG"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
