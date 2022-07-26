@@ -54,7 +54,7 @@ object RecipientNonQuadientErrorFormats {
 object TaxIdentifierRESTV2Formats {
 
   private def validateEpaye(value: String): JsResult[Epaye] =
-    if (value.matches("""^\d{3}[A-Za-z0-9 ]{1,10}$""")) {
+    if (value.matches("""^\d{3}[A-Za-z0-9]{1,10}$""")) {
       JsSuccess(Epaye(value))
     } else {
       JsError(s"The backend has rejected the message due to an invalid EMPREF value - $value")
