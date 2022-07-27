@@ -18,7 +18,7 @@ package uk.gov.hmrc.common.message.model
 
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json._
-import uk.gov.hmrc.common.message.model.TaxEntity.Epaye
+import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
 import uk.gov.hmrc.domain._
 
 class RecipientSpec extends PlaySpec {
@@ -118,6 +118,79 @@ class RecipientSpec extends PlaySpec {
        }""".stripMargin).as[Recipient] }
 
       error.errors.head._2.head.message mustBe "The backend has rejected the message due to an invalid EMPREF value - AB12345"
+    }
+
+    "Work for IR-PAYEs - case insensitive" in {
+      val recipient: Seq[Recipient] = List("EMPREF", "empref", "EmpRef").map { ref =>
+        Json.parse(s"""{
+                      |       "taxIdentifier":{
+                      |           "name":"IR-PAYE.$ref",
+                      |           "value":"840Pd00123456"
+                      |       },
+                      |       "regime":"epaye"
+
+       }""".stripMargin).as[Recipient]
+      }
+      recipient mustBe List(
+        Recipient(taxIdentifier = Epaye("840Pd00123456"), name = None, regime = Some(Regime.epaye)),
+        Recipient(taxIdentifier = Epaye("840Pd00123456"), name = None, regime = Some(Regime.epaye)),
+        Recipient(taxIdentifier = Epaye("840Pd00123456"), name = None, regime = Some(Regime.epaye))
+      )
+    }
+
+    "Work for HMRC-PPT-ORGs - case insensitive" in {
+      val recipient: Seq[Recipient] =
+        List("ETMPREGISTRATIONNUMBER", "etmpregistrationnumber", "EtmpRegistrationNumber").map { ref =>
+          Json.parse(s"""{
+                        |       "taxIdentifier":{
+                        |           "name":"HMRC-PPT-ORG.$ref",
+                        |           "value":"XMPPT0000000001"
+                        |       },
+                        |       "regime":"ppt"
+
+       }""".stripMargin).as[Recipient]
+        }
+      recipient mustBe List(
+        Recipient(taxIdentifier = HmrcPptOrg("XMPPT0000000001"), name = None, regime = Some(Regime.ppt)),
+        Recipient(taxIdentifier = HmrcPptOrg("XMPPT0000000001"), name = None, regime = Some(Regime.ppt)),
+        Recipient(taxIdentifier = HmrcPptOrg("XMPPT0000000001"), name = None, regime = Some(Regime.ppt))
+      )
+    }
+
+    "Work for HMRC-PODS-ORGs - case insensitive" in {
+      val recipient: Seq[Recipient] = List("PSAID", "psaid", "PsaId").map { ref =>
+        Json.parse(s"""{
+                      |       "taxIdentifier":{
+                      |           "name":"HMRC-PODS-ORG.$ref",
+                      |           "value":"A2100006"
+                      |       },
+                      |       "regime":"pods"
+
+       }""".stripMargin).as[Recipient]
+      }
+      recipient mustBe List(
+        Recipient(taxIdentifier = HmrcPodsOrg("A2100006"), name = None, regime = Some(Regime.pods)),
+        Recipient(taxIdentifier = HmrcPodsOrg("A2100006"), name = None, regime = Some(Regime.pods)),
+        Recipient(taxIdentifier = HmrcPodsOrg("A2100006"), name = None, regime = Some(Regime.pods))
+      )
+    }
+
+    "Work for HMRC-PODSPP-ORGs - case insensitive" in {
+      val recipient: Seq[Recipient] = List("PSPID", "pspid", "PspId").map { ref =>
+        Json.parse(s"""{
+                      |       "taxIdentifier":{
+                      |           "name":"HMRC-PODSPP-ORG.$ref",
+                      |           "value":"A2100006"
+                      |       },
+                      |       "regime":"pods"
+
+       }""".stripMargin).as[Recipient]
+      }
+      recipient mustBe List(
+        Recipient(taxIdentifier = HmrcPodsPpOrg("A2100006"), name = None, regime = Some(Regime.pods)),
+        Recipient(taxIdentifier = HmrcPodsPpOrg("A2100006"), name = None, regime = Some(Regime.pods)),
+        Recipient(taxIdentifier = HmrcPodsPpOrg("A2100006"), name = None, regime = Some(Regime.pods))
+      )
     }
   }
 }

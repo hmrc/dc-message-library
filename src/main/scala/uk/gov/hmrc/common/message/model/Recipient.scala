@@ -60,6 +60,9 @@ object TaxIdentifierRESTV2Formats {
       JsError(s"The backend has rejected the message due to an invalid EMPREF value - $value")
     }
 
+  private def caseInsensitiveIdentifier(name: String, matcher: String) =
+    name.toUpperCase.equals(matcher)
+
   implicit val identifierReads: Reads[TaxIdWithName] =
     ((__ \ "name").readNullable[String] and (__ \ "value").readNullable[String]).tupled
       .flatMap[TaxIdWithName] {
@@ -87,7 +90,7 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(Vrn(value))
           }
-        case (Some("IR-PAYE.EMPREF"), Some(value)) =>
+        case (Some(irPaye), Some(value)) if caseInsensitiveIdentifier(irPaye, "IR-PAYE.EMPREF") =>
           Reads[TaxIdWithName] { _ =>
             validateEpaye(value)
           }
@@ -99,7 +102,8 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcCusOrg(value))
           }
-        case (Some("HMRC-PPT-ORG.ETMPREGISTRATIONNUMBER"), Some(value)) =>
+        case (Some(hmrcPptOrg), Some(value))
+            if caseInsensitiveIdentifier(hmrcPptOrg, "HMRC-PPT-ORG.ETMPREGISTRATIONNUMBER") =>
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcPptOrg(value))
           }
@@ -115,11 +119,11 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcMtdItsa(value))
           }
-        case (Some("HMRC-PODS-ORG.PSAID"), Some(value)) =>
+        case (Some(hmrcPodsOrg), Some(value)) if caseInsensitiveIdentifier(hmrcPodsOrg, "HMRC-PODS-ORG.PSAID") =>
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcPodsOrg(value))
           }
-        case (Some("HMRC-PODSPP-ORG.PSPID"), Some(value)) =>
+        case (Some(hmrcPodsPpOrg), Some(value)) if caseInsensitiveIdentifier(hmrcPodsPpOrg, "HMRC-PODSPP-ORG.PSPID") =>
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcPodsPpOrg(value))
           }
@@ -164,7 +168,7 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(Vrn(value))
           }
-        case (Some("IR-PAYE.EMPREF"), Some(value)) =>
+        case (Some(irPaye), Some(value)) if caseInsensitiveIdentifier(irPaye, "IR-PAYE.EMPREF") =>
           Reads[TaxIdWithName] { _ =>
             validateEpaye(value)
           }
@@ -176,7 +180,8 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcCusOrg(value))
           }
-        case (Some("HMRC-PPT-ORG.ETMPREGISTRATIONNUMBER"), Some(value)) =>
+        case (Some(hmrcPptOrg), Some(value))
+            if caseInsensitiveIdentifier(hmrcPptOrg, "HMRC-PPT-ORG.ETMPREGISTRATIONNUMBER") =>
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcPptOrg(value))
           }
@@ -192,11 +197,11 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcMtdItsa(value))
           }
-        case (Some("HMRC-PODS-ORG.PSAID"), Some(value)) =>
+        case (Some(hmrcPodsOrg), Some(value)) if caseInsensitiveIdentifier(hmrcPodsOrg, "HMRC-PODS-ORG.PSAID") =>
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcPodsOrg(value))
           }
-        case (Some("HMRC-PODSPP-ORG.PSPID"), Some(value)) =>
+        case (Some(hmrcPodsPpOrg), Some(value)) if caseInsensitiveIdentifier(hmrcPodsPpOrg, "HMRC-PODSPP-ORG.PSPID") =>
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcPodsPpOrg(value))
           }
