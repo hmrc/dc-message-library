@@ -90,7 +90,7 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(Vrn(value))
           }
-        case (Some(irPaye), Some(value)) if caseInsensitiveIdentifier(irPaye, """IR-PAYE.(?i)EMPREF""") =>
+        case (Some(irPaye), Some(value)) if caseInsensitiveIdentifier(irPaye, "IR-PAYE.(?i)EMPREF") =>
           Reads[TaxIdWithName] { _ =>
             validateEpaye(value)
           }
