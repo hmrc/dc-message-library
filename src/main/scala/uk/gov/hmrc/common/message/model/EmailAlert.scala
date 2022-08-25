@@ -18,7 +18,6 @@ package uk.gov.hmrc.common.message.model
 
 import org.joda.time.DateTime
 import play.api.libs.json._
-
 // TODO it would be good to have different types for success and failure...
 case class EmailAlert(
   emailAddress: Option[String],

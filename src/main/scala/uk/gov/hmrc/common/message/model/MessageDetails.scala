@@ -17,11 +17,11 @@
 package uk.gov.hmrc.common.message.model
 
 import org.joda.time.LocalDate
+import org.mongodb.scala.bson.ObjectId
 import play.api.libs.functional.syntax._
-import play.api.libs.json.JodaWrites._
 import play.api.libs.json._
-import reactivemongo.bson.BSONObjectID
-import uk.gov.hmrc.mongo.json.BSONObjectIdFormats
+import uk.gov.hmrc.mongo.play.json.formats.MongoFormats
+import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotLocalDateFormat
 
 case class MessageDetails(
   formId: String,
@@ -31,7 +31,7 @@ case class MessageDetails(
   batchId: Option[String],
   issueDate: Option[LocalDate] = Some(LocalDate.now),
   replyTo: Option[String],
-  threadId: Option[BSONObjectID] = Some(BSONObjectID.generate),
+  threadId: Option[ObjectId] = Some(new ObjectId),
   enquiryType: Option[String] = None,
   adviser: Option[Adviser] = None,
   waitTime: Option[String] = None,
@@ -43,7 +43,9 @@ case class MessageDetails(
 
 }
 
-object MessageDetails extends BSONObjectIdFormats {
+object MessageDetails {
+
+  implicit val objectIdFormats = MongoFormats.objectIdFormat
 
   val reads: Reads[MessageDetails] =
     ((__ \ "formId").read[String] and
@@ -53,7 +55,7 @@ object MessageDetails extends BSONObjectIdFormats {
       (__ \ "batchId").readNullable[String] and
       (__ \ "issueDate").readNullable[LocalDate](jodaDateReads("issueDate")) and
       (__ \ "replyTo").readNullable[String] and
-      (__ \ "threadId").readNullable[BSONObjectID] and
+      (__ \ "threadId").readNullable[ObjectId] and
       (__ \ "enquiryType").readNullable[String] and
       (__ \ "adviser").readNullable[Adviser] and
       (__ \ "waitTime").readNullable[String] and

@@ -2,8 +2,10 @@
 lazy val appDependencies: Seq[ModuleID] = PlayCrossCompilation.dependencies(
   shared = Seq(
     "uk.gov.hmrc"       %% "domain"             % "6.2.0-play-28",
-    "uk.gov.hmrc"       %% "work-item-repo"     % "8.1.0-play-28",
+    "uk.gov.hmrc.mongo"     %% "hmrc-mongo-work-item-repo-play-28" % "0.68.0",
     "uk.gov.hmrc"       %% "http-verbs-play-28" % "13.8.0",
+    "uk.gov.hmrc.mongo"      %% "hmrc-mongo-play-28"        % "0.68.0",
+    "commons-codec" % "commons-codec" % "1.9",
     "com.typesafe.play" %% "play-json"          % "2.8.2",
     "com.beachape"      %% "enumeratum"         % "1.6.0",
     "com.beachape"      %% "enumeratum-play-json" % "1.6.0",

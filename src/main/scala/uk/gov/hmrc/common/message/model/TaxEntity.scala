@@ -20,6 +20,7 @@ import play.api.libs.json._
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.domain._
 
+
 final case class TaxEntity(
   regime: Regime.Value,
   identifier: TaxIdWithName,
@@ -28,12 +29,13 @@ final case class TaxEntity(
 
 object TaxEntity {
 
-  def create(identifier: TaxIdWithName, email: Option[String] = None, regime: Option[Regime.Value] = None): TaxEntity =
-    TaxEntity(
+  def create(identifier: TaxIdWithName, email: Option[String] = None, regime: Option[Regime.Value] = None): TaxEntity = {
+        TaxEntity(
       regime.foldLeft(regimeOf(identifier))((b, a) =>
         if (a == b) a else throw new RuntimeException(s"unmatched regimes: $a and $b")),
       identifier,
       email)
+  }
 
   def getEnrolments(taxEntity: TaxEntity): Enrolments =
     taxEntity match {

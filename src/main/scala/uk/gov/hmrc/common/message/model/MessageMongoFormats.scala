@@ -16,327 +16,334 @@
 
 package uk.gov.hmrc.common.message.model
 
-import org.joda.time.{ DateTime, LocalDate }
+import org.joda.time.{DateTime, LocalDate}
+import org.mongodb.scala.bson.ObjectId
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{ Json, _ }
-import reactivemongo.bson.BSONObjectID
+import play.api.libs.json._
+import uk.gov.hmrc.common.message.model.MongoTaxIdentifierFormats.mongoTaxIdentifierFormat
+import uk.gov.hmrc.common.message.model.TaxEntity.{Epaye, HmceVatdecOrg, HmrcCusOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg}
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.domain._
-import TaxEntity.{ Epaye, HmceVatdecOrg, HmrcCusOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
-import uk.gov.hmrc.mongo.json.ReactiveMongoFormats
-import play.api.libs.json.JodaReads._
-import play.api.libs.json.JodaWrites.{ JodaDateTimeWrites => _, _ }
-import uk.gov.hmrc.workitem.ProcessingStatus
+import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.mongoEntity
+import uk.gov.hmrc.mongo.workitem.ProcessingStatus
+import uk.gov.hmrc.mongo.workitem.ProcessingStatus.Implicits.format
+
 
 object MessageMongoFormats {
 
-  import MongoTaxIdentifierFormats._
-
-  implicit val dateTimeFormats: Format[DateTime] = ReactiveMongoFormats.dateTimeFormats
-  implicit val objectIdFormats: Format[BSONObjectID] = ReactiveMongoFormats.objectIdFormats
-
-  implicit val messageMongoFormat: Format[Message] = ReactiveMongoFormats.mongoEntity {
+  implicit val messageMongoFormat: Format[Message] = mongoEntity {
     val legacyStatutoryForms = Seq("SA309A", "SA309C", "SA326D", "SA328D", "SA370", "SA371")
 
-    def determineStatutoryFromForm = (__ \ "body" \ "form").readNullable[String].map {
-      case Some(form) => legacyStatutoryForms.contains(form) || form.startsWith("SA316")
-      case None       => false
-    }
-
-    // To Do: needs to check the value is a SaUtr
-    def generateLegacyMessageHeaderDetail: Reads[RenderUrl] =
-      for {
-        messageId <- (__ \ "id").read[BSONObjectID]
-        taxEntity <- (__ \ "recipient").read[TaxEntity]
-      } yield RenderUrl("sa-message-renderer", s"/messages/sa/${taxEntity.identifier.value}/${messageId.stringify}")
-
-    val reads1to21: Reads[
-      (
-        BSONObjectID,
-        TaxEntity,
-        String,
-        Option[Details],
-        LocalDate,
-        Option[LocalDate],
-        AlertDetails,
-        Option[EmailAlert],
-        Option[String],
-        Option[DateTime],
-        Option[DateTime],
-        Option[MessageContentParameters],
-        ProcessingStatus,
-        Option[Rescindment],
-        Option[DateTime],
-        String,
-        Boolean,
-        RenderUrl,
-        Option[String],
-        Option[ExternalRef],
-        Option[String]
-      )
-    ] = (
-      (__ \ "id").read[BSONObjectID] and
-        (__ \ "recipient").read[TaxEntity] and
-        (__ \ "subject").read[String] and
-        (__ \ "body").readNullable[Details] and
-        (__ \ "validFrom").read[LocalDate] and
-        (__ \ "alertFrom").readNullable[LocalDate] and
-        (__ \ "alertDetails").read[AlertDetails].orElse(Reads.pure(AlertDetails("newMessageAlert", None, Map()))) and
-        (__ \ "alerts").readNullable[EmailAlert] and
-        (__ \ "alertQueue").readNullable[String] and
-        (__ \ "readTime").readNullable[DateTime] and
-        (__ \ "archiveTime").readNullable[DateTime] and
-        (__ \ "contentParameters").readNullable[MessageContentParameters] and
-        (__ \ "status").read[ProcessingStatus] and
-        (__ \ "rescindment").readNullable[Rescindment] and
-        (__ \ "lastUpdated").readNullable[DateTime] and
-        (__ \ "hash").read[String] and
-        (__ \ "statutory").read[Boolean].orElse(determineStatutoryFromForm) and
-        (__ \ "renderUrl").read[RenderUrl].orElse(generateLegacyMessageHeaderDetail) and
-        (__ \ "sourceData").readNullable[String] and
-        (__ \ "externalRef").readNullable[ExternalRef] and
-        (__ \ "content").readNullable[String]
-    ).tupled
-
-    val reads22to27: Reads[(
-      Option[String],
-      Option[Boolean],
-      Option[Lifecycle],
-      Option[Map[String, String]],
-      Option[DateTime],
-      Option[MailgunStatus])] = (
-      (__ \ "emailAlertEventUrl").readNullable[String] and
-        (__ \ "verificationBrake").readNullable[Boolean] and
-        (__ \ "lifecycle").readNullable[Lifecycle] and
-        (__ \ "tags").readNullable[Map[String, String]] and
-        (__ \ "deliveredOn").readNullable[DateTime] and
-        (__ \ "mailgunStatus").readNullable[MailgunStatus]
-    ).tupled
-
-    val tupleToMessage: (
-      (
-        BSONObjectID,
-        TaxEntity,
-        String,
-        Option[Details],
-        LocalDate,
-        Option[LocalDate],
-        AlertDetails,
-        Option[EmailAlert],
-        Option[String],
-        Option[DateTime],
-        Option[DateTime],
-        Option[MessageContentParameters],
-        ProcessingStatus,
-        Option[Rescindment],
-        Option[DateTime],
-        String,
-        Boolean,
-        RenderUrl,
-        Option[String],
-        Option[ExternalRef],
-        Option[String]
-      ),
-      (
-        Option[String],
-        Option[Boolean],
-        Option[Lifecycle],
-        Option[Map[String, String]],
-        Option[DateTime],
-        Option[MailgunStatus])
-    ) => Message = {
-      case (
-          (
-            id,
-            recipient,
-            subject,
-            body,
-            validFrom,
-            alertFrom,
-            alertDetails,
-            alerts,
-            alertQueue,
-            readTime,
-            archiveTime,
-            contentParameters,
-            status,
-            rescindment,
-            lastUpdated,
-            hash,
-            statutory,
-            renderUrl,
-            sourceData,
-            externalRef,
-            content
-          ),
-          (emailAlertEventUrl, verificationBrake, lifecycle, tags, deliveredOn, mailgunStatus)
-          ) =>
-        Message(
-          id,
-          recipient,
-          subject,
-          body,
-          validFrom,
-          alertFrom,
-          alertDetails,
-          alerts,
-          alertQueue,
-          readTime,
-          archiveTime,
-          contentParameters,
-          status,
-          rescindment,
-          lastUpdated,
-          hash,
-          statutory,
-          renderUrl,
-          sourceData,
-          externalRef,
-          content,
-          emailAlertEventUrl,
-          verificationBrake,
-          lifecycle,
-          tags,
-          deliveredOn,
-          mailgunStatus
-        )
-    }
-
-    val messageToTuple: Message => (
-      (
-        BSONObjectID,
-        TaxEntity,
-        String,
-        Option[Details],
-        LocalDate,
-        Option[LocalDate],
-        AlertDetails,
-        Option[EmailAlert],
-        Option[String],
-        Option[DateTime],
-        Option[DateTime],
-        Option[MessageContentParameters],
-        ProcessingStatus,
-        Option[Rescindment],
-        Option[DateTime],
-        String,
-        Boolean,
-        RenderUrl,
-        Option[String],
-        Option[ExternalRef],
-        Option[String]
-      ),
-      (
-        Option[String],
-        Option[Boolean],
-        Option[Lifecycle],
-        Option[Map[String, String]],
-        Option[DateTime],
-        Option[MailgunStatus])
-    ) = { message =>
-      (
-        (
-          message.id,
-          message.recipient,
-          message.subject,
-          message.body,
-          message.validFrom,
-          message.alertFrom,
-          message.alertDetails,
-          message.alerts,
-          message.alertQueue,
-          message.readTime,
-          message.archiveTime,
-          message.contentParameters,
-          message.status,
-          message.rescindment,
-          message.lastUpdated,
-          message.hash,
-          message.statutory,
-          message.renderUrl,
-          message.sourceData,
-          message.externalRef,
-          message.content
-        ),
-        (
-          message.emailAlertEventUrl,
-          message.verificationBrake,
-          message.lifecycle,
-          message.tags,
-          message.deliveredOn,
-          message.mailgunStatus)
-      )
-    }
-
-    val reads: Reads[Message] = (reads1to21 and reads22to27) { tupleToMessage }
-
-    val writes1to21: OWrites[
-      (
-        BSONObjectID,
-        TaxEntity,
-        String,
-        Option[Details],
-        LocalDate,
-        Option[LocalDate],
-        AlertDetails,
-        Option[EmailAlert],
-        Option[String],
-        Option[DateTime],
-        Option[DateTime],
-        Option[MessageContentParameters],
-        ProcessingStatus,
-        Option[Rescindment],
-        Option[DateTime],
-        String,
-        Boolean,
-        RenderUrl,
-        Option[String],
-        Option[ExternalRef],
-        Option[String]
-      )
-    ] = (
-      (__ \ "id").write[BSONObjectID] and
-        (__ \ "recipient").write[TaxEntity] and
-        (__ \ "subject").write[String] and
-        (__ \ "body").writeNullable[Details] and
-        (__ \ "validFrom").write[LocalDate] and
-        (__ \ "alertFrom").writeNullable[LocalDate] and
-        (__ \ "alertDetails").write[AlertDetails] and
-        (__ \ "alerts").writeNullable[EmailAlert] and
-        (__ \ "alertQueue").writeNullable[String] and
-        (__ \ "readTime").writeNullable[DateTime] and
-        (__ \ "archiveTime").writeNullable[DateTime] and
-        (__ \ "contentParameters").writeNullable[MessageContentParameters] and
-        (__ \ "status").write[ProcessingStatus] and
-        (__ \ "rescindment").writeNullable[Rescindment] and
-        (__ \ "lastUpdated").writeNullable[DateTime] and
-        (__ \ "hash").write[String] and
-        (__ \ "statutory").write[Boolean] and
-        (__ \ "renderUrl").write[RenderUrl] and
-        (__ \ "sourceData").writeNullable[String] and
-        (__ \ "externalRef").writeNullable[ExternalRef] and
-        (__ \ "content").writeNullable[String]
-    ).tupled
-
-    val writes22to27: OWrites[(
-      Option[String],
-      Option[Boolean],
-      Option[Lifecycle],
-      Option[Map[String, String]],
-      Option[DateTime],
-      Option[MailgunStatus])] = (
-      (__ \ "emailAlertEventUrl").writeNullable[String] and
-        (__ \ "verificationBrake").writeNullable[Boolean] and
-        (__ \ "lifecycle").writeNullable[Lifecycle] and
-        (__ \ "tags").writeNullable[Map[String, String]] and
-        (__ \ "deliveredOn").writeNullable[DateTime] and
-        (__ \ "mailgunStatus").writeNullable[MailgunStatus]
-    ).tupled
-
-    val writes: OWrites[Message] = (writes1to21 ~ writes22to27) { messageToTuple }
-
-    Format(reads, writes)
+  def determineStatutoryFromForm = (__ \ "body" \ "form").readNullable[String].map {
+    case Some(form) => legacyStatutoryForms.contains(form) || form.startsWith("SA316")
+    case None => false
   }
+
+  // To Do: needs to check the value is a SaUtr
+  def generateLegacyMessageHeaderDetail: Reads[RenderUrl] = {
+    import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
+
+    for {
+      messageId <- (__ \ "id").read[ObjectId]
+      taxEntity <- (__ \ "recipient").read[TaxEntity]
+    } yield RenderUrl("sa-message-renderer", s"/messages/sa/${taxEntity.identifier.value}/${messageId.toString}")
+  }
+
+  import uk.gov.hmrc.common.message.model.EmailAlert._
+  import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
+  import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.{jotDateTimeFormat, jotLocalDateFormat}
+
+
+
+  val reads1to21: Reads[
+    (
+      ObjectId,
+        TaxEntity,
+        String,
+        Option[Details],
+        LocalDate,
+        Option[LocalDate],
+        AlertDetails,
+        Option[EmailAlert],
+        Option[String],
+        Option[DateTime],
+        Option[DateTime],
+        Option[MessageContentParameters],
+        ProcessingStatus,
+        Option[Rescindment],
+        Option[DateTime],
+        String,
+        Boolean,
+        RenderUrl,
+        Option[String],
+        Option[ExternalRef],
+        Option[String]
+      )
+  ] = (
+    (__ \ "id").read[ObjectId] and
+      (__ \ "recipient").read[TaxEntity] and
+      (__ \ "subject").read[String] and
+      (__ \ "body").readNullable[Details] and
+      (__ \ "validFrom").read[LocalDate] and
+      (__ \ "alertFrom").readNullable[LocalDate] and
+      (__ \ "alertDetails").read[AlertDetails].orElse(Reads.pure(AlertDetails("newMessageAlert", None, Map()))) and
+      (__ \ "alerts").readNullable[EmailAlert] and
+      (__ \ "alertQueue").readNullable[String] and
+      (__ \ "readTime").readNullable[DateTime] and
+      (__ \ "archiveTime").readNullable[DateTime] and
+      (__ \ "contentParameters").readNullable[MessageContentParameters] and
+      (__ \ "status").read[ProcessingStatus] and
+      (__ \ "rescindment").readNullable[Rescindment] and
+      (__ \ "lastUpdated").readNullable[DateTime] and
+      (__ \ "hash").read[String] and
+      (__ \ "statutory").read[Boolean].orElse(determineStatutoryFromForm) and
+      (__ \ "renderUrl").read[RenderUrl].orElse(generateLegacyMessageHeaderDetail) and
+      (__ \ "sourceData").readNullable[String] and
+      (__ \ "externalRef").readNullable[ExternalRef] and
+      (__ \ "content").readNullable[String]
+    ).tupled
+  val reads22to27: Reads[(
+    Option[String],
+      Option[Boolean],
+      Option[Lifecycle],
+      Option[Map[String, String]],
+      Option[DateTime],
+      Option[MailgunStatus])] = (
+    (__ \ "emailAlertEventUrl").readNullable[String] and
+      (__ \ "verificationBrake").readNullable[Boolean] and
+      (__ \ "lifecycle").readNullable[Lifecycle] and
+      (__ \ "tags").readNullable[Map[String, String]] and
+      (__ \ "deliveredOn").readNullable[DateTime] and
+      (__ \ "mailgunStatus").readNullable[MailgunStatus]
+    ).tupled
+  val tupleToMessage: (
+    (
+      ObjectId,
+        TaxEntity,
+        String,
+        Option[Details],
+        LocalDate,
+        Option[LocalDate],
+        AlertDetails,
+        Option[EmailAlert],
+        Option[String],
+        Option[DateTime],
+        Option[DateTime],
+        Option[MessageContentParameters],
+        ProcessingStatus,
+        Option[Rescindment],
+        Option[DateTime],
+        String,
+        Boolean,
+        RenderUrl,
+        Option[String],
+        Option[ExternalRef],
+        Option[String]
+      ),
+      (
+        Option[String],
+          Option[Boolean],
+          Option[Lifecycle],
+          Option[Map[String, String]],
+          Option[DateTime],
+          Option[MailgunStatus])
+    ) => Message = {
+    case (
+      (
+        id,
+        recipient,
+        subject,
+        body,
+        validFrom,
+        alertFrom,
+        alertDetails,
+        alerts,
+        alertQueue,
+        readTime,
+        archiveTime,
+        contentParameters,
+        status,
+        rescindment,
+        lastUpdated,
+        hash,
+        statutory,
+        renderUrl,
+        sourceData,
+        externalRef,
+        content
+        ),
+      (emailAlertEventUrl, verificationBrake, lifecycle, tags, deliveredOn, mailgunStatus)
+      ) =>
+      Message(
+        id,
+        recipient,
+        subject,
+        body,
+        validFrom,
+        alertFrom,
+        alertDetails,
+        alerts,
+        alertQueue,
+        readTime,
+        archiveTime,
+        contentParameters,
+        status,
+        rescindment,
+        lastUpdated,
+        hash,
+        statutory,
+        renderUrl,
+        sourceData,
+        externalRef,
+        content,
+        emailAlertEventUrl,
+        verificationBrake,
+        lifecycle,
+        tags,
+        deliveredOn,
+        mailgunStatus
+      )
+  }
+
+  val messageToTuple: Message => (
+    (
+      ObjectId,
+        TaxEntity,
+        String,
+        Option[Details],
+        LocalDate,
+        Option[LocalDate],
+        AlertDetails,
+        Option[EmailAlert],
+        Option[String],
+        Option[DateTime],
+        Option[DateTime],
+        Option[MessageContentParameters],
+        ProcessingStatus,
+        Option[Rescindment],
+        Option[DateTime],
+        String,
+        Boolean,
+        RenderUrl,
+        Option[String],
+        Option[ExternalRef],
+        Option[String]
+      ),
+      (
+        Option[String],
+          Option[Boolean],
+          Option[Lifecycle],
+          Option[Map[String, String]],
+          Option[DateTime],
+          Option[MailgunStatus])
+    ) = { message =>
+    (
+      (
+        message.id,
+        message.recipient,
+        message.subject,
+        message.body,
+        message.validFrom,
+        message.alertFrom,
+        message.alertDetails,
+        message.alerts,
+        message.alertQueue,
+        message.readTime,
+        message.archiveTime,
+        message.contentParameters,
+        message.status,
+        message.rescindment,
+        message.lastUpdated,
+        message.hash,
+        message.statutory,
+        message.renderUrl,
+        message.sourceData,
+        message.externalRef,
+        message.content
+      ),
+      (
+        message.emailAlertEventUrl,
+        message.verificationBrake,
+        message.lifecycle,
+        message.tags,
+        message.deliveredOn,
+        message.mailgunStatus)
+    )
+  }
+
+  val reads: Reads[Message] = (reads1to21 and reads22to27) {
+    tupleToMessage
+  }
+
+  val writes1to21: OWrites[
+    (
+      ObjectId,
+        TaxEntity,
+        String,
+        Option[Details],
+        LocalDate,
+        Option[LocalDate],
+        AlertDetails,
+        Option[EmailAlert],
+        Option[String],
+        Option[DateTime],
+        Option[DateTime],
+        Option[MessageContentParameters],
+        ProcessingStatus,
+        Option[Rescindment],
+        Option[DateTime],
+        String,
+        Boolean,
+        RenderUrl,
+        Option[String],
+        Option[ExternalRef],
+        Option[String]
+      )
+  ] = (
+    (__ \ "id").write[ObjectId] and
+      (__ \ "recipient").write[TaxEntity] and
+      (__ \ "subject").write[String] and
+      (__ \ "body").writeNullable[Details] and
+      (__ \ "validFrom").write[LocalDate] and
+      (__ \ "alertFrom").writeNullable[LocalDate] and
+      (__ \ "alertDetails").write[AlertDetails] and
+      (__ \ "alerts").writeNullable[EmailAlert] and
+      (__ \ "alertQueue").writeNullable[String] and
+      (__ \ "readTime").writeNullable[DateTime] and
+      (__ \ "archiveTime").writeNullable[DateTime] and
+      (__ \ "contentParameters").writeNullable[MessageContentParameters] and
+      (__ \ "status").write[ProcessingStatus] and
+      (__ \ "rescindment").writeNullable[Rescindment] and
+      (__ \ "lastUpdated").writeNullable[DateTime] and
+      (__ \ "hash").write[String] and
+      (__ \ "statutory").write[Boolean] and
+      (__ \ "renderUrl").write[RenderUrl] and
+      (__ \ "sourceData").writeNullable[String] and
+      (__ \ "externalRef").writeNullable[ExternalRef] and
+      (__ \ "content").writeNullable[String]
+    ).tupled
+
+  val writes22to27: OWrites[(
+    Option[String],
+      Option[Boolean],
+      Option[Lifecycle],
+      Option[Map[String, String]],
+      Option[DateTime],
+      Option[MailgunStatus])] = (
+    (__ \ "emailAlertEventUrl").writeNullable[String] and
+      (__ \ "verificationBrake").writeNullable[Boolean] and
+      (__ \ "lifecycle").writeNullable[Lifecycle] and
+      (__ \ "tags").writeNullable[Map[String, String]] and
+      (__ \ "deliveredOn").writeNullable[DateTime] and
+      (__ \ "mailgunStatus").writeNullable[MailgunStatus]
+    ).tupled
+
+  val writes: OWrites[Message] = (writes1to21 ~ writes22to27) {
+    messageToTuple
+  }
+
+  Format(reads, writes)
+}
 
   implicit def optionFormat[T: Format]: Format[Option[T]] = new Format[Option[T]] {
     override def reads(json: JsValue): JsResult[Option[T]] = json.validateOpt[T]
