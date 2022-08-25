@@ -17,11 +17,12 @@
 package uk.gov.hmrc.common.message.model
 
 import org.joda.time.LocalDate
+import org.mongodb.scala.bson.ObjectId
 import play.api.libs.functional.syntax._
-import play.api.libs.json.JodaWrites._
 import play.api.libs.json._
-import reactivemongo.bson.BSONObjectID
-import uk.gov.hmrc.mongo.json.BSONObjectIdFormats
+import play.api.libs.json.JodaWrites._
+import uk.gov.hmrc.mongo.play.json.formats.MongoFormats
+import scala.util.Try
 
 case class MessageDetails(
   formId: String,
@@ -31,20 +32,28 @@ case class MessageDetails(
   batchId: Option[String],
   issueDate: Option[LocalDate] = Some(LocalDate.now),
   replyTo: Option[String],
-  threadId: Option[BSONObjectID] = Some(BSONObjectID.generate),
+  threadId: Option[String] = Some((new ObjectId().toString)),
   enquiryType: Option[String] = None,
   adviser: Option[Adviser] = None,
   waitTime: Option[String] = None,
   topic: Option[String] = None,
   properties: Option[JsValue] = None
 ) {
+
+  require(
+    if (threadId.nonEmpty) {
+      Try(new ObjectId(threadId.getOrElse(""))).isSuccess
+    } else { true },
+    "threadId has invalid format"
+  )
+
   def statutory: Boolean = statutoryOp.getOrElse(false)
   def paperSent: Boolean = paperSentOp.getOrElse(false)
 
 }
 
-object MessageDetails extends BSONObjectIdFormats {
-
+object MessageDetails {
+  implicit val objectIdFormats = MongoFormats.objectIdFormat
   val reads: Reads[MessageDetails] =
     ((__ \ "formId").read[String] and
       (__ \ "statutory").readNullable[Boolean] and
@@ -53,7 +62,7 @@ object MessageDetails extends BSONObjectIdFormats {
       (__ \ "batchId").readNullable[String] and
       (__ \ "issueDate").readNullable[LocalDate](jodaDateReads("issueDate")) and
       (__ \ "replyTo").readNullable[String] and
-      (__ \ "threadId").readNullable[BSONObjectID] and
+      (__ \ "threadId").readNullable[String] and
       (__ \ "enquiryType").readNullable[String] and
       (__ \ "adviser").readNullable[Adviser] and
       (__ \ "waitTime").readNullable[String] and

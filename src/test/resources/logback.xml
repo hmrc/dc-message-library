@@ -51,9 +51,6 @@
         <appender-ref ref="STDOUT"/>
     </logger>
 
-    <logger name="reactivemongo.api.commands" level="WARN"/>
-    <logger name="reactivemongo.api.Driver" level="ERROR"/>
-    <logger name="reactivemongo.core.actors" level="ERROR"/>
 
     <root level="INFO">
         <appender-ref ref="FILE"/>

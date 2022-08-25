@@ -16,18 +16,15 @@
 
 package uk.gov.hmrc.common.message.model
 
-import java.security.MessageDigest
 import org.apache.commons.codec.binary.Base64
 import org.joda.time.{DateTime, LocalDate}
+import org.mongodb.scala.bson.ObjectId
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import reactivemongo.bson.BSONObjectID
 import uk.gov.hmrc.http.controllers.RestFormats
-import uk.gov.hmrc.mongo.json.BSONObjectIdFormats
-
 import java.security.MessageDigest
 
-object MessageRESTFormats extends RestFormats with BSONObjectIdFormats with AlertEmailTemplateMapper {
+object MessageRESTFormats extends RestFormats  with AlertEmailTemplateMapper {
 
   implicit val messageApiV3Reads: Reads[Message] =
     ((__ \ "externalRef").read[ExternalRef] and
@@ -56,7 +53,7 @@ object MessageRESTFormats extends RestFormats with BSONObjectIdFormats with Aler
 
         val validFrom = vf.filter(_.isAfter(issueDate)).getOrElse(issueDate)
 
-        val id = BSONObjectID.generate
+        val id = new ObjectId
 
         def decodeBase64String(input: String): String =
           new String(Base64.decodeBase64(input.getBytes("UTF-8")))
@@ -88,7 +85,7 @@ object MessageRESTFormats extends RestFormats with BSONObjectIdFormats with Aler
         }
 
         val details = messageDetails.map { ds =>
-          val threadId = ds.threadId.getOrElse(BSONObjectID.generate()) // DC-1738
+          val threadId = ds.threadId.getOrElse(new ObjectId().toString) // DC-1738
 
           Details(
             Some(ds.formId),
@@ -115,7 +112,7 @@ object MessageRESTFormats extends RestFormats with BSONObjectIdFormats with Aler
 
         val recipientName = recipient.name.map(_.withDefaultLine1)
 
-        val url = s"/external-message-adapter/external/messages/${id.stringify}/content"
+        val url = s"/external-message-adapter/external/messages/${id.toString}/content"
         Message(
           id = id,
           recipient = TaxEntity.create(recipient.taxIdentifier, recipient.email, recipient.regime),
