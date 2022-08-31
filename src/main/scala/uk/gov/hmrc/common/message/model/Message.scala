@@ -20,8 +20,7 @@ import enumeratum.{Enum, EnumEntry, PlayJsonEnum}
 import org.joda.time.{DateTime, LocalDate}
 import org.mongodb.scala.bson.ObjectId
 import org.apache.commons.codec.binary.Base64
-import play.api.libs.json.JodaWrites.{JodaDateTimeWrites => _}
-import play.api.libs.json._
+import play.api.libs.json.{Format, JsError, JsObject, JsResult, JsString, JsSuccess, JsValue, Json, OFormat, Reads, Writes}
 import uk.gov.hmrc.common.message.model.Rescindment.Type.GeneratedInError
 import uk.gov.hmrc.domain.TaxIds._
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus
@@ -43,8 +42,8 @@ object Rescindment {
     case object GeneratedInError extends Type
 
   }
-
-  implicit def rescindmentFormat(implicit dtf: Format[DateTime]): Format[Rescindment] = Json.format[Rescindment]
+  import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotDateTimeFormat
+  implicit val rescindmentFormat: Format[Rescindment] = Json.format[Rescindment]
 }
 
 object AlertQueueTypes {

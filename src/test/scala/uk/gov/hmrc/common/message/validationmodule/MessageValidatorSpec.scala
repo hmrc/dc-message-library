@@ -18,20 +18,20 @@ package uk.gov.hmrc.common.message.validationmodule
 
 import junit.framework.TestCase
 import org.joda.time.LocalDate
+import org.mongodb.scala.bson.ObjectId
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.mockito.MockitoSugar
-import reactivemongo.bson.BSONObjectID
-import uk.gov.hmrc.domain.{ HmrcMtdVat, SaUtr }
 import uk.gov.hmrc.common.message.model._
+import uk.gov.hmrc.domain.{HmrcMtdVat, SaUtr}
 
 class MessageValidatorSpec extends AnyWordSpecLike with MockitoSugar with Matchers with ScalaFutures {
 
   "isGmc" must {
 
     val message = Message(
-      id = BSONObjectID.generate(),
+      id = new ObjectId,
       recipient = TaxEntity(Regime.sa, SaUtr("1234567890"), Some("test@test.com")),
       subject = "RE: Subject",
       body = None,
@@ -60,7 +60,7 @@ class MessageValidatorSpec extends AnyWordSpecLike with MockitoSugar with Matche
   "checkEmailPresentForVat" must {
 
     val message = Message(
-      id = BSONObjectID.generate(),
+      id = new ObjectId,
       recipient = TaxEntity(Regime.sa, HmrcMtdVat("mtd-vat"), Some("test@test.com")),
       subject = "RE: Subject",
       body = None,

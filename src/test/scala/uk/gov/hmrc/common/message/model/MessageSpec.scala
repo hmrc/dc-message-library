@@ -16,11 +16,15 @@
 
 package uk.gov.hmrc.common.message.model
 
+import org.joda.time.LocalDate
+import org.joda.time.format.ISODateTimeFormat
+import org.mongodb.scala.bson.ObjectId
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json.Json
-import reactivemongo.bson.BSONObjectID
-import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.common.message.model.MessageRESTFormats._
+import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
+import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
+
 
 class MessageSpec extends PlaySpec {
   "message creation from two-way-message" must {
@@ -46,7 +50,7 @@ class MessageSpec extends PlaySpec {
           "formId":"2wsm-reply",
           "replyTo":"5c85a5000000000000000001",
           "enquiryType":"p800",
-          "threadId":"5c85a5000000000000000000",
+          "threadId":{"$$oid":"6308ebc948f9b01e9092074e"},
           "batchId":"batch-id",
           "topic":"some-topic-name"
         }
@@ -123,13 +127,46 @@ class MessageSpec extends PlaySpec {
     }
   }
 
-  "bsonObjectIdWrites" must {
-    "serialize BSONObjectID to json" in {
-      import uk.gov.hmrc.common.message.model.Message._
-      val bsonId: BSONObjectID = BSONObjectID.generate()
+  "objectId" must {
+    "serialize and deserialize from Json" in {
+      val objectId: ObjectId = new ObjectId
+      Json.toJson(objectId).as[ObjectId] mustBe objectId
+    }
+  }
 
-      Json.toJson(bsonId)(bsonObjectIdWrites) mustBe Json.toJson(bsonId.stringify)
+  "LocalDate" must {
+    "serialize and deserialize from Json" in {
+      val localDate: LocalDate = LocalDate.now()
+      println(localDate)
+      println(localDate.toString)
+      println(Json.toJson(localDate))
 
+      val date = ISODateTimeFormat.date()
+
+
+
+
+      Json.toJson(localDate).as[LocalDate] mustBe localDate
+    }
+  }
+
+  "MessageDetails" must {
+    "serialize and deserialize from Json" in {
+      val messageDetails = MessageDetails("formId",
+        None,
+        None,
+        Some("sourceDate"),
+        Some("batchId"),
+        Some(LocalDate.now()),
+        threadId = Some(new ObjectId),
+        replyTo = None,
+        enquiryType = None,
+        adviser = None,
+        waitTime = None,
+        topic = None,
+        properties = None
+              )
+     Json.toJson(messageDetails).as[MessageDetails] mustBe messageDetails
     }
   }
 }
