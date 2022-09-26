@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.common.message.model
 
-import org.joda.time.{DateTime, LocalDate}
+import org.joda.time.{DateTime, DateTimeZone, LocalDate}
 
 trait TimeSource {
   def now(): DateTime
@@ -24,7 +24,7 @@ trait TimeSource {
 }
 
 trait SystemTimeSource extends TimeSource {
-  override def now() = DateTime.now()
+  override def now() = DateTime.now.withZone(DateTimeZone.UTC)
 }
 
 object SystemTimeSource extends SystemTimeSource
