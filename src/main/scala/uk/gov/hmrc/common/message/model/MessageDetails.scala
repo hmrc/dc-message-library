@@ -22,6 +22,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats
 import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotLocalDateFormat
+import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat.reads
 
 case class MessageDetails(
   formId: String,
