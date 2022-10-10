@@ -128,17 +128,17 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcPodsPpOrg(value))
           }
-        case (_, None) =>
-          Reads[TaxIdWithName] { _ =>
-            JsError("The backend has rejected the message due to an unknown tax identifier.")
-          }
-        case (Some(_), _) =>
-          Reads[TaxIdWithName] { _ =>
-            JsError("The backend has rejected the message due to an unknown tax identifier.")
-          }
         case (None, _) =>
           Reads[TaxIdWithName] { _ =>
-            JsError("The backend has rejected the message due to an unknown tax identifier.")
+            JsError("The backend has rejected the message due to a missing tax identifier name.")
+          }
+        case (_, None) =>
+          Reads[TaxIdWithName] { _ =>
+            JsError("The backend has rejected the message due to a missing tax identifier value.")
+          }
+        case (Some(name), _) =>
+          Reads[TaxIdWithName] { _ =>
+            JsError(s"The backend has rejected the message due to an unknown tax identifier ($name).")
           }
       }
 
@@ -207,6 +207,10 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcPodsPpOrg(value))
           }
+        case (None, _) =>
+          Reads[TaxIdWithName] { _ =>
+            JsError("Unknown tax identifier name (missing tax identifier name)")
+          }
         case (_, None) =>
           Reads[TaxIdWithName] { _ =>
             JsError("Unknown tax identifier name (missing tax identifier value)")
@@ -214,10 +218,6 @@ object TaxIdentifierRESTV2Formats {
         case (Some(name), _) =>
           Reads[TaxIdWithName] { _ =>
             JsError(s"Unknown tax identifier name ($name)")
-          }
-        case (None, _) =>
-          Reads[TaxIdWithName] { _ =>
-            JsError("Unknown tax identifier name (missing tax identifier name)")
           }
       }
 

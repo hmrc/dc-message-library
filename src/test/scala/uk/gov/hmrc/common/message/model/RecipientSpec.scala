@@ -108,7 +108,7 @@ class RecipientSpec extends PlaySpec {
       recipient mustBe Recipient(taxIdentifier = Epaye("000AB12345"), name = None, regime = Some(Regime.epaye))
     }
 
-    "return error for an invalid IR-PAYE EMPREF" in {
+    "return error for an invalid IR-PAYE EMPREF value" in {
       val error = intercept[JsResultException] { Json.parse("""{
                                                               |       "taxIdentifier":{
                                                               |           "name":"IR-PAYE.EMPREF",
@@ -118,6 +118,40 @@ class RecipientSpec extends PlaySpec {
        }""".stripMargin).as[Recipient] }
 
       error.errors.head._2.head.message mustBe "The backend has rejected the message due to an invalid EMPREF value - AB12345"
+    }
+
+    "return error for a missing IR-PAYE EMPREF value" in {
+      val error = intercept[JsResultException] { Json.parse("""{
+                                                              |       "taxIdentifier":{
+                                                              |           "name":"IR-PAYE.EMPREF"
+                                                              |       },
+                                                              |       "regime":"epaye"
+       }""".stripMargin).as[Recipient] }
+
+      error.errors.head._2.head.message mustBe "The backend has rejected the message due to a missing tax identifier value."
+    }
+
+    "return error for a missing IR-PAYE EMPREF name" in {
+      val error = intercept[JsResultException] { Json.parse("""{
+                                                              |       "taxIdentifier":{
+                                                              |           "value":"000AB12345"
+                                                              |       },
+                                                              |       "regime":"epaye"
+       }""".stripMargin).as[Recipient] }
+
+      error.errors.head._2.head.message mustBe "The backend has rejected the message due to a missing tax identifier name."
+    }
+
+    "return error for an unknown tax identifier name" in {
+      val error = intercept[JsResultException] { Json.parse("""{
+                                                              |       "taxIdentifier":{
+                                                              |           "name":"IR-UNKNOWN",
+                                                              |           "value":"AB12345"
+                                                              |       },
+                                                              |       "regime":"epaye"
+       }""".stripMargin).as[Recipient] }
+
+      error.errors.head._2.head.message mustBe "The backend has rejected the message due to an unknown tax identifier (IR-UNKNOWN)."
     }
 
     "Work for IR-PAYEs - case insensitive" in {
