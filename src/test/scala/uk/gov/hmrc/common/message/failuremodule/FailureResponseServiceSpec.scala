@@ -232,6 +232,12 @@ class FailureResponseServiceSpec extends PlaySpec {
       val t: Result = errorResponseResult("Submission has not passed validation. Invalid payload.")
       t.header.status mustEqual BAD_REQUEST
     }
+
+    "for invalid regime. Invalid payload. return BAD_REQUEST status code " in {
+      val t: Result = errorResponseResult("could not parse body due to unmatched regimes")
+      t.header.status mustEqual BAD_REQUEST
+    }
+
     "for The backend has rejected the message due to not being able to find the tax payer. return NOT_FOUND status code " in {
       val t: Result = errorResponseResult(
         "The backend has rejected the message due to not being able to find the tax payer",
