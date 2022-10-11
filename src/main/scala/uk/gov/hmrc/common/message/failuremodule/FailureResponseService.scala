@@ -110,6 +110,10 @@ object FailureResponseService {
         BAD_REQUEST,
         "Invalid date format provided",
         INVALID_PAYLOAD),
+      (BAD_REQUEST, "could not parse body due to unmatched regimes") -> ErrorMessage(
+        BAD_REQUEST,
+        "Invalid regime",
+        INVALID_PAYLOAD),
       (BAD_REQUEST, "email: invalid email address provided") -> ErrorMessage(
         BAD_REQUEST,
         "email: invalid email address provided",
