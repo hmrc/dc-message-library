@@ -57,8 +57,16 @@ class FailureResponseServiceSpec extends PlaySpec {
         showErrorID = true)) must include("UNKNOWN_TAX_IDENTIFIER")
     }
 
-    "for non Quadient not return UNKNOWN_TAX_IDENTIFIER for The backend has rejected the message due to an unknown tax identifier." in {
+    "for non Quadient return UNKNOWN_TAX_IDENTIFIER for The backend has rejected the message due to an unknown tax identifier." in {
       Json.stringify(errorResponseJson("The backend has rejected the message due to an unknown tax identifier.")) mustEqual """"The backend has rejected the message due to an unknown tax identifier.""""
+    }
+
+    "for non Quadient return MISSING_TAX_IDENTIFIER_NAME for The backend has rejected the message due to a missing tax identifier name." in {
+      Json.stringify(errorResponseJson("The backend has rejected the message due to a missing tax identifier name.")) mustEqual """"The backend has rejected the message due to a missing tax identifier name.""""
+    }
+
+    "for non Quadient return MISSING_TAX_IDENTIFIER_VALUE for The backend has rejected the message due to a missing tax identifier value." in {
+      Json.stringify(errorResponseJson("The backend has rejected the message due to a missing tax identifier value.")) mustEqual """"The backend has rejected the message due to a missing tax identifier value.""""
     }
 
     "for Quadient return MISSING_DETAILS for details not provided where it is required" in {

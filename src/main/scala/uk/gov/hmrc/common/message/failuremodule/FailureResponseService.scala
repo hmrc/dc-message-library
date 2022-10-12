@@ -34,6 +34,8 @@ object FailureResponseService {
   val INVALID_CORRELATIONID = "INVALID_CORRELATIONID"
   val INVALID_REQUEST = "INVALID_REQUEST"
   val UNKNOWN_TAX_IDENTIFIER = "UNKNOWN_TAX_IDENTIFIER"
+  val MISSING_TAX_IDENTIFIER_NAME = "MISSING_TAX_IDENTIFIER_NAME"
+  val MISSING_TAX_IDENTIFIER_VALUE = "MISSING_TAX_IDENTIFIER_VALUE"
   val MISSING_DETAILS = "MISSING_DETAILS"
   val EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED"
   val TAXPAYER_NOT_FOUND = "TAXPAYER_NOT_FOUND"
@@ -73,6 +75,14 @@ object FailureResponseService {
         BAD_REQUEST,
         "The backend has rejected the message due to an unknown tax identifier.",
         UNKNOWN_TAX_IDENTIFIER),
+      (BAD_REQUEST, "The backend has rejected the message due to a missing tax identifier name.") -> ErrorMessage(
+        BAD_REQUEST,
+        "The backend has rejected the message due to a missing tax identifier name.",
+        MISSING_TAX_IDENTIFIER_NAME),
+      (BAD_REQUEST, "The backend has rejected the message due to a missing tax identifier value.") -> ErrorMessage(
+        BAD_REQUEST,
+        "The backend has rejected the message due to a missing tax identifier value.",
+        MISSING_TAX_IDENTIFIER_VALUE),
       (BAD_REQUEST, "Missing or empty externalRef id or source") -> ErrorMessage(
         BAD_REQUEST,
         "Missing or empty externalRef id or source",
