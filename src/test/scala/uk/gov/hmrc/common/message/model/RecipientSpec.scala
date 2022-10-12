@@ -151,7 +151,7 @@ class RecipientSpec extends PlaySpec {
                                                               |       "regime":"epaye"
        }""".stripMargin).as[Recipient] }
 
-      error.errors.head._2.head.message mustBe "The backend has rejected the message due to an unknown tax identifier (IR-UNKNOWN)."
+      error.errors.head._2.head.message mustBe "The backend has rejected the message due to an unknown tax identifier."
     }
 
     "Work for IR-PAYEs - case insensitive" in {
