@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.common.message.model
 
-import org.joda.time.{DateTime, DateTimeZone, LocalDate}
+import org.joda.time.{ DateTime, DateTimeZone, LocalDate }
 
 trait TimeSource {
   def now(): DateTime

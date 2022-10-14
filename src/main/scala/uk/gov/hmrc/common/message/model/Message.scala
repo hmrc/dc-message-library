@@ -16,17 +16,16 @@
 
 package uk.gov.hmrc.common.message.model
 
-import enumeratum.{Enum, EnumEntry, PlayJsonEnum}
-import org.joda.time.{DateTime, LocalDate}
+import enumeratum.{ Enum, EnumEntry, PlayJsonEnum }
+import org.joda.time.{ DateTime, LocalDate }
 import org.mongodb.scala.bson.ObjectId
 import org.apache.commons.codec.binary.Base64
-import play.api.libs.json.{Format, JsError, JsObject, JsResult, JsString, JsSuccess, JsValue, Json, OFormat, Reads, Writes}
+import play.api.libs.json.{ Format, JsError, JsObject, JsResult, JsString, JsSuccess, JsValue, Json, OFormat, Reads, Writes }
 import uk.gov.hmrc.common.message.model.Rescindment.Type.GeneratedInError
 import uk.gov.hmrc.domain.TaxIds._
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus.ToDo
 import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotLocalDateFormat
-
 
 case class MessageContentParameters(data: ContentParameters, templateId: String)
 object MessageContentParameters {
@@ -138,8 +137,6 @@ object Message {
 
   implicit val taxEntityWrites: Writes[TaxEntity] = Json.writes[TaxEntity]
 
-
-
 }
 
 case class ConversationItem(
@@ -151,7 +148,7 @@ case class ConversationItem(
 )
 
 object ConversationItem {
-   def apply(message: Message): ConversationItem =
+  def apply(message: Message): ConversationItem =
     ConversationItem(
       message.id.toString,
       message.subject,
@@ -207,7 +204,7 @@ case class Details(
   batchId: Option[String] = None,
   issueDate: Option[LocalDate] = Some(LocalDate.now),
   replyTo: Option[String] = None,
-  threadId: Option[ObjectId] = None,
+  threadId: Option[String] = None,
   enquiryType: Option[String] = None,
   adviser: Option[Adviser] = None,
   waitTime: Option[String] = None,
@@ -236,7 +233,6 @@ case class Details(
   val toMap = paramsMap.collect { case (key, Some(value)) => key -> value.toString }
 }
 object Details {
-  import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
   implicit val format: OFormat[Details] = Json.format[Details]
 }
 

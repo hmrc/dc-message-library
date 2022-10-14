@@ -23,6 +23,7 @@ import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats
 import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotLocalDateFormat
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat._
+import scala.util.Try
 
 case class MessageDetails(
   formId: String,
@@ -32,13 +33,16 @@ case class MessageDetails(
   batchId: Option[String],
   issueDate: Option[LocalDate] = Some(LocalDate.now),
   replyTo: Option[String],
-  threadId: Option[ObjectId] = Some(new ObjectId),
+  threadId: Option[String] = Some((new ObjectId().toString)),
   enquiryType: Option[String] = None,
   adviser: Option[Adviser] = None,
   waitTime: Option[String] = None,
   topic: Option[String] = None,
   properties: Option[JsValue] = None
 ) {
+
+  require(Try(new ObjectId(threadId.getOrElse(""))).isSuccess, "threadId has invalid format")
+
   def statutory: Boolean = statutoryOp.getOrElse(false)
   def paperSent: Boolean = paperSentOp.getOrElse(false)
 
@@ -47,7 +51,6 @@ case class MessageDetails(
 object MessageDetails {
 
   implicit val objectIdFormats = MongoFormats.objectIdFormat
-
   val reads: Reads[MessageDetails] =
     ((__ \ "formId").read[String] and
       (__ \ "statutory").readNullable[Boolean] and
@@ -56,7 +59,7 @@ object MessageDetails {
       (__ \ "batchId").readNullable[String] and
       (__ \ "issueDate").readNullable[LocalDate] and
       (__ \ "replyTo").readNullable[String] and
-      (__ \ "threadId").readNullable[ObjectId] and
+      (__ \ "threadId").readNullable[String] and
       (__ \ "enquiryType").readNullable[String] and
       (__ \ "adviser").readNullable[Adviser] and
       (__ \ "waitTime").readNullable[String] and

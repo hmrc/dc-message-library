@@ -86,7 +86,7 @@ object MessageRESTFormats extends RestFormats  with AlertEmailTemplateMapper {
         }
 
         val details = messageDetails.map { ds =>
-          val threadId = ds.threadId.getOrElse(new ObjectId) // DC-1738
+          val threadId = ds.threadId.getOrElse(new ObjectId().toString) // DC-1738
 
           Details(
             Some(ds.formId),

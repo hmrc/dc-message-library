@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.common.message.util
 
-import org.joda.time.{DateTime, DateTimeZone, LocalDate}
+import org.joda.time.{ DateTime, DateTimeZone, LocalDate }
 import org.mongodb.scala.bson.ObjectId
-import play.api.libs.json.{JsObject, JsString, JsValue, Json, Reads, __}
+import play.api.libs.json.{ JsObject, JsString, JsValue, Json, Reads, __ }
 import uk.gov.hmrc.common.message.model._
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.domain._
@@ -103,7 +103,7 @@ object MessageFixtures {
     externalRef: Option[ExternalRef] = None,
     sourceData: Option[String] = None,
     emailAlertEventUrl: Option[String] = None,
-    threadId: Option[ObjectId] = None,
+    threadId: Option[String] = None,
     enquiryType: Option[String] = None,
     adviser: Option[Adviser] = None,
     replyTo: Option[String] = None,
@@ -194,7 +194,7 @@ object MessageFixtures {
     externalRef: Option[ExternalRef] = None,
     sourceData: Option[String] = None,
     emailAlertEventUrl: Option[String] = None,
-    threadId: Option[ObjectId] = None,
+    threadId: Option[String] = None,
     enquiryType: Option[String] = None,
     adviser: Option[Adviser] = None,
     replyTo: Option[String] = None,
@@ -508,16 +508,15 @@ object MessageFixtures {
 
   def testExtRef(source: String) = Some(ExternalRef(s"${UUID.randomUUID}", source))
 
-  def updateIssueDate(jsMessage: JsValue, issueDate: LocalDate = LocalDate.now): JsValue = {
+  def updateIssueDate(jsMessage: JsValue, issueDate: LocalDate = LocalDate.now): JsValue =
     jsMessage
       .transform((__ \ 'body \ 'issueDate).json.update(Reads.of[JsString].map { _ =>
-     Json.parse(s"""{
+        Json.parse(s"""{
         "$$date": {
           "$$numberLong": ${issueDate.toDateTimeAtCurrentTime.getMillis}
         }
       }""")
       }))
       .get
-  }
 
 }

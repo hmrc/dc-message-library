@@ -44,6 +44,28 @@ class MessageDetailsSpec extends PlaySpec {
       json.as[MessageDetails].properties mustBe None
 
     }
+
+    "threadId" should {
+      "be valid hex string" in {
+        val json =
+          Json.obj(
+            "formId"   -> "formId",
+            "threadId" -> "5c85a5000000000000000001"
+          )
+        json.as[MessageDetails].threadId.get mustBe "5c85a5000000000000000001"
+      }
+    }
   }
 
+  "fail validation if its not valid hash string" in {
+    val json =
+      Json.obj(
+        "formId"   -> "formId",
+        "threadId" -> "some invalid hash"
+      )
+
+    the[IllegalArgumentException] thrownBy (json
+      .as[MessageDetails]) must have message "requirement failed: threadId has invalid format"
+
+  }
 }

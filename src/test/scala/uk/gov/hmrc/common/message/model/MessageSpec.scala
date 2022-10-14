@@ -20,11 +20,10 @@ import org.joda.time.LocalDate
 import org.joda.time.format.ISODateTimeFormat
 import org.mongodb.scala.bson.ObjectId
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import uk.gov.hmrc.common.message.model.MessageRESTFormats._
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
-
 
 class MessageSpec extends PlaySpec {
   "message creation from two-way-message" must {
@@ -137,36 +136,28 @@ class MessageSpec extends PlaySpec {
   "LocalDate" must {
     "serialize and deserialize from Json" in {
       val localDate: LocalDate = LocalDate.now()
-      println(localDate)
-      println(localDate.toString)
-      println(Json.toJson(localDate))
-
-      val date = ISODateTimeFormat.date()
-
-
-
-
       Json.toJson(localDate).as[LocalDate] mustBe localDate
     }
   }
 
   "MessageDetails" must {
     "serialize and deserialize from Json" in {
-      val messageDetails = MessageDetails("formId",
+      val messageDetails = MessageDetails(
+        "formId",
         None,
         None,
         Some("sourceDate"),
         Some("batchId"),
         Some(LocalDate.now()),
-        threadId = Some(new ObjectId),
+        threadId = Some(new ObjectId().toString),
         replyTo = None,
         enquiryType = None,
         adviser = None,
         waitTime = None,
         topic = None,
         properties = None
-              )
-     Json.toJson(messageDetails).as[MessageDetails] mustBe messageDetails
+      )
+      Json.toJson(messageDetails).as[MessageDetails] mustBe messageDetails
     }
   }
 }
