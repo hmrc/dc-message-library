@@ -49,7 +49,7 @@ class MessageSpec extends PlaySpec {
           "formId":"2wsm-reply",
           "replyTo":"5c85a5000000000000000001",
           "enquiryType":"p800",
-          "threadId":{"$$oid":"6308ebc948f9b01e9092074e"},
+          "threadId":"6308ebc948f9b01e9092074e",
           "batchId":"batch-id",
           "topic":"some-topic-name"
         }
