@@ -41,13 +41,12 @@ case class MessageDetails(
   properties: Option[JsValue] = None
 ) {
 
-  require{
-    if (threadId.nonEmpty) {
+    require(
+    if(threadId.nonEmpty) {
       Try(new ObjectId(threadId.getOrElse(""))).isSuccess
-    }
-    , "threadId has invalid format")
-  else true
-}
+    } else {true},
+     "threadId has invalid format"
+  )
 
 
   def statutory: Boolean = statutoryOp.getOrElse(false)

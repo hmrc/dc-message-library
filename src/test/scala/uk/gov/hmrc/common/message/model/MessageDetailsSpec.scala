@@ -46,8 +46,8 @@ class MessageDetailsSpec extends PlaySpec {
 
     }
 
-    "threadId" should {
-      "be valid hex string" in {
+    "threadId if supplied" should {
+      "be a valid hex string" in {
         val json =
           Json.obj(
             "formId"   -> "formId",
