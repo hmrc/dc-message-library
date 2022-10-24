@@ -27,12 +27,14 @@ import uk.gov.hmrc.mongo.workitem.ProcessingStatus
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus.ToDo
 import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotLocalDateFormat
 
+import java.time.Instant
+
 case class MessageContentParameters(data: ContentParameters, templateId: String)
 object MessageContentParameters {
   implicit val messageTemplateFormats = Json.format[MessageContentParameters]
 }
 
-case class Rescindment(time: DateTime, `type`: Rescindment.Type, ref: String)
+case class Rescindment(time: Instant, `type`: Rescindment.Type, ref: String)
 object Rescindment {
   sealed trait Type extends EnumEntry
   object Type extends Enum[Type] with PlayJsonEnum[Type] {
@@ -41,7 +43,7 @@ object Rescindment {
     case object GeneratedInError extends Type
 
   }
-  import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotDateTimeFormat
+
   implicit val rescindmentFormat: Format[Rescindment] = Json.format[Rescindment]
 }
 
