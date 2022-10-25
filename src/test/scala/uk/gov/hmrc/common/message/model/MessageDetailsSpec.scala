@@ -16,9 +16,11 @@
 
 package uk.gov.hmrc.common.message.model
 
+import org.joda.time.LocalDate
 import org.mongodb.scala.bson.ObjectId
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
+import uk.gov.hmrc.mongo.play.json.Codecs
 
 class MessageDetailsSpec extends PlaySpec {
 
@@ -54,6 +56,17 @@ class MessageDetailsSpec extends PlaySpec {
             "threadId" -> "5c85a5000000000000000001"
           )
         json.as[MessageDetails].threadId.get mustBe "5c85a5000000000000000001"
+      }
+    }
+
+    "issueDate" should {
+      "be serialized" in {
+        val localDate = LocalDate.now()
+        val json = s"""{
+                      |      "formId":"formId",
+                      |       "issueDate":"$localDate"
+                      |   }""".stripMargin
+        Json.parse(json).as[MessageDetails].issueDate mustBe Some(localDate)
       }
     }
   }

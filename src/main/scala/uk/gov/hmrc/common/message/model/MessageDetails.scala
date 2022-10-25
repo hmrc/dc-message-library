@@ -21,8 +21,8 @@ import org.mongodb.scala.bson.ObjectId
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats
-import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotLocalDateFormat
-import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat._
+//import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotLocalDateFormat
+//import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat._
 import scala.util.Try
 
 case class MessageDetails(
@@ -54,7 +54,8 @@ case class MessageDetails(
 }
 
 object MessageDetails {
-
+  import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
+  import play.api.libs.json.JodaWrites.{ JodaDateTimeWrites => _, _ }
   implicit val objectIdFormats = MongoFormats.objectIdFormat
   val reads: Reads[MessageDetails] =
     ((__ \ "formId").read[String] and
