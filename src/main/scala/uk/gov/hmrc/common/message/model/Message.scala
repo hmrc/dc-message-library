@@ -24,6 +24,8 @@ import play.api.libs.json.{ Format, JsError, JsObject, JsResult, JsString, JsSuc
 import uk.gov.hmrc.common.message.model.Rescindment.Type.GeneratedInError
 import uk.gov.hmrc.domain.TaxIds._
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus
+import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
+import play.api.libs.json.JodaWrites.{ JodaDateTimeWrites => _, _ }
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus.ToDo
 import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotLocalDateFormat
 
