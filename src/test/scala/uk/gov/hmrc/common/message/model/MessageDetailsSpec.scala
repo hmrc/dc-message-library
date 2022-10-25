@@ -61,12 +61,12 @@ class MessageDetailsSpec extends PlaySpec {
 
     "issueDate" should {
       "be serialized" in {
-        val localDate = LocalDate.now()
+        val localDate = "2022-10-10"
         val json = s"""{
                       |      "formId":"formId",
                       |       "issueDate":"$localDate"
                       |   }""".stripMargin
-        Json.parse(json).as[MessageDetails].issueDate mustBe Some(localDate)
+        Json.parse(json).as[MessageDetails].issueDate.get.toString() mustBe "2022-10-10"
       }
     }
   }
