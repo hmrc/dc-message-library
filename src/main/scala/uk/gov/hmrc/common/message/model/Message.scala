@@ -236,7 +236,7 @@ case class Details(
 }
 object Details {
   import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
-  import play.api.libs.json.JodaWrites.{ JodaDateTimeWrites => _, _ }
+  import play.api.libs.json.JodaWrites.DefaultJodaLocalDateWrites
   implicit val format: OFormat[Details] = Json.format[Details]
 }
 
