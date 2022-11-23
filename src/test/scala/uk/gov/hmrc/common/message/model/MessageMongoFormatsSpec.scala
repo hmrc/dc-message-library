@@ -16,16 +16,14 @@
 
 package uk.gov.hmrc.common.message.model
 
-import org.joda.time.{DateTime, LocalDate}
+import org.joda.time.{ DateTime, LocalDate }
 import org.mongodb.scala.bson.ObjectId
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
 import uk.gov.hmrc.common.message.util.MessageFixtures._
-import uk.gov.hmrc.common.message.util.{MessageFixtures, Resources}
+import uk.gov.hmrc.common.message.util.{ MessageFixtures, Resources }
 import uk.gov.hmrc.domain.SaUtr
-
-import java.time.Instant
 
 class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
 
@@ -47,8 +45,11 @@ class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
       alertFrom = Some(LocalDate.parse("2015-07-18")),
       alertDetails = AlertDetails("templateId", Some(taxPayername), Map("key 1" -> "value 1", "key2" -> "value2")),
       alerts = Some(EmailAlert(None, DateTime.parse("2015-07-17T15:40:08.829Z"), false, None)),
-      rescindment =
-        Some(Rescindment(java.time.Instant.ofEpochMilli(DateTime.parse("2015-07-17T15:40:09.829Z").toInstant.getMillis), Rescindment.Type.GeneratedInError, "blah")),
+      rescindment = Some(
+        Rescindment(
+          java.time.Instant.ofEpochMilli(DateTime.parse("2015-07-17T15:40:08.829Z").toInstant.getMillis),
+          Rescindment.Type.GeneratedInError,
+          "blah")),
       lastUpdated = None,
       hash = "O4KWyUPKQySWUVzQVfoPswBEKfN1gLe9dXi7EzCwp5U=",
       statutory = false,
@@ -58,37 +59,53 @@ class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
     )
 
     "be able to read and write to the current mongo format" in {
-      val messageReads = Json.toJson(exampleMessage)(MessageMongoFormats.messageMongoFormat)
-      val messageWrites = messageReads.as[Message](MessageMongoFormats.messageMongoFormat)
-      messageWrites mustBe exampleMessage
+      val currentJson = updateIssueDate(Resources.readJson("messages/mongo/allFieldsNoBreak.json"))
+
+      Json.toJson(exampleMessage)(MessageMongoFormats.messageMongoFormat) must be(currentJson)
+
+      currentJson.as[Message](MessageMongoFormats.messageMongoFormat) must be(exampleMessage)
     }
 
     "be able to read and write to the current mongo format with verificationBreak" in {
-      val messageReads = Json.toJson(exampleMessage.copy(verificationBrake = Some(true)))(MessageMongoFormats.messageMongoFormat)
-      val messageWrites = messageReads.as[Message](MessageMongoFormats.messageMongoFormat)
-      messageWrites mustBe exampleMessage.copy(verificationBrake = Some(true))
+      val currentJson = updateIssueDate(Resources.readJson("messages/mongo/verificationBreak.json"))
+
+      val messageWithVerificationBrake = exampleMessage.copy(verificationBrake = Some(true))
+      Json.toJson(messageWithVerificationBrake)(MessageMongoFormats.messageMongoFormat) must be(currentJson)
+
+      currentJson.as[Message](MessageMongoFormats.messageMongoFormat) must be(messageWithVerificationBrake)
     }
 
     "be able to read and write to the current mongo format without recipientName" in {
-      val messageReads = Json.toJson(exampleMessage.copy(alertDetails = AlertDetails("newMessageAlert", None, Map())))(MessageMongoFormats.messageMongoFormat)
-      val messageWrites = messageReads.as[Message](MessageMongoFormats.messageMongoFormat)
-      messageWrites mustBe exampleMessage.copy(alertDetails = AlertDetails("newMessageAlert", None, Map()))
+      val currentJson = updateIssueDate(Resources.readJson("messages/mongo/noRecipientName.json"))
+
+      val messageWithoutRecipientName: Message =
+        exampleMessage.copy(alertDetails = AlertDetails("newMessageAlert", None, Map()))
+      Json.toJson(messageWithoutRecipientName)(MessageMongoFormats.messageMongoFormat) must be(currentJson)
+
+      currentJson.as[Message](MessageMongoFormats.messageMongoFormat) must be(messageWithoutRecipientName)
     }
 
     "be able to read the mongo format without the rescindment" in {
-      val messageReads = Json.toJson(exampleMessage.copy(rescindment = None))(MessageMongoFormats.messageMongoFormat)
-      val messageWrites = messageReads.as[Message](MessageMongoFormats.messageMongoFormat)
-      messageWrites mustBe exampleMessage.copy(rescindment = None)
+      val legacyJson = updateIssueDate(Resources.readJson("messages/mongo/legacy/noRescindment.json"))
+      val messageNotRescinded = exampleMessage.copy(rescindment = None)
+
+      Json.toJson(messageNotRescinded)(MessageMongoFormats.messageMongoFormat) must be(legacyJson)
+
+      legacyJson.as[Message](MessageMongoFormats.messageMongoFormat) must be(messageNotRescinded)
     }
 
     "be able to read the mongo format without the alertDetails" in {
-      val messageReads = Json.toJson(exampleMessage.copy(alertDetails = AlertDetails("newMessageAlert", None, Map()), rescindment = None))(MessageMongoFormats.messageMongoFormat)
-      val messageWrites = messageReads.as[Message](MessageMongoFormats.messageMongoFormat)
-      messageWrites mustBe exampleMessage.copy(alertDetails = AlertDetails("newMessageAlert", None, Map()), rescindment = None)
+      val legacyJson = updateIssueDate(Resources.readJson("messages/mongo/legacy/noAlertDetails.json"))
+      val messageNotRescinded =
+        exampleMessage.copy(alertDetails = AlertDetails("newMessageAlert", None, Map()), rescindment = None)
+
+      legacyJson.as[Message](MessageMongoFormats.messageMongoFormat) must be(messageNotRescinded)
     }
 
     "be able to read the mongo format without the statutory flag" in {
-      val messageReads = Json.toJson(exampleMessage.copy(statutory = true,
+      val legacyJson = updateIssueDate(Resources.readJson("messages/mongo/legacy/noStatutoryFlag.json"))
+      val messageStatutory = exampleMessage.copy(
+        statutory = true,
         body = Some(
           Details(
             Some("SA316 2015"),
@@ -96,22 +113,14 @@ class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
             Some("2015-01-02"),
             Some("C0123456781234568")
           )
-        )))(MessageMongoFormats.messageMongoFormat)
-      val messageWrites = messageReads.as[Message](MessageMongoFormats.messageMongoFormat)
-      messageWrites mustBe exampleMessage.copy(statutory = true,
-        body = Some(
-          Details(
-            Some("SA316 2015"),
-            Some("print-suppression-notification"),
-            Some("2015-01-02"),
-            Some("C0123456781234568")
-          )
-        ))
+        )
+      )
+      legacyJson.as[Message](MessageMongoFormats.messageMongoFormat) must be(messageStatutory)
     }
 
     "be able to read the render url if it is already stored in the database as a field" in {
-
-      val messageReads = Json.toJson(exampleMessage.copy(
+      val legacyJson = updateIssueDate(Resources.readJson("messages/mongo/legacy/withRenderUrl.json"))
+      val messageStatutory = exampleMessage.copy(
         statutory = true,
         body = Some(
           Details(
@@ -123,22 +132,13 @@ class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
         ),
         renderUrl = RenderUrl("abc", "url")
       )
-      )(MessageMongoFormats.messageMongoFormat)
-      val messageWrites = messageReads.as[Message](MessageMongoFormats.messageMongoFormat)
-      messageWrites mustBe exampleMessage.copy(statutory = true,
-        body = Some(
-          Details(
-            Some("SA316 2015"),
-            Some("print-suppression-notification"),
-            Some("2015-01-02"),
-            Some("C0123456781234568")
-          )
-        ),
-        renderUrl = RenderUrl("abc", "url"))
+      val m = legacyJson.as[Message](MessageMongoFormats.messageMongoFormat)
+      m must be(messageStatutory)
     }
 
     "be able to construct the default the render url if it is not stored in the database as a field" in {
-      val messageReads = Json.toJson(exampleMessage.copy(
+      val legacyJson = updateIssueDate(Resources.readJson("messages/mongo/legacy/noRenderUrl.json"))
+      val messageStatutory = exampleMessage.copy(
         statutory = true,
         body = Some(
           Details(
@@ -150,21 +150,7 @@ class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
         ),
         renderUrl = RenderUrl("sa-message-renderer", "/messages/sa/12345678/55a921d84f573b6f14325b57")
       )
-      )(MessageMongoFormats.messageMongoFormat)
-      val messageWrites = messageReads.as[Message](MessageMongoFormats.messageMongoFormat)
-      messageWrites mustBe exampleMessage.copy(
-        statutory = true,
-        body = Some(
-          Details(
-            Some("SA316 2015"),
-            Some("print-suppression-notification"),
-            Some("2015-01-02"),
-            Some("C0123456781234568")
-          )
-        ),
-        renderUrl = RenderUrl("sa-message-renderer", "/messages/sa/12345678/55a921d84f573b6f14325b57")
-
-      )
+      legacyJson.as[Message](MessageMongoFormats.messageMongoFormat) must be(messageStatutory)
     }
   }
 }
