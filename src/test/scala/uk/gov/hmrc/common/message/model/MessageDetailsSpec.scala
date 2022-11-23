@@ -16,11 +16,8 @@
 
 package uk.gov.hmrc.common.message.model
 
-import org.joda.time.LocalDate
-import org.mongodb.scala.bson.ObjectId
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
-import uk.gov.hmrc.mongo.play.json.Codecs
 
 class MessageDetailsSpec extends PlaySpec {
 

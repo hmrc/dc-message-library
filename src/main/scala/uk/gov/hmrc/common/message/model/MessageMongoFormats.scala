@@ -60,7 +60,7 @@ object MessageMongoFormats {
         taxEntity <- (__ \ "recipient").read[TaxEntity]
       } yield RenderUrl("sa-message-renderer", s"/messages/sa/${taxEntity.identifier.value}/${messageId.toString}")
 
-    import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.{ jotDateTimeFormat, jotLocalDateFormat }
+    import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotDateTimeFormat
     import uk.gov.hmrc.common.message.model.EmailAlert._
 
     val reads1to21: Reads[
