@@ -32,14 +32,18 @@
   },
   "alerts": {
     "alertTime": {
-      "$date": 1437147608829
+      "$date": {
+        "$numberLong": "1437147608829"
+      }
     },
     "success": false
   },
   "status": "todo",
   "rescindment": {
     "time": {
-      "$date": 1437147609829
+      "$date": {
+        "$numberLong": "1437147608829"
+      }
     },
     "type": "GeneratedInError",
     "ref": "blah"

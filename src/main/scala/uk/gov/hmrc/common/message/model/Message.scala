@@ -23,6 +23,7 @@ import org.apache.commons.codec.binary.Base64
 import play.api.libs.json.{ Format, JsError, JsObject, JsResult, JsString, JsSuccess, JsValue, Json, OFormat, Reads, Writes }
 import uk.gov.hmrc.common.message.model.Rescindment.Type.GeneratedInError
 import uk.gov.hmrc.domain.TaxIds._
+import uk.gov.hmrc.mongo.play.json.formats.{ MongoJavatimeFormats, MongoJodaFormats }
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus.ToDo
 import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotLocalDateFormat
@@ -43,7 +44,7 @@ object Rescindment {
     case object GeneratedInError extends Type
 
   }
-
+  implicit val instantFormat = MongoJavatimeFormats.instantFormat
   implicit val rescindmentFormat: Format[Rescindment] = Json.format[Rescindment]
 }
 
@@ -235,8 +236,6 @@ case class Details(
   val toMap = paramsMap.collect { case (key, Some(value)) => key -> value.toString }
 }
 object Details {
-  import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
-  import play.api.libs.json.JodaWrites.DefaultJodaLocalDateWrites
   implicit val format: OFormat[Details] = Json.format[Details]
 }
 

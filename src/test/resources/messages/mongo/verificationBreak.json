@@ -8,10 +8,7 @@
   },
   "subject": "asdfg",
   "body": {
-    "type": "print-suppression-notification",
-    "form": "SA316 2015",
-    "suppressedAt": "2015-01-02",
-    "detailsId": "C0123456781234568",
+    "type": "tax-summary-notification",
     "issueDate": "2020-05-04"
   },
   "validFrom": "2015-07-17",
@@ -49,10 +46,16 @@
     "ref": "blah"
   },
   "hash": "O4KWyUPKQySWUVzQVfoPswBEKfN1gLe9dXi7EzCwp5U=",
+  "statutory": false,
   "_id": {
     "$oid": "55a921d84f573b6f14325b57"
   },
+  "renderUrl": {
+    "service": "sa-message-renderer",
+    "url": "/messages/sa/12345678/55a921d84f573b6f14325b57"
+  },
   "tags": {
     "notificationType": "Direct Debit"
-  }
+  },
+  "verificationBrake": true
 }
