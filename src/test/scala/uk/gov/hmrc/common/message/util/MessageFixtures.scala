@@ -17,13 +17,13 @@
 package uk.gov.hmrc.common.message.util
 
 import org.joda.time.{ DateTime, DateTimeZone, LocalDate }
+import org.mongodb.scala.bson.ObjectId
 import play.api.libs.json.{ JsString, JsValue, Reads, __ }
-import reactivemongo.bson.BSONObjectID
 import uk.gov.hmrc.common.message.model._
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.domain._
-import uk.gov.hmrc.time.DateTimeUtils
-import uk.gov.hmrc.workitem._
+import uk.gov.hmrc.mongo.workitem.ProcessingStatus
+import uk.gov.hmrc.mongo.workitem.ProcessingStatus.ToDo
 
 import java.util.UUID
 
@@ -33,7 +33,7 @@ object MessageFixtures {
   val form = "SA300"
 
   def testMessageWithContent(
-    id: BSONObjectID,
+    id: ObjectId,
     recipientId: TaxIdWithName = SaUtr("5554444333"),
     uuid: UUID,
     form: String = "SA300",
@@ -90,7 +90,7 @@ object MessageFixtures {
     readTime: Option[DateTime] = None,
     archiveTime: Option[DateTime] = None,
     alerts: Option[EmailAlert] = Some(
-      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), DateTimeUtils.now, true, None)
+      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), DateTime.now(), true, None)
     ),
     alertDetails: AlertDetails = AlertDetails("templateId", None, Map()),
     status: ProcessingStatus = ToDo,
@@ -103,14 +103,14 @@ object MessageFixtures {
     externalRef: Option[ExternalRef] = None,
     sourceData: Option[String] = None,
     emailAlertEventUrl: Option[String] = None,
-    threadId: Option[BSONObjectID] = None,
+    threadId: Option[String] = None,
     enquiryType: Option[String] = None,
     adviser: Option[Adviser] = None,
     replyTo: Option[String] = None,
     batchId: Option[String] = None,
     verificationBrake: Option[Boolean] = None,
     issueDate: Option[LocalDate] = None,
-    id: BSONObjectID = BSONObjectID.generate,
+    id: ObjectId = new ObjectId,
     tags: Option[Map[String, String]] = None,
     deliveredOn: Option[DateTime] = None
   ): Message = {
@@ -181,7 +181,7 @@ object MessageFixtures {
     readTime: Option[DateTime] = None,
     archiveTime: Option[DateTime] = None,
     alerts: Option[EmailAlert] = Some(
-      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), DateTimeUtils.now, true, None)
+      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), DateTime.now, true, None)
     ),
     alertDetails: AlertDetails = AlertDetails("templateId", None, Map()),
     status: ProcessingStatus = ToDo,
@@ -194,7 +194,7 @@ object MessageFixtures {
     externalRef: Option[ExternalRef] = None,
     sourceData: Option[String] = None,
     emailAlertEventUrl: Option[String] = None,
-    threadId: Option[BSONObjectID] = None,
+    threadId: Option[String] = None,
     enquiryType: Option[String] = None,
     adviser: Option[Adviser] = None,
     replyTo: Option[String] = None,
@@ -217,7 +217,7 @@ object MessageFixtures {
     )
 
     Message(
-      id = BSONObjectID.generate,
+      id = new ObjectId,
       recipient = MessageFixtures.createTaxEntity(recipientId),
       subject = subject,
       body = Some(details),
@@ -250,7 +250,7 @@ object MessageFixtures {
     readTime: Option[DateTime] = None,
     archiveTime: Option[DateTime] = None,
     alerts: Option[EmailAlert] = Some(
-      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), DateTimeUtils.now, true, None)
+      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), DateTime.now, true, None)
     ),
     status: ProcessingStatus = ToDo,
     lastUpdated: Option[DateTime] = Some(SystemTimeSource.now),
@@ -262,7 +262,7 @@ object MessageFixtures {
     emailAlertEventUrl: Option[String] = None
   ) =
     Message(
-      id = BSONObjectID.generate,
+      id = new ObjectId,
       recipient = MessageFixtures.createTaxEntity(recipientId),
       subject = subject,
       body = Some(Details(None, Some("tax-summary-notification"), None, None)),
@@ -299,7 +299,7 @@ object MessageFixtures {
     emailAlertEventUrl: Option[String] = None
   ) =
     Message(
-      id = BSONObjectID.generate,
+      id = new ObjectId,
       recipient = MessageFixtures.createTaxEntity(SaUtr(utr)),
       subject = "Your Tax Return",
       body = Some(
@@ -339,7 +339,7 @@ object MessageFixtures {
     emailAlertEventUrl: Option[String] = None
   ) =
     Message(
-      id = BSONObjectID.generate,
+      id = new ObjectId,
       recipient = MessageFixtures.createTaxEntity(SaUtr(utr)),
       subject = "Your Tax Return",
       body = Some(
@@ -378,7 +378,7 @@ object MessageFixtures {
     emailAlertEventUrl: Option[String] = None
   ) =
     Message(
-      id = BSONObjectID.generate,
+      id = new ObjectId,
       recipient = MessageFixtures.createTaxEntity(Nino("CS700100A")),
       subject = "Your Tax Return",
       body = Some(
@@ -403,7 +403,7 @@ object MessageFixtures {
     )
 
   def messageFor2WSM(
-    id: BSONObjectID = BSONObjectID.generate(),
+    id: ObjectId = new ObjectId,
     utr: String = utr,
     validFrom: LocalDate = testDate(0),
     readTime: Option[DateTime] = None,
@@ -463,7 +463,7 @@ object MessageFixtures {
     alerts: Option[EmailAlert] = None
   ) =
     Message(
-      id = BSONObjectID.generate,
+      id = new ObjectId,
       externalRef = Some(externalRef),
       recipient = MessageFixtures.createTaxEntity(SaUtr(utr)),
       subject = "Your Tax Return",

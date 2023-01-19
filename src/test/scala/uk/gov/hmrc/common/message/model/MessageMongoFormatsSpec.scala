@@ -17,13 +17,13 @@
 package uk.gov.hmrc.common.message.model
 
 import org.joda.time.{ DateTime, LocalDate }
+import org.mongodb.scala.bson.ObjectId
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
-import reactivemongo.bson.BSONObjectID
-import uk.gov.hmrc.domain.SaUtr
-import uk.gov.hmrc.common.message.util.{ MessageFixtures, Resources }
 import uk.gov.hmrc.common.message.util.MessageFixtures._
+import uk.gov.hmrc.common.message.util.{ MessageFixtures, Resources }
+import uk.gov.hmrc.domain.SaUtr
 
 class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
 
@@ -37,7 +37,7 @@ class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
 
   "The message mongo format" must {
     val exampleMessage = Message(
-      id = BSONObjectID.parse("55a921d84f573b6f14325b57").get,
+      id = new ObjectId("55a921d84f573b6f14325b57"),
       recipient = MessageFixtures.createTaxEntity(SaUtr("12345678")),
       subject = "asdfg",
       body = Some(Details(None, Some("tax-summary-notification"), None, None, issueDate = Some(LocalDate.now))),
@@ -45,8 +45,11 @@ class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
       alertFrom = Some(LocalDate.parse("2015-07-18")),
       alertDetails = AlertDetails("templateId", Some(taxPayername), Map("key 1" -> "value 1", "key2" -> "value2")),
       alerts = Some(EmailAlert(None, DateTime.parse("2015-07-17T15:40:08.829Z"), false, None)),
-      rescindment =
-        Some(Rescindment(DateTime.parse("2015-07-17T15:40:09.829Z"), Rescindment.Type.GeneratedInError, "blah")),
+      rescindment = Some(
+        Rescindment(
+          java.time.Instant.ofEpochMilli(DateTime.parse("2015-07-17T15:40:08.829Z").toInstant.getMillis),
+          Rescindment.Type.GeneratedInError,
+          "blah")),
       lastUpdated = None,
       hash = "O4KWyUPKQySWUVzQVfoPswBEKfN1gLe9dXi7EzCwp5U=",
       statutory = false,
@@ -75,7 +78,8 @@ class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
     "be able to read and write to the current mongo format without recipientName" in {
       val currentJson = updateIssueDate(Resources.readJson("messages/mongo/noRecipientName.json"))
 
-      val messageWithoutRecipientName = exampleMessage.copy(alertDetails = AlertDetails("newMessageAlert", None, Map()))
+      val messageWithoutRecipientName: Message =
+        exampleMessage.copy(alertDetails = AlertDetails("newMessageAlert", None, Map()))
       Json.toJson(messageWithoutRecipientName)(MessageMongoFormats.messageMongoFormat) must be(currentJson)
 
       currentJson.as[Message](MessageMongoFormats.messageMongoFormat) must be(messageWithoutRecipientName)
@@ -149,5 +153,4 @@ class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
       legacyJson.as[Message](MessageMongoFormats.messageMongoFormat) must be(messageStatutory)
     }
   }
-
 }

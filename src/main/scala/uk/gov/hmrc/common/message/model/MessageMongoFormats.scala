@@ -17,25 +17,35 @@
 package uk.gov.hmrc.common.message.model
 
 import org.joda.time.{ DateTime, LocalDate }
+import org.mongodb.scala.bson.ObjectId
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{ Json, _ }
-import reactivemongo.bson.BSONObjectID
+import play.api.libs.json._
+import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmceVatdecOrg, HmrcCusOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.domain._
-import TaxEntity.{ Epaye, HmceVatdecOrg, HmrcCusOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
-import uk.gov.hmrc.mongo.json.ReactiveMongoFormats
-import play.api.libs.json.JodaReads._
-import play.api.libs.json.JodaWrites.{ JodaDateTimeWrites => _, _ }
-import uk.gov.hmrc.workitem.ProcessingStatus
+import uk.gov.hmrc.mongo.workitem.ProcessingStatus
+import uk.gov.hmrc.mongo.workitem.ProcessingStatus.Implicits.format
+import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
 
 object MessageMongoFormats {
 
   import MongoTaxIdentifierFormats._
+  object DetailsFormatter {
+    import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
+    import play.api.libs.json.JodaWrites.DefaultJodaLocalDateWrites
+    implicit val format = Json.format[Details]
+  }
 
-  implicit val dateTimeFormats: Format[DateTime] = ReactiveMongoFormats.dateTimeFormats
-  implicit val objectIdFormats: Format[BSONObjectID] = ReactiveMongoFormats.objectIdFormats
+  object LocalDateFormatter {
 
-  implicit val messageMongoFormat: Format[Message] = ReactiveMongoFormats.mongoEntity {
+    val localDateReads = play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
+    val localDateWrites = play.api.libs.json.JodaWrites.DefaultJodaLocalDateWrites
+
+    val localDateFormat: Format[LocalDate] =
+      Format(localDateReads, localDateWrites)
+  }
+
+  implicit val messageMongoFormat: Format[Message] = {
     val legacyStatutoryForms = Seq("SA309A", "SA309C", "SA326D", "SA328D", "SA370", "SA371")
 
     def determineStatutoryFromForm = (__ \ "body" \ "form").readNullable[String].map {
@@ -46,13 +56,16 @@ object MessageMongoFormats {
     // To Do: needs to check the value is a SaUtr
     def generateLegacyMessageHeaderDetail: Reads[RenderUrl] =
       for {
-        messageId <- (__ \ "id").read[BSONObjectID]
+        messageId <- (__ \ "_id").read[ObjectId]
         taxEntity <- (__ \ "recipient").read[TaxEntity]
-      } yield RenderUrl("sa-message-renderer", s"/messages/sa/${taxEntity.identifier.value}/${messageId.stringify}")
+      } yield RenderUrl("sa-message-renderer", s"/messages/sa/${taxEntity.identifier.value}/${messageId.toString}")
+
+    import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotDateTimeFormat
+    import uk.gov.hmrc.common.message.model.EmailAlert._
 
     val reads1to21: Reads[
       (
-        BSONObjectID,
+        ObjectId,
         TaxEntity,
         String,
         Option[Details],
@@ -75,12 +88,12 @@ object MessageMongoFormats {
         Option[String]
       )
     ] = (
-      (__ \ "id").read[BSONObjectID] and
+      (__ \ "_id").read[ObjectId] and
         (__ \ "recipient").read[TaxEntity] and
         (__ \ "subject").read[String] and
-        (__ \ "body").readNullable[Details] and
-        (__ \ "validFrom").read[LocalDate] and
-        (__ \ "alertFrom").readNullable[LocalDate] and
+        (__ \ "body").readNullable[Details](DetailsFormatter.format) and
+        (__ \ "validFrom").read[LocalDate](LocalDateFormatter.localDateFormat) and
+        (__ \ "alertFrom").readNullable[LocalDate](LocalDateFormatter.localDateFormat) and
         (__ \ "alertDetails").read[AlertDetails].orElse(Reads.pure(AlertDetails("newMessageAlert", None, Map()))) and
         (__ \ "alerts").readNullable[EmailAlert] and
         (__ \ "alertQueue").readNullable[String] and
@@ -97,7 +110,6 @@ object MessageMongoFormats {
         (__ \ "externalRef").readNullable[ExternalRef] and
         (__ \ "content").readNullable[String]
     ).tupled
-
     val reads22to27: Reads[(
       Option[String],
       Option[Boolean],
@@ -112,10 +124,9 @@ object MessageMongoFormats {
         (__ \ "deliveredOn").readNullable[DateTime] and
         (__ \ "mailgunStatus").readNullable[MailgunStatus]
     ).tupled
-
     val tupleToMessage: (
       (
-        BSONObjectID,
+        ObjectId,
         TaxEntity,
         String,
         Option[Details],
@@ -204,7 +215,7 @@ object MessageMongoFormats {
 
     val messageToTuple: Message => (
       (
-        BSONObjectID,
+        ObjectId,
         TaxEntity,
         String,
         Option[Details],
@@ -268,11 +279,13 @@ object MessageMongoFormats {
       )
     }
 
-    val reads: Reads[Message] = (reads1to21 and reads22to27) { tupleToMessage }
+    val reads: Reads[Message] = (reads1to21 and reads22to27) {
+      tupleToMessage
+    }
 
     val writes1to21: OWrites[
       (
-        BSONObjectID,
+        ObjectId,
         TaxEntity,
         String,
         Option[Details],
@@ -295,12 +308,12 @@ object MessageMongoFormats {
         Option[String]
       )
     ] = (
-      (__ \ "id").write[BSONObjectID] and
+      (__ \ "_id").write[ObjectId] and
         (__ \ "recipient").write[TaxEntity] and
         (__ \ "subject").write[String] and
-        (__ \ "body").writeNullable[Details] and
-        (__ \ "validFrom").write[LocalDate] and
-        (__ \ "alertFrom").writeNullable[LocalDate] and
+        (__ \ "body").writeNullable[Details](DetailsFormatter.format) and
+        (__ \ "validFrom").write[LocalDate](LocalDateFormatter.localDateWrites) and
+        (__ \ "alertFrom").writeNullable[LocalDate](LocalDateFormatter.localDateWrites) and
         (__ \ "alertDetails").write[AlertDetails] and
         (__ \ "alerts").writeNullable[EmailAlert] and
         (__ \ "alertQueue").writeNullable[String] and
@@ -333,7 +346,9 @@ object MessageMongoFormats {
         (__ \ "mailgunStatus").writeNullable[MailgunStatus]
     ).tupled
 
-    val writes: OWrites[Message] = (writes1to21 ~ writes22to27) { messageToTuple }
+    val writes: OWrites[Message] = (writes1to21 ~ writes22to27) {
+      messageToTuple
+    }
 
     Format(reads, writes)
   }

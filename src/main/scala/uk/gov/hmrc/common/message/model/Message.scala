@@ -18,23 +18,24 @@ package uk.gov.hmrc.common.message.model
 
 import enumeratum.{ Enum, EnumEntry, PlayJsonEnum }
 import org.joda.time.{ DateTime, LocalDate }
-import play.api.libs.json._
-import reactivemongo.bson.BSONObjectID
-
+import org.mongodb.scala.bson.ObjectId
 import org.apache.commons.codec.binary.Base64
-import uk.gov.hmrc.domain.TaxIds._
-import uk.gov.hmrc.mongo.json.BSONObjectIdFormats
+import play.api.libs.json.{ Format, JsError, JsObject, JsResult, JsString, JsSuccess, JsValue, Json, OFormat, Reads, Writes }
 import uk.gov.hmrc.common.message.model.Rescindment.Type.GeneratedInError
-import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
-import play.api.libs.json.JodaWrites.{ JodaDateTimeWrites => _, _ }
-import uk.gov.hmrc.workitem._
+import uk.gov.hmrc.domain.TaxIds._
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import uk.gov.hmrc.mongo.workitem.ProcessingStatus
+import uk.gov.hmrc.mongo.workitem.ProcessingStatus.ToDo
+import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotLocalDateFormat
+
+import java.time.Instant
 
 case class MessageContentParameters(data: ContentParameters, templateId: String)
 object MessageContentParameters {
   implicit val messageTemplateFormats = Json.format[MessageContentParameters]
 }
 
-case class Rescindment(time: DateTime, `type`: Rescindment.Type, ref: String)
+case class Rescindment(time: Instant, `type`: Rescindment.Type, ref: String)
 object Rescindment {
   sealed trait Type extends EnumEntry
   object Type extends Enum[Type] with PlayJsonEnum[Type] {
@@ -43,8 +44,8 @@ object Rescindment {
     case object GeneratedInError extends Type
 
   }
-
-  implicit def rescindmentFormat(implicit dtf: Format[DateTime]): Format[Rescindment] = Json.format[Rescindment]
+  implicit val instantFormat = MongoJavatimeFormats.instantFormat
+  implicit val rescindmentFormat: Format[Rescindment] = Json.format[Rescindment]
 }
 
 object AlertQueueTypes {
@@ -60,7 +61,7 @@ trait Alertable {
 
   def auditData: Map[String, String]
 
-  def id: BSONObjectID
+  def id: ObjectId
 
   def externalRef: Option[ExternalRef]
 
@@ -78,7 +79,7 @@ trait Alertable {
 }
 
 case class Message(
-  id: BSONObjectID = BSONObjectID.generate,
+  id: ObjectId = new ObjectId,
   recipient: TaxEntity,
   subject: String,
   body: Option[Details],
@@ -119,11 +120,11 @@ case class Message(
   override def taxPayerName: Option[TaxpayerName] = alertDetails.recipientName
 
   override def auditData: Map[String, String] =
-    body.map(_.toMap).getOrElse(Map.empty) ++ Map("messageId" -> id.stringify)
+    body.map(_.toMap).getOrElse(Map.empty) ++ Map("messageId" -> id.toString)
 
   override def hardCopyAuditData: Map[String, String] =
     Map(
-      "messageId" -> id.stringify,
+      "messageId" -> id.toString,
       "utr"       -> recipient.identifier.value,
       "validFrom" -> validFrom.toString
     ) ++ body.map(_.toMap).getOrElse(Map.empty)
@@ -137,13 +138,7 @@ object Message {
       JsObject(Seq("name" -> JsString(taxId.name), "value" -> JsString(taxId.value)))
   }
 
-  implicit val bsonObjectIdWrites = new Writes[BSONObjectID] {
-    def writes(bsonObjectId: BSONObjectID) = Json.toJson(bsonObjectId.stringify)
-  }
-
   implicit val taxEntityWrites: Writes[TaxEntity] = Json.writes[TaxEntity]
-
-  implicit val messageFormat: Format[Message] = messageMongoFormat
 
 }
 
@@ -156,10 +151,9 @@ case class ConversationItem(
 )
 
 object ConversationItem {
-
   def apply(message: Message): ConversationItem =
     ConversationItem(
-      message.id.stringify,
+      message.id.toString,
       message.subject,
       message.body,
       message.validFrom,
@@ -213,7 +207,7 @@ case class Details(
   batchId: Option[String] = None,
   issueDate: Option[LocalDate] = Some(LocalDate.now),
   replyTo: Option[String] = None,
-  threadId: Option[BSONObjectID] = None,
+  threadId: Option[String] = None,
   enquiryType: Option[String] = None,
   adviser: Option[Adviser] = None,
   waitTime: Option[String] = None,
@@ -231,7 +225,7 @@ case class Details(
     "batchId"      -> batchId,
     "issueDate"    -> issueDate,
     "replyTo"      -> replyTo,
-    "threadId"     -> threadId.map(_.stringify),
+    "threadId"     -> threadId.map(_.toString),
     "enquiryType"  -> enquiryType,
     "adviser"      -> adviser.map(_.pidId),
     "topic"        -> topic,
@@ -241,7 +235,7 @@ case class Details(
 
   val toMap = paramsMap.collect { case (key, Some(value)) => key -> value.toString }
 }
-object Details extends BSONObjectIdFormats {
+object Details {
   implicit val format: OFormat[Details] = Json.format[Details]
 }
 

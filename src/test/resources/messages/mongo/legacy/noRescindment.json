@@ -29,7 +29,9 @@
   },
   "alerts": {
     "alertTime": {
-      "$date": 1437147608829
+      "$date": {
+        "$numberLong": "1437147608829"
+      }
     },
     "success": false
   },
