@@ -28,7 +28,6 @@ import uk.gov.hmrc.mongo.workitem.ProcessingStatus
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus.ToDo
 import play.api.libs.json.JodaWrites._
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats
-
 import java.time.Instant
 
 case class MessageContentParameters(data: ContentParameters, templateId: String)
