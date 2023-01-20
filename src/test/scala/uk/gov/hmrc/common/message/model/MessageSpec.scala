@@ -159,4 +159,19 @@ class MessageSpec extends PlaySpec {
       Json.toJson(messageDetails).as[MessageDetails] mustBe messageDetails
     }
   }
+
+  "ConversationItem" must {
+    "serialize to correct json" in {
+      val conversationItem = ConversationItem(
+        "id",
+        "subject",
+        Some(
+          Details(None, Some("tax-summary-notification"), None, None, issueDate = Some(LocalDate.parse("2023-01-01")))),
+        LocalDate.parse("2023-01-01"),
+        None
+      )
+      Json.toJson(conversationItem) mustBe Json.parse(
+        """{"id":"id","subject":"subject","body":{"type":"tax-summary-notification","issueDate":"2023-01-01"},"validFrom":"2023-01-01"}""")
+    }
+  }
 }

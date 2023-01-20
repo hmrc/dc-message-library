@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,8 @@ import uk.gov.hmrc.domain.TaxIds._
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus.ToDo
-import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotLocalDateFormat
+import play.api.libs.json.JodaWrites._
+import uk.gov.hmrc.mongo.play.json.formats.MongoFormats
 
 import java.time.Instant
 
@@ -236,7 +237,7 @@ case class Details(
   val toMap = paramsMap.collect { case (key, Some(value)) => key -> value.toString }
 }
 object Details {
-  implicit val format: OFormat[Details] = Json.format[Details]
+  implicit val format: Writes[Details] = Json.writes[Details]
 }
 
 case class MessageStatus(
