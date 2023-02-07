@@ -17,7 +17,7 @@
 package uk.gov.hmrc.common.message.validationmodule
 
 import org.apache.commons.codec.binary.Base64
-import uk.gov.hmrc.emailaddress.EmailAddress
+import uk.gov.hmrc.common.message.emailaddress.EmailAddress
 import uk.gov.hmrc.common.message.model._
 import uk.gov.hmrc.domain.HmrcMtdVat
 
