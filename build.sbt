@@ -13,7 +13,9 @@ lazy val appDependencies: Seq[ModuleID] = PlayCrossCompilation.dependencies(
     "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % "test",
     "uk.gov.hmrc.mongo"      %% "hmrc-mongo-test-play-28"   % "0.74.0" % "test",
     "com.vladsch.flexmark"    % "flexmark-all"       % "0.35.10" % "test",
-    "org.scalatestplus"     %% "mockito-3-4"         % "3.2.8.0" % "test"
+    "org.scalatestplus"     %% "mockito-3-4"         % "3.2.8.0" % "test",
+    "org.scalatestplus" %% "scalacheck-1-17" % "3.2.14.0" % Test,
+    "org.scalacheck" %% "scalacheck" % "1.17.0" % Test
   )
 )
 lazy val messageLib = Project(appName, file("."))
