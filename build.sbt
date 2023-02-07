@@ -10,7 +10,6 @@ lazy val appDependencies: Seq[ModuleID] = PlayCrossCompilation.dependencies(
     "com.beachape"      %% "enumeratum"         % "1.6.0",
     "com.beachape"      %% "enumeratum-play-json" % "1.6.0",
     "com.typesafe.play" %% "play-json-joda"       % "2.6.13",
-    "uk.gov.hmrc"       %% "emailaddress"         % "3.5.0",
     "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % "test",
     "uk.gov.hmrc.mongo"      %% "hmrc-mongo-test-play-28"   % "0.74.0" % "test",
     "com.vladsch.flexmark"    % "flexmark-all"       % "0.35.10" % "test",
