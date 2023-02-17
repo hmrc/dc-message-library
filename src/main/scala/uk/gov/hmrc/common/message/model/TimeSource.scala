@@ -20,11 +20,11 @@ import org.joda.time.{ DateTime, DateTimeZone, LocalDate }
 
 trait TimeSource {
   def now(): DateTime
-  def today(): LocalDate = now.toLocalDate
+  def today(): LocalDate = now().toLocalDate
 }
 
 trait SystemTimeSource extends TimeSource {
-  override def now() = DateTime.now.withZone(DateTimeZone.UTC)
+  override def now(): DateTime = DateTime.now.withZone(DateTimeZone.UTC)
 }
 
 object SystemTimeSource extends SystemTimeSource

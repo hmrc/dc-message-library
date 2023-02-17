@@ -1,8 +1,8 @@
 
 lazy val compile: Seq[ModuleID] = Seq(
-  "uk.gov.hmrc"       %% "domain"                            % "6.2.0-play-28",
+  "uk.gov.hmrc"       %% "domain"                            % "8.1.0-play-28",
   "uk.gov.hmrc.mongo" %% "hmrc-mongo-work-item-repo-play-28" % "0.74.0",
-  "uk.gov.hmrc"       %% "http-verbs-play-28"                % "13.8.0",
+  "uk.gov.hmrc"       %% "http-verbs-play-28"                % "14.8.0",
   "commons-codec"     %  "commons-codec"                     % "1.9",
   "com.typesafe.play" %% "play-json"                         % "2.9.4",
   "com.typesafe.play" %% "play-json-joda"                    % "2.9.4",
@@ -23,7 +23,7 @@ lazy val messageLib = Project(appName, file("."))
   .settings(majorVersion := 0)
   .settings(isPublicArtefact := true)
   .settings(
-    scalaVersion := "2.12.12",
+    scalaVersion := "2.13.8",
     libraryDependencies ++= PlayCrossCompilation.dependencies(shared = compile ++ test),
   )
   .settings(PlayCrossCompilation.playCrossCompilationSettings)
