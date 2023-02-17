@@ -18,7 +18,7 @@ package uk.gov.hmrc.common.message.model
 
 trait AlertEmailTemplateMapper {
 
-  val templatesToMapToNewMessageAlert = Seq(
+  val templatesToMapToNewMessageAlert: Seq[String] = Seq(
     "R002A",
     "SA251",
     "SA326D",
@@ -34,6 +34,7 @@ trait AlertEmailTemplateMapper {
     "CA001"
   )
 
+  // scalastyle:off
   def emailTemplateFromMessageFormId(formId: String, requestAlertTemplateId: Option[String] = None): String =
     (formId, requestAlertTemplateId) match {
       case (_, Some(templateId)) if templateId != "newMessageAlert"                  => templateId
@@ -56,5 +57,5 @@ trait AlertEmailTemplateMapper {
           case _                                     => "newMessageAlert"
         }
     }
-
+  // scalastyle:on
 }

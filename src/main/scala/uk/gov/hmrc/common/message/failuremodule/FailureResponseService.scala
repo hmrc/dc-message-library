@@ -194,8 +194,11 @@ object FailureResponseService {
     responseCode: Int = BAD_REQUEST,
     showErrorID: Boolean = false): JsValue = {
     def helper(err: ErrorMessage): JsValue =
-      if (showErrorID) Json.toJson(FailureResponse(err.errorID, err.errorDescription))
-      else Json.toJson(err.errorDescription)
+      if (showErrorID) {
+        Json.toJson(FailureResponse(err.errorID, err.errorDescription))
+      } else {
+        Json.toJson(err.errorDescription)
+      }
     helper(getFailureId(responseCode, errorMessage))
   }
 
@@ -204,8 +207,11 @@ object FailureResponseService {
     responseCode: Int = BAD_REQUEST,
     showErrorID: Boolean = false): Result = {
     def getJson(err: ErrorMessage): JsValue =
-      if (showErrorID) Json.toJson(FailureResponse(err.errorID, err.errorDescription))
-      else Json.toJson((err.errorDescription))
+      if (showErrorID) {
+        Json.toJson(FailureResponse(err.errorID, err.errorDescription))
+      } else {
+        Json.toJson(err.errorDescription)
+      }
 
     getFailureId(responseCode, errorMessage) match {
       case e @ ErrorMessage(OK, _, _)                    => Ok(getJson(e))
