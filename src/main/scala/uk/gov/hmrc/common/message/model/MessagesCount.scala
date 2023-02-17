@@ -21,7 +21,6 @@ import play.api.libs.functional.syntax._
 
 final case class MessagesCount(total: Int, unread: Int) {
   def +(m: MessagesCount): MessagesCount = MessagesCount(total + m.total, unread + m.unread)
-  def -(m: MessagesCount): MessagesCount = MessagesCount(total + m.total, unread + m.unread)
 }
 
 object MessagesCount {
