@@ -24,6 +24,7 @@ lazy val messageLib = Project(appName, file("."))
   .settings(
     scalaVersion := "2.12.12",
     libraryDependencies ++= appDependencies,
-  ).settings(PlayCrossCompilation.playCrossCompilationSettings)
+  )
+  .settings(PlayCrossCompilation.playCrossCompilationSettings)
 
 val appName = "dc-message-library"
