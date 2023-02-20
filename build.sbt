@@ -16,7 +16,7 @@
 
 import uk.gov.hmrc.DefaultBuildSettings.targetJvm
 
-val scala2_12 = "2.12.17"
+val scala2_12 = "2.12.12"
 val scala2_13 = "2.13.8"
 
 val compile: Seq[ModuleID] = Seq(
@@ -27,7 +27,7 @@ val compile: Seq[ModuleID] = Seq(
   "com.typesafe.play" %% "play-json"                         % "2.9.4",
   "com.typesafe.play" %% "play-json-joda"                    % "2.9.4",
   "com.beachape"      %% "enumeratum"                        % "1.7.2",
-  "com.beachape"      %% "enumeratum-play-json"              % "1.7.2",
+  "com.beachape"      %% "enumeratum-play-json"              % "1.7.2"
 )
 
 val test: Seq[ModuleID] = Seq(
@@ -43,10 +43,11 @@ lazy val messageLib = Project(appName, file("."))
   .settings(majorVersion := 0)
   .settings(isPublicArtefact := true)
   .settings(
-    scalaVersion := scala2_13,
+    scalaVersion := scala2_12,
     crossScalaVersions := Seq(scala2_12, scala2_13),
-    targetJvm := "jvm-11",
-    libraryDependencies ++= compile ++ test,
+    // TODO - put back when no longer cross compiling to Scala 2.12
+    // targetJvm := "jvm-11",
+    libraryDependencies ++= compile ++ test
   )
 
 val appName = "dc-message-library"
