@@ -16,7 +16,10 @@
 
 import uk.gov.hmrc.DefaultBuildSettings.targetJvm
 
-lazy val compile: Seq[ModuleID] = Seq(
+val scala2_12 = "2.12.12"
+val scala2_13 = "2.13.8"
+
+val compile: Seq[ModuleID] = Seq(
   "uk.gov.hmrc"       %% "domain"                            % "8.1.0-play-28",
   "uk.gov.hmrc.mongo" %% "hmrc-mongo-work-item-repo-play-28" % "0.74.0",
   "uk.gov.hmrc"       %% "http-verbs-play-28"                % "14.8.0",
@@ -27,7 +30,7 @@ lazy val compile: Seq[ModuleID] = Seq(
   "com.beachape"      %% "enumeratum-play-json"              % "1.7.2",
 )
 
-lazy val test: Seq[ModuleID] = Seq(
+val test: Seq[ModuleID] = Seq(
   "org.scalatestplus.play" %% "scalatestplus-play"      % "5.1.0"    % Test,
   "uk.gov.hmrc.mongo"      %% "hmrc-mongo-test-play-28" % "0.74.0"   % Test,
   "com.vladsch.flexmark"   %  "flexmark-all"            % "0.35.10"  % Test,
@@ -40,10 +43,10 @@ lazy val messageLib = Project(appName, file("."))
   .settings(majorVersion := 0)
   .settings(isPublicArtefact := true)
   .settings(
-    scalaVersion := "2.13.8",
+    scalaVersion := scala2_13,
+    crossScalaVersions := Seq(scala2_12, scala2_13),
     targetJvm := "jvm-11",
-    libraryDependencies ++= PlayCrossCompilation.dependencies(shared = compile ++ test),
+    libraryDependencies ++= compile ++ test,
   )
-  .settings(PlayCrossCompilation.playCrossCompilationSettings)
 
 val appName = "dc-message-library"
