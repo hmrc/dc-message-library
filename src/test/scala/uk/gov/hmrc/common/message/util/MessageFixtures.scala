@@ -510,7 +510,7 @@ object MessageFixtures {
 
   def updateIssueDate(jsMessage: JsValue, issueDate: LocalDate = LocalDate.now): JsValue =
     jsMessage
-      .transform((__ \ Symbol("body") \ Symbol("issueDate")).json.update(Reads.of[JsString].map { _: JsString =>
+      .transform((__ \ "body" \ "issueDate").json.update(Reads.of[JsString].map { _: JsString =>
         JsString(s"$issueDate")
       }))
       .get
