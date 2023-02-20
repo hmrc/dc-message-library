@@ -16,7 +16,7 @@
 
 import uk.gov.hmrc.DefaultBuildSettings.targetJvm
 
-val scala2_12 = "2.12.12"
+val scala2_12 = "2.12.17"
 val scala2_13 = "2.13.8"
 
 val compile: Seq[ModuleID] = Seq(
