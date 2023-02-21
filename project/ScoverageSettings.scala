@@ -26,6 +26,6 @@ object ScoverageSettings {
       ScoverageKeys.coverageMinimumStmtTotal := 97.00,
       ScoverageKeys.coverageFailOnMinimum := true,
       ScoverageKeys.coverageHighlighting := true,
-      parallelExecution in ConfigKey.configurationToKey(Test) := false
+      ConfigKey.configurationToKey(Test) / parallelExecution := false
     )
 }

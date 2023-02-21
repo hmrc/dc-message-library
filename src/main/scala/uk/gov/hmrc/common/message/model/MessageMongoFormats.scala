@@ -63,8 +63,7 @@ object MessageMongoFormats {
     import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotDateTimeFormat
     import uk.gov.hmrc.common.message.model.EmailAlert._
 
-    val reads1to21: Reads[
-      (
+    val reads1to21: Reads[(
         ObjectId,
         TaxEntity,
         String,
@@ -86,8 +85,7 @@ object MessageMongoFormats {
         Option[String],
         Option[ExternalRef],
         Option[String]
-      )
-    ] = (
+      )] = (
       (__ \ "_id").read[ObjectId] and
         (__ \ "recipient").read[TaxEntity] and
         (__ \ "subject").read[String] and
@@ -283,8 +281,7 @@ object MessageMongoFormats {
       tupleToMessage
     }
 
-    val writes1to21: OWrites[
-      (
+    val writes1to21: OWrites[(
         ObjectId,
         TaxEntity,
         String,
@@ -306,8 +303,7 @@ object MessageMongoFormats {
         Option[String],
         Option[ExternalRef],
         Option[String]
-      )
-    ] = (
+      )] = (
       (__ \ "_id").write[ObjectId] and
         (__ \ "recipient").write[TaxEntity] and
         (__ \ "subject").write[String] and

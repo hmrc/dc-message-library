@@ -67,8 +67,11 @@ object MessageValidator {
   def checkValidIssueDate(message: Message): Try[Message] = {
     val validFrom = message.validFrom
     val issueDate = message.body.flatMap(_.issueDate).getOrElse(validFrom)
-    if ((validFrom == issueDate || validFrom.isAfter(issueDate))) Success(message)
-    else Failure(MessageValidationException("Issue date after the valid from date"))
+    if (validFrom == issueDate || validFrom.isAfter(issueDate)) {
+      Success(message)
+    } else {
+      Failure(MessageValidationException("Issue date after the valid from date"))
+    }
   }
 
   def checkInvalidEmailAddress(message: Message): Try[Message] = message.recipient.email match {

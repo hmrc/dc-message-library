@@ -35,6 +35,7 @@ object TaxEntity {
       identifier,
       email)
 
+  // scalastyle:off
   def getEnrolments(taxEntity: TaxEntity): Enrolments =
     taxEntity match {
       case TaxEntity(Regime.paye, id, _)  => Enrolments(s"IR-NINO~NINO~${id.value}")
@@ -78,6 +79,7 @@ object TaxEntity {
       case _: HmrcPodsPpOrg                              => Regime.pods
       case x                                             => throw new RuntimeException(s"unsupported identifier $x")
     }
+  // scalastyle:on
 
   def forAudit(entity: TaxEntity): Map[String, String] = entity.identifier match {
     case x: TaxIdWithName => Map(x.name -> x.value)
@@ -87,7 +89,7 @@ object TaxEntity {
   implicit def taxEntityFormat(implicit taxId: Format[TaxIdWithName]): Format[TaxEntity] = Json.format[TaxEntity]
 
   case class Epaye(value: String) extends TaxIdentifier with SimpleName {
-    override def toString = value
+    override def toString: String = value
     val name = "EMPREF"
   }
 
@@ -97,7 +99,7 @@ object TaxEntity {
   }
 
   case class HmceVatdecOrg(value: String) extends TaxIdentifier with SimpleName {
-    override def toString = value
+    override def toString: String = value
     val name = "HMCE-VATDEC-ORG"
   }
 
@@ -108,7 +110,7 @@ object TaxEntity {
   }
 
   case class HmrcCusOrg(value: String) extends TaxIdentifier with SimpleName {
-    override def toString = value
+    override def toString: String = value
     val name = "HMRC-CUS-ORG"
   }
 
@@ -119,7 +121,7 @@ object TaxEntity {
   }
 
   case class HmrcOssOrg(value: String) extends TaxIdentifier with SimpleName {
-    override def toString = value
+    override def toString: String = value
     val name = "HMRC-OSS-ORG"
   }
 
@@ -130,7 +132,7 @@ object TaxEntity {
   }
 
   case class HmrcPptOrg(value: String) extends TaxIdentifier with SimpleName {
-    override def toString = value
+    override def toString: String = value
     val name = "ETMPREGISTRATIONNUMBER"
   }
 
@@ -141,7 +143,7 @@ object TaxEntity {
   }
 
   case class HmrcPodsOrg(value: String) extends TaxIdentifier with SimpleName {
-    override def toString = value
+    override def toString: String = value
     val name = "PSAID"
   }
 
@@ -152,7 +154,7 @@ object TaxEntity {
   }
 
   case class HmrcPodsPpOrg(value: String) extends TaxIdentifier with SimpleName {
-    override def toString = value
+    override def toString: String = value
     val name = "PSPID"
   }
 

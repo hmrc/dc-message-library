@@ -47,7 +47,7 @@ object MessageFixtures {
     archiveTime: Option[DateTime] = None,
     alertDetails: AlertDetails = AlertDetails("templateId", None, Map()),
     status: ProcessingStatus = ToDo,
-    testTime: Option[DateTime] = Some(SystemTimeSource.now),
+    testTime: Option[DateTime] = Some(SystemTimeSource.now()),
     contentParameters: Option[MessageContentParameters] = None,
     statutory: Boolean = false,
     renderUrl: RenderUrl = RenderUrl("service", "relUrl"),
@@ -94,7 +94,7 @@ object MessageFixtures {
     ),
     alertDetails: AlertDetails = AlertDetails("templateId", None, Map()),
     status: ProcessingStatus = ToDo,
-    lastUpdated: Option[DateTime] = Some(SystemTimeSource.now),
+    lastUpdated: Option[DateTime] = Some(SystemTimeSource.now()),
     contentParameters: Option[MessageContentParameters] = None,
     hash: String = UUID.randomUUID.toString,
     statutory: Boolean = false,
@@ -185,7 +185,7 @@ object MessageFixtures {
     ),
     alertDetails: AlertDetails = AlertDetails("templateId", None, Map()),
     status: ProcessingStatus = ToDo,
-    lastUpdated: Option[DateTime] = Some(SystemTimeSource.now),
+    lastUpdated: Option[DateTime] = Some(SystemTimeSource.now()),
     contentParameters: Option[MessageContentParameters] = None,
     hash: String = UUID.randomUUID.toString,
     statutory: Boolean = false,
@@ -253,7 +253,7 @@ object MessageFixtures {
       EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), DateTime.now, true, None)
     ),
     status: ProcessingStatus = ToDo,
-    lastUpdated: Option[DateTime] = Some(SystemTimeSource.now),
+    lastUpdated: Option[DateTime] = Some(SystemTimeSource.now()),
     contentParameters: Option[MessageContentParameters] = None,
     hash: String = "someHashValue",
     statutory: Boolean = false,
@@ -315,7 +315,7 @@ object MessageFixtures {
       alertFrom = Some(validFrom),
       alertDetails = AlertDetails(alertTemplateId, recipientName, Map()),
       alerts = None,
-      lastUpdated = Some(SystemTimeSource.now),
+      lastUpdated = Some(SystemTimeSource.now()),
       hash = hash,
       statutory = statutory,
       renderUrl = renderUrl,
@@ -355,7 +355,7 @@ object MessageFixtures {
       alertFrom = Some(validFrom),
       alertDetails = AlertDetails(alertTemplateId, recipientName, Map()),
       alerts = None,
-      lastUpdated = Some(SystemTimeSource.now),
+      lastUpdated = Some(SystemTimeSource.now()),
       hash = hash,
       statutory = statutory,
       renderUrl = renderUrl,
@@ -394,7 +394,7 @@ object MessageFixtures {
       alertFrom = Some(validFrom),
       alertDetails = AlertDetails(alertTemplateId, recipientName, Map()),
       alerts = None,
-      lastUpdated = Some(SystemTimeSource.now),
+      lastUpdated = Some(SystemTimeSource.now()),
       hash = hash,
       statutory = statutory,
       renderUrl = renderUrl,
@@ -437,7 +437,7 @@ object MessageFixtures {
       alertFrom = Some(validFrom),
       alertDetails = AlertDetails(alertTemplateId, recipientName, Map()),
       alerts = None,
-      lastUpdated = Some(SystemTimeSource.now),
+      lastUpdated = Some(SystemTimeSource.now()),
       hash = hash,
       statutory = statutory,
       renderUrl = renderUrl,
@@ -480,7 +480,7 @@ object MessageFixtures {
       alertFrom = Some(validFrom),
       alertDetails = AlertDetails(alertTemplateId, recipientName, Map()),
       alerts = alerts,
-      lastUpdated = Some(SystemTimeSource.now),
+      lastUpdated = Some(SystemTimeSource.now()),
       hash = hash,
       statutory = statutory,
       renderUrl = renderUrl,
@@ -510,7 +510,7 @@ object MessageFixtures {
 
   def updateIssueDate(jsMessage: JsValue, issueDate: LocalDate = LocalDate.now): JsValue =
     jsMessage
-      .transform((__ \ 'body \ 'issueDate).json.update(Reads.of[JsString].map { _: JsString =>
+      .transform((__ \ "body" \ "issueDate").json.update(Reads.of[JsString].map { _: JsString =>
         JsString(s"$issueDate")
       }))
       .get

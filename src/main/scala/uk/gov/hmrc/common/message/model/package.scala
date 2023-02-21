@@ -27,7 +27,7 @@ package object model {
   type ContentParameters = JsValue
   val defaultJodaDateFormat = "yyyy-MM-dd"
 
-  def formatDate(date: LocalDate) = "%04d-%02d-%02d".format(date.getYear, date.getMonthOfYear, date.getDayOfMonth)
+  def formatDate(date: LocalDate): String = "%04d-%02d-%02d".format(date.getYear, date.getMonthOfYear, date.getDayOfMonth)
 
   def jodaDateReads(): Reads[LocalDate] =
     Reads[LocalDate](
@@ -41,7 +41,7 @@ package object model {
               case Failure(_)     => throw DateValidationException("Invalid date format provided")
           }))
 
-  def jodaDateReads(fieldName: String) =
+  def jodaDateReads(fieldName: String): Reads[LocalDate] =
     Reads[LocalDate](
       js =>
         js.validate[String]

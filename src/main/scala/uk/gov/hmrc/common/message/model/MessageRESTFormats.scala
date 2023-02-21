@@ -38,16 +38,20 @@ object MessageRESTFormats extends RestFormats  with AlertEmailTemplateMapper {
       (__ \ "alertQueue").readNullable[String] and
       (__ \ "emailAlertEventUrl").readNullable[String] and
       Reads[Option[Map[String, String]]](jsValue =>
-          ( __ \ "alertDetails" \ "data").asSingleJson(jsValue) match {
-             case JsDefined(value) => value.validate[Map[String, String]].map(Some.apply).
-                                                          orElse(JsError("sourceData: invalid source data provided"))
-             case JsUndefined() => JsSuccess(None)}) and
+        (__ \ "alertDetails" \ "data").asSingleJson(jsValue) match {
+          case JsDefined(value) =>
+            value.validate[Map[String, String]].map(Some.apply).orElse(JsError("sourceData: invalid source data provided"))
+          case _: JsUndefined => JsSuccess(None)
+        }
+      ) and
       Reads[Option[Map[String, String]]](jsValue =>
         ( __ \ "tags").asSingleJson(jsValue) match {
           case JsDefined(value) => value.validate[Map[String, String]]
             .map(Some.apply)
             .orElse(JsError("tags : invalid data provided"))
-          case JsUndefined() => JsSuccess(None)})) {
+          case _: JsUndefined => JsSuccess(None)
+        }
+      )) {
       (externalRef, recipient, messageType, subject, vf, deliveredOn, content, messageDetails, alertQueue, emailAlertEventUrl, alertDetailsData, tags) =>
         val issueDate = messageDetails.flatMap(_.issueDate).getOrElse(LocalDate.now)
 
