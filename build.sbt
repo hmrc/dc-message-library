@@ -23,11 +23,15 @@ val compile: Seq[ModuleID] = Seq(
   "uk.gov.hmrc"       %% "domain"                            % "8.1.0-play-28",
   "uk.gov.hmrc.mongo" %% "hmrc-mongo-work-item-repo-play-28" % "0.74.0",
   "uk.gov.hmrc"       %% "http-verbs-play-28"                % "14.8.0",
-  "commons-codec"     %  "commons-codec"                     % "1.9",
-  "com.typesafe.play" %% "play-json"                         % "2.9.4",
-  "com.typesafe.play" %% "play-json-joda"                    % "2.9.4",
-  "com.beachape"      %% "enumeratum"                        % "1.7.2",
-  "com.beachape"      %% "enumeratum-play-json"              % "1.7.2"
+  "commons-codec"     %  "commons-codec"                     % "1.9"
+)
+
+// Play 28 (2.8.18) specific versions - caution when upgrading
+val play28: Seq[ModuleID] = Seq(
+  "com.typesafe.play" %% "play-json"            % "2.8.2",
+  "com.typesafe.play" %% "play-json-joda"       % "2.8.2",
+  "com.beachape"      %% "enumeratum"           % "1.7.0",
+  "com.beachape"      %% "enumeratum-play-json" % "1.7.0"
 )
 
 val test: Seq[ModuleID] = Seq(
@@ -47,7 +51,7 @@ lazy val messageLib = Project(appName, file("."))
     crossScalaVersions := Seq(scala2_12, scala2_13),
     // TODO - put back when no longer cross compiling to Scala 2.12
     // targetJvm := "jvm-11",
-    libraryDependencies ++= compile ++ test
+    libraryDependencies ++= compile ++ play28 ++ test
   )
 
 val appName = "dc-message-library"
