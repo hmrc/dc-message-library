@@ -497,6 +497,7 @@ object MessageFixtures {
     case x: Nino         => TaxEntity(Regime.paye, x, email)
     case x: SaUtr        => TaxEntity(Regime.sa, x, email)
     case x: CtUtr        => TaxEntity(Regime.ct, x, email)
+    case x: HmrcMtdItsa  => TaxEntity(Regime.itsa, x, email)
     case x: HmrcObtdsOrg => TaxEntity(Regime.fhdds, x)
     case x: HmrcMtdVat   => TaxEntity(Regime.vat, x)
     case x: Vrn          => TaxEntity(Regime.vat, x)

@@ -27,6 +27,8 @@ import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus.ToDo
 import play.api.libs.json.JodaWrites._
+import uk.gov.hmrc.domain.HmrcMtdItsa
+
 import java.time.Instant
 
 case class MessageContentParameters(data: ContentParameters, templateId: String)
@@ -121,12 +123,18 @@ case class Message(
   override def auditData: Map[String, String] =
     body.map(_.toMap).getOrElse(Map.empty) ++ Map("messageId" -> id.toString)
 
-  override def hardCopyAuditData: Map[String, String] =
+  override def hardCopyAuditData: Map[String, String] = {
+    val taxId = recipient.identifier match {
+      case HmrcMtdItsa(_) => "itsaId"
+      case _              => recipient.identifier.name
+    }
+
     Map(
       "messageId" -> id.toString,
-      "utr"       -> recipient.identifier.value,
+      taxId       -> recipient.identifier.value,
       "validFrom" -> validFrom.toString
     ) ++ body.map(_.toMap).getOrElse(Map.empty)
+  }
 }
 
 object Message {

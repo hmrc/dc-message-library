@@ -21,8 +21,12 @@ import org.mongodb.scala.bson.ObjectId
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 import uk.gov.hmrc.common.message.model.MessageRESTFormats._
+import uk.gov.hmrc.common.message.util.MessageFixtures.testMessageWithContent
+import uk.gov.hmrc.domain.{HmrcMtdItsa, Nino}
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
+
+import java.util.UUID
 
 class MessageSpec extends PlaySpec {
   "message creation from two-way-message" must {
@@ -172,6 +176,36 @@ class MessageSpec extends PlaySpec {
       )
       Json.toJson(conversationItem) mustBe Json.parse(
         """{"id":"id","subject":"subject","body":{"type":"tax-summary-notification","issueDate":"2023-01-01"},"validFrom":"2023-01-01"}""")
+    }
+  }
+
+  "hardCopyAuditData" must {
+    "return correct audit data for a recipient with ITSA ID" in {
+      val message = testMessageWithContent(
+        id = new ObjectId("6409cd09f156deb4633d3c56"),
+        uuid = UUID.fromString("41c44af3-9e38-4249-bec7-03aacd3da5f8"),
+        recipientId = HmrcMtdItsa("XCIT00000564721"),
+        content = "Test content"
+      )
+
+      message.hardCopyAuditData must {
+        contain("messageId" -> "6409cd09f156deb4633d3c56") and
+          contain("itsaId" -> "XCIT00000564721")
+      }
+    }
+
+    "return correct audit data for a recipient with NINO" in {
+      val message = testMessageWithContent(
+        id = new ObjectId("6409cd09f156deb4633d3c56"),
+        uuid = UUID.fromString("41c44af3-9e38-4249-bec7-03aacd3da5f8"),
+        recipientId = Nino("CE123456D"),
+        content = "Test content"
+      )
+
+      message.hardCopyAuditData must {
+        contain("messageId" -> "6409cd09f156deb4633d3c56") and
+          contain("nino" -> "CE123456D")
+      }
     }
   }
 }
