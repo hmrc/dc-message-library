@@ -190,7 +190,7 @@ class MessageSpec extends PlaySpec {
 
       message.hardCopyAuditData must {
         contain("messageId" -> "6409cd09f156deb4633d3c56") and
-          contain("itsaId" -> "XCIT00000564721")
+          contain("HMRC-MTD-IT" -> "XCIT00000564721")
       }
     }
 
