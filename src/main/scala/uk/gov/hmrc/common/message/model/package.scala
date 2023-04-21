@@ -29,19 +29,7 @@ package object model {
 
   def formatDate(date: LocalDate): String = "%04d-%02d-%02d".format(date.getYear, date.getMonthOfYear, date.getDayOfMonth)
 
-  def jodaDateReads(): Reads[LocalDate] =
-    Reads[LocalDate](
-      js =>
-        js.validate[String]
-          .map[LocalDate](dtString =>
-            Try {
-              LocalDate.parse(dtString, DateTimeFormat.forPattern(defaultJodaDateFormat))
-            } match {
-              case Success(reads) => reads
-              case Failure(_)     => throw DateValidationException("Invalid date format provided")
-          }))
-
-  def jodaDateReads(fieldName: String): Reads[LocalDate] =
+  def jodaDateReads: Reads[LocalDate] =
     Reads[LocalDate](
       js =>
         js.validate[String]

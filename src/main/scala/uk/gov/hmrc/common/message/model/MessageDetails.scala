@@ -60,7 +60,7 @@ object MessageDetails {
       (__ \ "paperSent").readNullable[Boolean] and
       (__ \ "sourceData").readNullable[String] and
       (__ \ "batchId").readNullable[String] and
-      (__ \ "issueDate").readNullable[LocalDate](jodaDateReads("issueDate")) and
+      (__ \ "issueDate").readNullable[LocalDate](jodaDateReads) and
       (__ \ "replyTo").readNullable[String] and
       (__ \ "threadId").readNullable[String] and
       (__ \ "enquiryType").readNullable[String] and
