@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import uk.gov.hmrc.DefaultBuildSettings.targetJvm
-
 val scala2_12 = "2.12.12"
 val scala2_13 = "2.13.8"
 
@@ -49,8 +47,6 @@ lazy val messageLib = Project(appName, file("."))
   .settings(
     scalaVersion := scala2_12,
     crossScalaVersions := Seq(scala2_12, scala2_13),
-    // TODO - put back when no longer cross compiling to Scala 2.12
-    // targetJvm := "jvm-11",
     libraryDependencies ++= compile ++ play28 ++ test
   )
 

@@ -31,7 +31,7 @@ object MessageRESTFormats extends RestFormats  with AlertEmailTemplateMapper {
       (__ \ "recipient").read[Recipient] and
       (__ \ "messageType").read[String] and
       (__ \ "subject").read[String] and
-      (__ \ "validFrom").readNullable[LocalDate](jodaDateReads("validFrom")) and
+      (__ \ "validFrom").readNullable[LocalDate](jodaDateReads) and
       (__ \ "deliveredOn").readNullable[DateTime] and
       (__ \ "content").read[String] and
       (__ \ "details").readNullable[MessageDetails] and

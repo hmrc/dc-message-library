@@ -28,10 +28,10 @@ case class EmailAlert(
 )
 
 object EmailAlert {
-  def success(emailAddress: String, templateName: String): EmailAlert =
+  def success(emailAddress: String): EmailAlert =
     EmailAlert(Some(emailAddress), SystemTimeSource.now(), success = true, None)
 
-  def failure(templateName: String, failureReason: String): EmailAlert =
+  def failure(failureReason: String): EmailAlert =
     EmailAlert(None, SystemTimeSource.now(), success = false, Some(failureReason))
 
   implicit def alertFormat(implicit dtf: Format[DateTime]): OFormat[EmailAlert] =

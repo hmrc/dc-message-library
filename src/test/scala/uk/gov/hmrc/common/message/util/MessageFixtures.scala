@@ -37,11 +37,9 @@ object MessageFixtures {
     recipientId: TaxIdWithName = SaUtr("5554444333"),
     uuid: UUID,
     form: String = "SA300",
-    suppressedAt: String = "2013-01-02",
     validFrom: LocalDate = new LocalDate(2013, 12, 1),
     rescindment: Option[Rescindment] = None,
     alertFrom: Option[LocalDate] = Some(new LocalDate(2013, 12, 1)),
-    detailsId: String = "C0123456781234568",
     subject: String = "Blah blah blah",
     readTime: Option[DateTime] = None,
     archiveTime: Option[DateTime] = None,
@@ -286,7 +284,6 @@ object MessageFixtures {
   def messageForSAWithAlertQueue(
     utr: String = utr,
     validFrom: LocalDate = testDate(0),
-    readTime: Option[DateTime] = None,
     form: String = "SA300",
     contentParameters: Option[MessageContentParameters] = None,
     detailsId: String = "C0123456781234568",
@@ -327,7 +324,6 @@ object MessageFixtures {
   def messageForSA(
     utr: String = utr,
     validFrom: LocalDate = testDate(0),
-    readTime: Option[DateTime] = None,
     form: String = "SA300",
     contentParameters: Option[MessageContentParameters] = None,
     detailsId: String = "C0123456781234568",
@@ -366,7 +362,6 @@ object MessageFixtures {
   def messageForNino(
     utr: String = utr,
     validFrom: LocalDate = testDate(0),
-    readTime: Option[DateTime] = None,
     form: String = "SA300",
     contentParameters: Option[MessageContentParameters] = None,
     detailsId: String = "C0123456781234568",
@@ -406,7 +401,6 @@ object MessageFixtures {
     id: ObjectId = new ObjectId,
     utr: String = utr,
     validFrom: LocalDate = testDate(0),
-    readTime: Option[DateTime] = None,
     form: String = "SA300",
     contentParameters: Option[MessageContentParameters] = None,
     detailsId: String = "C0123456781234568",
@@ -449,7 +443,6 @@ object MessageFixtures {
   def gmcMessage(
     utr: String = utr,
     validFrom: LocalDate = testDate(0),
-    readTime: Option[DateTime] = None,
     form: String = "SA300",
     contentParameters: Option[MessageContentParameters] = None,
     detailsId: String = "C0123456781234568",

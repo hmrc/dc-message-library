@@ -33,6 +33,16 @@ class MessageRESTFormatsSpec extends PlaySpec {
     parsedMessage.get.alertFrom mustBe Some(parsedMessage.get.validFrom)
   }
 
+  "must parse validFrom successfully" in {
+    val parsedMessage = MessageRESTFormats.messageApiV3Reads.reads(Json.parse(messageWithTags))
+    parsedMessage.get.validFrom mustBe LocalDate.parse("2018-01-01")
+  }
+
+  "must parse issueDate successfully" in {
+    val parsedMessage = MessageRESTFormats.messageApiV3Reads.reads(Json.parse(messageWithTags))
+    parsedMessage.get.body.get.issueDate mustBe Some(LocalDate.parse("2017-12-01"))
+  }
+
   "check the renderer is set to 'two-way-message' for 2WSM " in {
     val parsedMessage = MessageRESTFormats.messageApiV3Reads.reads(Json.parse(messageFrom2WSM))
     parsedMessage.get.renderUrl.service mustEqual "two-way-message"
@@ -63,9 +73,12 @@ class MessageRESTFormatsSpec extends PlaySpec {
                           |       },
                           |       "email":"johnsmith@gmail.com"
                           |   },
+                          |   "details": {
+                          |       "formId": "some-form-id",
+                          |       "issueDate": "2017-12-01"
+                          |   },
                           |   "validFrom": "2018-01-01",
                           |   "messageType":"cds_ddi_setup_dcs_alert",
-                          |   "validFrom": "2020-05-04",
                           |   "subject":"Confirmation of your CDS Registration",
                           |   "content":"SGVsbG8gV29ybGQ=",
                           |   "alertQueue":"DEFAULT",
