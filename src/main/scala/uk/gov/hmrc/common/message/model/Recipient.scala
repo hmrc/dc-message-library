@@ -222,7 +222,7 @@ object TaxIdentifierRESTV2Formats {
       }
 
   implicit val identifierWrites: Writes[TaxIdWithName] = new Writes[TaxIdWithName] {
-    override def writes(taxId: TaxIdWithName): JsValue = JsObject(Seq(taxId.name -> JsString(taxId.value)))
+    override def writes(taxId: TaxIdWithName): JsValue = Json.obj("name" -> taxId.name, "value" -> taxId.value)
   }
 
   implicit val format: Format[TaxIdWithName] = Format(identifierReads, identifierWrites)
