@@ -55,24 +55,24 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
     }
 
     "map all the ITSA not custom templates to `new_message_alert_itsa`" in {
-      val itsaFormId = List(
-        "ITSAQU1",
-        "ITSAQU2",
-        "ITSAEOPS1",
-        "ITSAEOPS2",
-        "ITSAEOPSF",
-        "ITSAPOA1-1",
-        "ITSAPOA1-2",
-        "ITSAPOA2-1",
-        "ITSAPOA2-2",
-        "ITSAFD1",
-        "ITSAFD2",
-        "ITSAFD3",
-        "ITSAPOA-CN",
-        "ITSAUC1"
+      val itsaFormId = Map(
+        "ITSAQU1"    -> "new_message_alert_itsaqu1",
+        "ITSAQU2"    -> "new_message_alert_itsaqu2",
+        "ITSAEOPS1"  -> "new_message_alert_itsaeops1",
+        "ITSAEOPS2"  -> "new_message_alert_itsaeops2",
+        "ITSAEOPSF"  -> "new_message_alert_itsaeopsf",
+        "ITSAPOA1-1" -> "new_message_alert_itsapoa1-1",
+        "ITSAPOA1-2" -> "new_message_alert_itsapoa1-2",
+        "ITSAPOA2-1" -> "new_message_alert_itsapoa2-1",
+        "ITSAPOA2-2" -> "new_message_alert_itsapoa2-2",
+        "ITSAFD1"    -> "new_message_alert_itsafd1",
+        "ITSAFD2"    -> "new_message_alert_itsafd2",
+        "ITSAFD3"    -> "new_message_alert_itsafd3",
+        "ITSAPOA-CN" -> "new_message_alert_itsapoa-cn",
+        "ITSAUC1"    -> "new_message_alert_itsauc1"
       )
       itsaFormId.foreach { t =>
-        emailTemplateFromMessageFormId(t) mustBe "new_message_alert_itsa"
+        emailTemplateFromMessageFormId(t._1) mustBe t._2
       }
     }
   }
@@ -113,25 +113,25 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
     }
 
     "map all the ITSA not custom templates to `new_message_alert_itsa_cy`" in {
-      val itsaFormId = List(
-        "ITSAQU1",
-        "ITSAQU2",
-        "ITSAEOPS1",
-        "ITSAEOPS2",
-        "ITSAEOPSF",
-        "ITSAPOA1-1",
-        "ITSAPOA1-2",
-        "ITSAPOA2-1",
-        "ITSAPOA2-2",
-        "ITSAFD1",
-        "ITSAFD2",
-        "ITSAFD3",
-        "ITSAPOA-CN",
-        "ITSAUC1"
+      val itsaFormId = Map(
+        "ITSAQU1"    -> "new_message_alert_itsaqu1",
+        "ITSAQU2"    -> "new_message_alert_itsaqu2",
+        "ITSAEOPS1"  -> "new_message_alert_itsaeops1",
+        "ITSAEOPS2"  -> "new_message_alert_itsaeops2",
+        "ITSAEOPSF"  -> "new_message_alert_itsaeopsf",
+        "ITSAPOA1-1" -> "new_message_alert_itsapoa1-1",
+        "ITSAPOA1-2" -> "new_message_alert_itsapoa1-2",
+        "ITSAPOA2-1" -> "new_message_alert_itsapoa2-1",
+        "ITSAPOA2-2" -> "new_message_alert_itsapoa2-2",
+        "ITSAFD1"    -> "new_message_alert_itsafd1",
+        "ITSAFD2"    -> "new_message_alert_itsafd2",
+        "ITSAFD3"    -> "new_message_alert_itsafd3",
+        "ITSAPOA-CN" -> "new_message_alert_itsapoa-cn",
+        "ITSAUC1"    -> "new_message_alert_itsauc1"
       )
       itsaFormId.foreach { t =>
-        val welshFormId = s"${t}_CY"
-        emailTemplateFromMessageFormId(welshFormId) mustBe "new_message_alert_itsa_cy"
+        val welshFormId = s"${t._1}_CY"
+        emailTemplateFromMessageFormId(welshFormId) mustBe s"${t._2}_cy"
       }
     }
   }
