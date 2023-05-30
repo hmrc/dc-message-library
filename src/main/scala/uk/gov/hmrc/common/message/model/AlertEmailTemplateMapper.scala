@@ -59,9 +59,9 @@ trait AlertEmailTemplateMapper {
 
   private def getItsaTemplateId(formId: String): String =
     itsaTemplates.toList.find(r => r._1.equals(formId.toLowerCase)) match {
-      case Some((_, templateId))          => templateId
-      case None if formId.endsWith("_cy") => "new_message_alert_itsa_cy"
-      case _                              => "new_message_alert_itsa"
+      case Some((_, templateId))       => templateId
+      case _ if formId.endsWith("_cy") => "new_message_alert_itsa_cy"
+      case _                           => "new_message_alert_itsa"
     }
 
   lazy val itsaTemplates = Map(
@@ -92,7 +92,7 @@ trait AlertEmailTemplateMapper {
     "itsapoa-cn"    -> "new_message_alert_itsapoa-cn",
     "itsapoa-cn_cy" -> "new_message_alert_itsapoa-cn_cy",
     "itsauc1"       -> "new_message_alert_itsauc1",
-    "itsauc1_cy"    -> "new_message_alert_itsauc1_cy",
+    "itsauc1_cy"    -> "new_message_alert_itsauc1_cy"
   )
   // scalastyle:on
 }
