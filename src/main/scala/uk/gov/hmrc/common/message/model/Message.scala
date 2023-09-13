@@ -123,9 +123,9 @@ case class Message(
 
   override def hardCopyAuditData: Map[String, String] =
     Map(
-      "messageId" -> id.toString,
+      "messageId"               -> id.toString,
       recipient.identifier.name -> recipient.identifier.value,
-      "validFrom" -> validFrom.toString
+      "validFrom"               -> validFrom.toString
     ) ++ body.map(_.toMap).getOrElse(Map.empty)
 }
 

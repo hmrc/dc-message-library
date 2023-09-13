@@ -64,28 +64,28 @@ object MessageMongoFormats {
     import uk.gov.hmrc.common.message.model.EmailAlert._
 
     val reads1to21: Reads[(
-        ObjectId,
-        TaxEntity,
-        String,
-        Option[Details],
-        LocalDate,
-        Option[LocalDate],
-        AlertDetails,
-        Option[EmailAlert],
-        Option[String],
-        Option[DateTime],
-        Option[DateTime],
-        Option[MessageContentParameters],
-        ProcessingStatus,
-        Option[Rescindment],
-        Option[DateTime],
-        String,
-        Boolean,
-        RenderUrl,
-        Option[String],
-        Option[ExternalRef],
-        Option[String]
-      )] = (
+      ObjectId,
+      TaxEntity,
+      String,
+      Option[Details],
+      LocalDate,
+      Option[LocalDate],
+      AlertDetails,
+      Option[EmailAlert],
+      Option[String],
+      Option[DateTime],
+      Option[DateTime],
+      Option[MessageContentParameters],
+      ProcessingStatus,
+      Option[Rescindment],
+      Option[DateTime],
+      String,
+      Boolean,
+      RenderUrl,
+      Option[String],
+      Option[ExternalRef],
+      Option[String]
+    )] = (
       (__ \ "_id").read[ObjectId] and
         (__ \ "recipient").read[TaxEntity] and
         (__ \ "subject").read[String] and
@@ -282,28 +282,28 @@ object MessageMongoFormats {
     }
 
     val writes1to21: OWrites[(
-        ObjectId,
-        TaxEntity,
-        String,
-        Option[Details],
-        LocalDate,
-        Option[LocalDate],
-        AlertDetails,
-        Option[EmailAlert],
-        Option[String],
-        Option[DateTime],
-        Option[DateTime],
-        Option[MessageContentParameters],
-        ProcessingStatus,
-        Option[Rescindment],
-        Option[DateTime],
-        String,
-        Boolean,
-        RenderUrl,
-        Option[String],
-        Option[ExternalRef],
-        Option[String]
-      )] = (
+      ObjectId,
+      TaxEntity,
+      String,
+      Option[Details],
+      LocalDate,
+      Option[LocalDate],
+      AlertDetails,
+      Option[EmailAlert],
+      Option[String],
+      Option[DateTime],
+      Option[DateTime],
+      Option[MessageContentParameters],
+      ProcessingStatus,
+      Option[Rescindment],
+      Option[DateTime],
+      String,
+      Boolean,
+      RenderUrl,
+      Option[String],
+      Option[ExternalRef],
+      Option[String]
+    )] = (
       (__ \ "_id").write[ObjectId] and
         (__ \ "recipient").write[TaxEntity] and
         (__ \ "subject").write[String] and

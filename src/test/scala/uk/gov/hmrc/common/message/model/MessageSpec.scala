@@ -22,7 +22,7 @@ import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 import uk.gov.hmrc.common.message.model.MessageRESTFormats._
 import uk.gov.hmrc.common.message.util.MessageFixtures.testMessageWithContent
-import uk.gov.hmrc.domain.{HmrcMtdItsa, Nino}
+import uk.gov.hmrc.domain.{ HmrcMtdItsa, Nino }
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
 
@@ -189,7 +189,7 @@ class MessageSpec extends PlaySpec {
       )
 
       message.hardCopyAuditData must {
-        contain("messageId" -> "6409cd09f156deb4633d3c56") and
+        contain("messageId"     -> "6409cd09f156deb4633d3c56") and
           contain("HMRC-MTD-IT" -> "XCIT00000564721")
       }
     }
@@ -204,7 +204,7 @@ class MessageSpec extends PlaySpec {
 
       message.hardCopyAuditData must {
         contain("messageId" -> "6409cd09f156deb4633d3c56") and
-          contain("nino" -> "CE123456D")
+          contain("nino"    -> "CE123456D")
       }
     }
   }
