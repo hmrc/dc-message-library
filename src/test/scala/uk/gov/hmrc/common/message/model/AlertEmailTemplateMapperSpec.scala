@@ -53,7 +53,7 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
       emailTemplateFromMessageFormId("SA309A", Some("newMessageAlert")) mustBe "newMessageAlert_SA309"
       emailTemplateFromMessageFormId("SA309A") mustBe "newMessageAlert_SA309"
       emailTemplateFromMessageFormId("LPP4") mustBe "newMessageAlert_LPP4"
-      emailTemplateFromMessageFormId("LP11") mustBe "newMessageAlert_LP11"
+      emailTemplateFromMessageFormId("LPi1") mustBe "newMessageAlert_LPi1"
     }
 
     "map all the ITSA not custom templates to `new_message_alert_itsa`" in {
@@ -90,7 +90,7 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
       emailTemplateFromMessageFormId("P800 2032_CY") mustBe "newMessageAlert_P800_cy"
       emailTemplateFromMessageFormId("PA302 2032_CY") mustBe "newMessageAlert_PA302_cy"
       emailTemplateFromMessageFormId("LPP4_CY") mustBe "newMessageAlert_LPP4_cy"
-      emailTemplateFromMessageFormId("LP11_CY") mustBe "newMessageAlert_LP11_cy"
+      emailTemplateFromMessageFormId("LPi1_CY") mustBe "newMessageAlert_LPi1_cy"
     }
 
     "map all the SA not custom templates to `newMessageAlert_formId`" in {
