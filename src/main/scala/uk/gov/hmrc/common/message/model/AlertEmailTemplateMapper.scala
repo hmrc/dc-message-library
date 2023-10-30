@@ -19,7 +19,7 @@ package uk.gov.hmrc.common.message.model
 trait AlertEmailTemplateMapper {
 
   val templatesToMapToNewMessageAlert: Seq[String] = Seq(
-    "R002A",
+    "R002",
     "SA251",
     "SA326D",
     "SA328D",
