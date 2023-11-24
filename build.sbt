@@ -45,7 +45,7 @@ lazy val messageLib = Project(appName, file("."))
   .settings(majorVersion := 0)
   .settings(isPublicArtefact := true)
   .settings(
-    scalaVersion := scala2_12,
+    scalaVersion := scala2_13,
     crossScalaVersions := Seq(scala2_12, scala2_13),
     libraryDependencies ++= compile ++ play28 ++ test
   )
