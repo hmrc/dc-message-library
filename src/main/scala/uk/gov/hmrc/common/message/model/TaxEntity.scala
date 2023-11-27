@@ -168,7 +168,7 @@ object TaxEntity {
 
   case class HmrcIossOrg(value: String) extends TaxIdentifier with SimpleName {
     override def toString: String = value
-    val name = "IOSSNUMBER"
+    val name = "IOSSNumber"
   }
 
   object HmrcIossOrg extends (String => HmrcIossOrg) {
