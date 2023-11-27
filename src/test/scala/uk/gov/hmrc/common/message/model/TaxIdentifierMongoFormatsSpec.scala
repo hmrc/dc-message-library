@@ -38,7 +38,7 @@ class TaxIdentifierMongoFormatsSpec extends PlaySpec {
 
     "write a HMRC-IOSS-ORG as an element with name and value fields" in {
       val json = Json.toJson[TaxIdWithName](HmrcIossOrg("XX9999999999"))
-      json mustBe Json.parse("""{"name": "IOSSNumber", "value" :"XX9999999999"}""")
+      json mustBe Json.parse("""{"name": "HMRC-IOSS-ORG", "value" :"XX9999999999"}""")
     }
 
     "write a UAR as an element with name and value fields" in {
