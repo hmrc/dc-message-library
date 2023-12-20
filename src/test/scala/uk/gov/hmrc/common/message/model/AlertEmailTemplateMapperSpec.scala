@@ -77,6 +77,27 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
         emailTemplateFromMessageFormId(t._1) mustBe t._2
       }
     }
+
+    "map all the IOSS templates to `new_message_alert_*ioss`" in {
+      val itsaFormId = Map(
+        "M01-ioss"  -> "new_message_alert_m01_ioss",
+        "M01a-ioss" -> "new_message_alert_m01a_ioss",
+        "M02a-ioss" -> "new_message_alert_m02a_ioss",
+        "M02-ioss"  -> "new_message_alert_m02_ioss",
+        "M04-ioss"  -> "new_message_alert_m04_ioss",
+        "M05-ioss"  -> "new_message_alert_m05_ioss",
+        "M05a-ioss" -> "new_message_alert_m05a_ioss",
+        "M07a-ioss" -> "new_message_alert_m07a_ioss",
+        "M06-ioss"  -> "new_message_alert_m06_ioss",
+        "M06a-ioss" -> "new_message_alert_m06a_ioss",
+        "M07-ioss"  -> "new_message_alert_m07_ioss",
+        "M08a-ioss" -> "new_message_alert_m08a_ioss",
+        "M08-ioss"  -> "new_message_alert_m08_ioss"
+      )
+      itsaFormId.foreach { t =>
+        emailTemplateFromMessageFormId(t._1) mustBe t._2
+      }
+    }
   }
 
   "The alert email template mapper - Welsh" must {
@@ -132,6 +153,27 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
         "ITSAFD3"    -> "new_message_alert_itsafd3",
         "ITSAPOA-CN" -> "new_message_alert_itsapoa-cn",
         "ITSAUC1"    -> "new_message_alert_itsauc1"
+      )
+      itsaFormId.foreach { t =>
+        val welshFormId = s"${t._1}_CY"
+        emailTemplateFromMessageFormId(welshFormId) mustBe s"${t._2}_cy"
+      }
+    }
+    "map all the ioss templates having _cy to `new_message_alert_*_ioss_cy`" in {
+      val itsaFormId = Map(
+        "M01-ioss"  -> "new_message_alert_m01_ioss",
+        "M01a-ioss" -> "new_message_alert_m01a_ioss",
+        "M02a-ioss" -> "new_message_alert_m02a_ioss",
+        "M02-ioss"  -> "new_message_alert_m02_ioss",
+        "M04-ioss"  -> "new_message_alert_m04_ioss",
+        "M05-ioss"  -> "new_message_alert_m05_ioss",
+        "M05a-ioss" -> "new_message_alert_m05a_ioss",
+        "M07a-ioss" -> "new_message_alert_m07a_ioss",
+        "M06-ioss"  -> "new_message_alert_m06_ioss",
+        "M06a-ioss" -> "new_message_alert_m06a_ioss",
+        "M07-ioss"  -> "new_message_alert_m07_ioss",
+        "M08a-ioss" -> "new_message_alert_m08a_ioss",
+        "M08-ioss"  -> "new_message_alert_m08_ioss"
       )
       itsaFormId.foreach { t =>
         val welshFormId = s"${t._1}_CY"

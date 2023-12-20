@@ -52,7 +52,9 @@ trait AlertEmailTemplateMapper {
       case (form, _) if form.startsWith("LPI1")                                      => "newMessageAlert_LPI1"
       case (form, _) if form.startsWith("LPP4") && form.toLowerCase.endsWith("_cy")  => "newMessageAlert_LPP4_cy"
       case (form, _) if form.startsWith("LPP4")                                      => "newMessageAlert_LPP4"
-      case (form, _) if form.toLowerCase.startsWith("itsa")                          => getItsaTemplateId(form)
+      case (form, _) if form.toLowerCase.startsWith("itsa")                          => getTemplateId(form, itsaTemplates, "itsa")
+      case (form, _) if form.toLowerCase.endsWith("ioss") || form.toLowerCase.endsWith("ioss_cy") =>
+        getTemplateId(form, iossTemplates, "ioss")
       case (form, _) =>
         templatesToMapToNewMessageAlert.find(fId => form.startsWith(fId)) match {
           case Some(formId)                          => s"newMessageAlert_$formId"
@@ -61,11 +63,11 @@ trait AlertEmailTemplateMapper {
         }
     }
 
-  private def getItsaTemplateId(formId: String): String =
-    itsaTemplates.toList.find(r => r._1.equals(formId.toLowerCase)) match {
+  private def getTemplateId(formId: String, templates: Map[String, String], default: String): String =
+    templates.toList.find(r => r._1.equals(formId.toLowerCase)) match {
       case Some((_, templateId))       => templateId
-      case _ if formId.endsWith("_cy") => "new_message_alert_itsa_cy"
-      case _                           => "new_message_alert_itsa"
+      case _ if formId.endsWith("_cy") => s"new_message_alert_${default}_cy"
+      case _                           => s"new_message_alert_$default"
     }
 
   lazy val itsaTemplates = Map(
@@ -97,6 +99,35 @@ trait AlertEmailTemplateMapper {
     "itsapoa-cn_cy" -> "new_message_alert_itsapoa-cn_cy",
     "itsauc1"       -> "new_message_alert_itsauc1",
     "itsauc1_cy"    -> "new_message_alert_itsauc1_cy"
+  )
+
+  lazy val iossTemplates = Map(
+    "m01-ioss"     -> "new_message_alert_m01_ioss",
+    "m01-ioss_cy"  -> "new_message_alert_m01_ioss_cy",
+    "m01a-ioss"    -> "new_message_alert_m01a_ioss",
+    "m01a-ioss_cy" -> "new_message_alert_m01a_ioss_cy",
+    "m02a-ioss"    -> "new_message_alert_m02a_ioss",
+    "m02a-ioss_cy" -> "new_message_alert_m02a_ioss_cy",
+    "m02-ioss"     -> "new_message_alert_m02_ioss",
+    "m02-ioss_cy"  -> "new_message_alert_m02_ioss_cy",
+    "m04-ioss"     -> "new_message_alert_m04_ioss",
+    "m04-ioss_cy"  -> "new_message_alert_m04_ioss_cy",
+    "m05-ioss"     -> "new_message_alert_m05_ioss",
+    "m05-ioss_cy"  -> "new_message_alert_m05_ioss_cy",
+    "m05a-ioss"    -> "new_message_alert_m05a_ioss",
+    "m05a-ioss_cy" -> "new_message_alert_m05a_ioss_cy",
+    "m07a-ioss"    -> "new_message_alert_m07a_ioss",
+    "m07a-ioss_cy" -> "new_message_alert_m07a_ioss_cy",
+    "m06-ioss"     -> "new_message_alert_m06_ioss",
+    "m06-ioss_cy"  -> "new_message_alert_m06_ioss_cy",
+    "m06a-ioss"    -> "new_message_alert_m06a_ioss",
+    "m06a-ioss_cy" -> "new_message_alert_m06a_ioss_cy",
+    "m07-ioss"     -> "new_message_alert_m07_ioss",
+    "m07-ioss_cy"  -> "new_message_alert_m07_ioss_cy",
+    "m08a-ioss"    -> "new_message_alert_m08a_ioss",
+    "m08a-ioss_cy" -> "new_message_alert_m08a_ioss_cy",
+    "m08-ioss"     -> "new_message_alert_m08_ioss",
+    "m08-ioss_cy"  -> "new_message_alert_m08_ioss_cy"
   )
   // scalastyle:on
 }
