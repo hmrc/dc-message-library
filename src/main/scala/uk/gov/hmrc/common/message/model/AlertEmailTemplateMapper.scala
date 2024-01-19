@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,32 +102,32 @@ trait AlertEmailTemplateMapper {
   )
 
   lazy val iossTemplates = Map(
-    "m01-ioss"     -> "new_message_alert_m01_ioss",
-    "m01-ioss_cy"  -> "new_message_alert_m01_ioss_cy",
-    "m01a-ioss"    -> "new_message_alert_m01a_ioss",
-    "m01a-ioss_cy" -> "new_message_alert_m01a_ioss_cy",
-    "m02a-ioss"    -> "new_message_alert_m02a_ioss",
-    "m02a-ioss_cy" -> "new_message_alert_m02a_ioss_cy",
-    "m02-ioss"     -> "new_message_alert_m02_ioss",
-    "m02-ioss_cy"  -> "new_message_alert_m02_ioss_cy",
-    "m04-ioss"     -> "new_message_alert_m04_ioss",
-    "m04-ioss_cy"  -> "new_message_alert_m04_ioss_cy",
-    "m05-ioss"     -> "new_message_alert_m05_ioss",
-    "m05-ioss_cy"  -> "new_message_alert_m05_ioss_cy",
-    "m05a-ioss"    -> "new_message_alert_m05a_ioss",
-    "m05a-ioss_cy" -> "new_message_alert_m05a_ioss_cy",
-    "m07a-ioss"    -> "new_message_alert_m07a_ioss",
-    "m07a-ioss_cy" -> "new_message_alert_m07a_ioss_cy",
-    "m06-ioss"     -> "new_message_alert_m06_ioss",
-    "m06-ioss_cy"  -> "new_message_alert_m06_ioss_cy",
-    "m06a-ioss"    -> "new_message_alert_m06a_ioss",
-    "m06a-ioss_cy" -> "new_message_alert_m06a_ioss_cy",
-    "m07-ioss"     -> "new_message_alert_m07_ioss",
-    "m07-ioss_cy"  -> "new_message_alert_m07_ioss_cy",
-    "m08a-ioss"    -> "new_message_alert_m08a_ioss",
-    "m08a-ioss_cy" -> "new_message_alert_m08a_ioss_cy",
-    "m08-ioss"     -> "new_message_alert_m08_ioss",
-    "m08-ioss_cy"  -> "new_message_alert_m08_ioss_cy"
+    "m01ioss"     -> "new_message_alert_m01_ioss",
+    "m01ioss_cy"  -> "new_message_alert_m01_ioss_cy",
+    "m01aioss"    -> "new_message_alert_m01a_ioss",
+    "m01aioss_cy" -> "new_message_alert_m01a_ioss_cy",
+    "m02aioss"    -> "new_message_alert_m02a_ioss",
+    "m02aioss_cy" -> "new_message_alert_m02a_ioss_cy",
+    "m02ioss"     -> "new_message_alert_m02_ioss",
+    "m02ioss_cy"  -> "new_message_alert_m02_ioss_cy",
+    "m04ioss"     -> "new_message_alert_m04_ioss",
+    "m04ioss_cy"  -> "new_message_alert_m04_ioss_cy",
+    "m05ioss"     -> "new_message_alert_m05_ioss",
+    "m05ioss_cy"  -> "new_message_alert_m05_ioss_cy",
+    "m05aioss"    -> "new_message_alert_m05a_ioss",
+    "m05aioss_cy" -> "new_message_alert_m05a_ioss_cy",
+    "m07aioss"    -> "new_message_alert_m07a_ioss",
+    "m07aioss_cy" -> "new_message_alert_m07a_ioss_cy",
+    "m06ioss"     -> "new_message_alert_m06_ioss",
+    "m06ioss_cy"  -> "new_message_alert_m06_ioss_cy",
+    "m06aioss"    -> "new_message_alert_m06a_ioss",
+    "m06aioss_cy" -> "new_message_alert_m06a_ioss_cy",
+    "m07ioss"     -> "new_message_alert_m07_ioss",
+    "m07ioss_cy"  -> "new_message_alert_m07_ioss_cy",
+    "m08aioss"    -> "new_message_alert_m08a_ioss",
+    "m08aioss_cy" -> "new_message_alert_m08a_ioss_cy",
+    "m08ioss"     -> "new_message_alert_m08_ioss",
+    "m08ioss_cy"  -> "new_message_alert_m08_ioss_cy"
   )
   // scalastyle:on
 }
