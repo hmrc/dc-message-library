@@ -23,7 +23,6 @@ val compile: Seq[ModuleID] = Seq(
   "uk.gov.hmrc"       %% "http-verbs-play-30"                % "14.12.0",
   "commons-codec"     %  "commons-codec"                     % "1.16.0",
   "org.playframework" %% "play-json"                         % "3.0.2",
-  "org.playframework" %% "play-json-joda"                    % "3.0.2",
   "com.beachape"      %% "enumeratum"                        % "1.7.3",
   "com.beachape"      %% "enumeratum-play-json"              % "1.8.0"
 )

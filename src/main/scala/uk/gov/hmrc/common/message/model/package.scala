@@ -25,7 +25,7 @@ import scala.util.{ Failure, Success, Try }
 package object model {
 
   type ContentParameters = JsValue
-  val defaultJodaDateFormat = "yyyy-MM-dd"
+  val defaultDateFormat = "yyyy-MM-dd"
 
   def formatDate(date: LocalDate): String =
     "%04d-%02d-%02d".format(date.getYear, date.getMonthValue, date.getDayOfMonth)
@@ -36,7 +36,7 @@ package object model {
         js.validate[String]
           .map[LocalDate](dtString =>
             Try {
-              LocalDate.parse(dtString, DateTimeFormatter.ofPattern(defaultJodaDateFormat))
+              LocalDate.parse(dtString, DateTimeFormatter.ofPattern(defaultDateFormat))
             } match {
               case Success(reads) => reads
               case Failure(_)     => throw DateValidationException("Invalid date format provided")
