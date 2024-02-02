@@ -18,7 +18,7 @@ package uk.gov.hmrc.common.message.validationmodule
 
 import junit.framework.TestCase
 import org.bson.types.ObjectId
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike

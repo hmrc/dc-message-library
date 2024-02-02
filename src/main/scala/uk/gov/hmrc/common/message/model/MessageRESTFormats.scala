@@ -17,22 +17,23 @@
 package uk.gov.hmrc.common.message.model
 
 import org.apache.commons.codec.binary.Base64
-import org.joda.time.{DateTime, LocalDate}
+
+import java.time.{ LocalDate, Instant }
 import org.mongodb.scala.bson.ObjectId
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import uk.gov.hmrc.http.controllers.RestFormats
+
 import java.security.MessageDigest
 
-object MessageRESTFormats extends RestFormats  with AlertEmailTemplateMapper {
+object MessageRESTFormats extends AlertEmailTemplateMapper {
 
   implicit val messageApiV3Reads: Reads[Message] =
     ((__ \ "externalRef").read[ExternalRef] and
       (__ \ "recipient").read[Recipient] and
       (__ \ "messageType").read[String] and
       (__ \ "subject").read[String] and
-      (__ \ "validFrom").readNullable[LocalDate](jodaDateReads) and
-      (__ \ "deliveredOn").readNullable[DateTime] and
+      (__ \ "validFrom").readNullable[LocalDate](localDateReads) and
+      (__ \ "deliveredOn").readNullable[Instant] and
       (__ \ "content").read[String] and
       (__ \ "details").readNullable[MessageDetails] and
       (__ \ "alertQueue").readNullable[String] and

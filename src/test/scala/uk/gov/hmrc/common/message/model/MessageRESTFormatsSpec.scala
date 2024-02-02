@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.common.message.model
 
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 
@@ -55,7 +55,7 @@ class MessageRESTFormatsSpec extends PlaySpec {
 
   "check tags are serialised into their map counterpart" in {
     val parsedMessage = MessageRESTFormats.messageApiV3Reads.reads(Json.parse(messageWithTags))
-    parsedMessage.get.tags.getOrElse(Map()).getOrElse("notificationType", "") mustEqual ("Direct Debit")
+    parsedMessage.get.tags.getOrElse(Map()).getOrElse("notificationType", "") mustEqual "Direct Debit"
   }
 
   val messageWithTags = """{

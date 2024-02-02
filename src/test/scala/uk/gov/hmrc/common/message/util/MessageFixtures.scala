@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.common.message.util
 
-import org.joda.time.{ DateTime, DateTimeZone, LocalDate }
+import java.time.{ Instant, LocalDate, ZoneOffset }
 import org.mongodb.scala.bson.ObjectId
 import play.api.libs.json.{ JsString, JsValue, Reads, __ }
 import uk.gov.hmrc.common.message.model._
@@ -37,15 +37,15 @@ object MessageFixtures {
     recipientId: TaxIdWithName = SaUtr("5554444333"),
     uuid: UUID,
     form: String = "SA300",
-    validFrom: LocalDate = new LocalDate(2013, 12, 1),
+    validFrom: LocalDate = LocalDate.of(2013, 12, 1),
     rescindment: Option[Rescindment] = None,
-    alertFrom: Option[LocalDate] = Some(new LocalDate(2013, 12, 1)),
+    alertFrom: Option[LocalDate] = Some(LocalDate.of(2013, 12, 1)),
     subject: String = "Blah blah blah",
-    readTime: Option[DateTime] = None,
-    archiveTime: Option[DateTime] = None,
+    readTime: Option[Instant] = None,
+    archiveTime: Option[Instant] = None,
     alertDetails: AlertDetails = AlertDetails("templateId", None, Map()),
     status: ProcessingStatus = ToDo,
-    testTime: Option[DateTime] = Some(SystemTimeSource.now()),
+    testTime: Option[Instant] = Some(SystemTimeSource.now()),
     contentParameters: Option[MessageContentParameters] = None,
     statutory: Boolean = false,
     renderUrl: RenderUrl = RenderUrl("service", "relUrl"),
@@ -80,19 +80,18 @@ object MessageFixtures {
     recipientId: TaxIdWithName = SaUtr("5554444333"),
     form: String = "SA300",
     suppressedAt: String = "2013-01-02",
-    validFrom: LocalDate = new LocalDate(2013, 12, 1),
+    validFrom: LocalDate = LocalDate.of(2013, 12, 1),
     rescindment: Option[Rescindment] = None,
-    alertFrom: Option[LocalDate] = Some(new LocalDate(2013, 12, 1)),
+    alertFrom: Option[LocalDate] = Some(LocalDate.of(2013, 12, 1)),
     detailsId: String = "C0123456781234568",
     subject: String = "Blah blah blah",
-    readTime: Option[DateTime] = None,
-    archiveTime: Option[DateTime] = None,
+    readTime: Option[Instant] = None,
+    archiveTime: Option[Instant] = None,
     alerts: Option[EmailAlert] = Some(
-      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), DateTime.now(), true, None)
-    ),
+      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), Instant.now(), true, None)),
     alertDetails: AlertDetails = AlertDetails("templateId", None, Map()),
     status: ProcessingStatus = ToDo,
-    lastUpdated: Option[DateTime] = Some(SystemTimeSource.now()),
+    lastUpdated: Option[Instant] = Some(SystemTimeSource.now()),
     contentParameters: Option[MessageContentParameters] = None,
     hash: String = UUID.randomUUID.toString,
     statutory: Boolean = false,
@@ -110,7 +109,7 @@ object MessageFixtures {
     issueDate: Option[LocalDate] = None,
     id: ObjectId = new ObjectId,
     tags: Option[Map[String, String]] = None,
-    deliveredOn: Option[DateTime] = None
+    deliveredOn: Option[Instant] = None
   ): Message = {
 
     val details = issueDate.fold(
@@ -171,19 +170,18 @@ object MessageFixtures {
     recipientId: TaxIdWithName = SaUtr("5554444333"),
     form: Option[String] = Some("SA300"),
     suppressedAt: String = "2013-01-02",
-    validFrom: LocalDate = new LocalDate(2013, 12, 1),
+    validFrom: LocalDate = LocalDate.of(2013, 12, 1),
     rescindment: Option[Rescindment] = None,
-    alertFrom: Option[LocalDate] = Some(new LocalDate(2013, 12, 1)),
+    alertFrom: Option[LocalDate] = Some(LocalDate.of(2013, 12, 1)),
     detailsId: String = "C0123456781234568",
     subject: String = "Blah blah blah",
-    readTime: Option[DateTime] = None,
-    archiveTime: Option[DateTime] = None,
+    readTime: Option[Instant] = None,
+    archiveTime: Option[Instant] = None,
     alerts: Option[EmailAlert] = Some(
-      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), DateTime.now, true, None)
-    ),
+      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), Instant.now(), true, None)),
     alertDetails: AlertDetails = AlertDetails("templateId", None, Map()),
     status: ProcessingStatus = ToDo,
-    lastUpdated: Option[DateTime] = Some(SystemTimeSource.now()),
+    lastUpdated: Option[Instant] = Some(SystemTimeSource.now()),
     contentParameters: Option[MessageContentParameters] = None,
     hash: String = UUID.randomUUID.toString,
     statutory: Boolean = false,
@@ -241,17 +239,16 @@ object MessageFixtures {
 
   def atsTestMessage(
     recipientId: TaxIdWithName = SaUtr("5554444333"),
-    validFrom: LocalDate = new LocalDate(2013, 12, 1),
+    validFrom: LocalDate = LocalDate.of(2013, 12, 1),
     rescindment: Option[Rescindment] = None,
-    alertFrom: Option[LocalDate] = Some(new LocalDate(2013, 12, 1)),
+    alertFrom: Option[LocalDate] = Some(LocalDate.of(2013, 12, 1)),
     subject: String = "Blah blah blah",
-    readTime: Option[DateTime] = None,
-    archiveTime: Option[DateTime] = None,
+    readTime: Option[Instant] = None,
+    archiveTime: Option[Instant] = None,
     alerts: Option[EmailAlert] = Some(
-      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), DateTime.now, true, None)
-    ),
+      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), Instant.now(), true, None)),
     status: ProcessingStatus = ToDo,
-    lastUpdated: Option[DateTime] = Some(SystemTimeSource.now()),
+    lastUpdated: Option[Instant] = Some(SystemTimeSource.now()),
     contentParameters: Option[MessageContentParameters] = None,
     hash: String = "someHashValue",
     statutory: Boolean = false,
@@ -481,10 +478,10 @@ object MessageFixtures {
       emailAlertEventUrl = None
     )
 
-  def testDate(plusDays: Int): LocalDate = new LocalDate(2013, 6, 1).plusDays(plusDays)
+  def testDate(plusDays: Long): LocalDate = LocalDate.of(2013, 6, 1).plusDays(plusDays)
 
-  def testTime(plusDays: Int, plusHours: Int): DateTime =
-    testDate(plusDays).toDateTimeAtStartOfDay(DateTimeZone.UTC).plusHours(plusHours)
+  def testTime(plusDays: Long, plusHours: Long): Instant =
+    testDate(plusDays).atStartOfDay(ZoneOffset.UTC).plusHours(plusHours).toInstant
 
   def createTaxEntity(identifier: TaxIdWithName, email: Option[String] = None): TaxEntity = identifier match {
     case x: Nino         => TaxEntity(Regime.paye, x, email)
@@ -497,8 +494,13 @@ object MessageFixtures {
     case x               => throw new RuntimeException(s"unsupported identifier $x")
   }
 
-  def testAlert(dateTime: DateTime) =
-    Some(EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), dateTime, true, None))
+  def testAlert(dateTime: Instant) =
+    Some(
+      EmailAlert(
+        emailAddress = Some(s"${UUID.randomUUID}@test.com"),
+        dateTime.atOffset(ZoneOffset.UTC).toInstant,
+        true,
+        None))
 
   def testExtRef(source: String) = Some(ExternalRef(s"${UUID.randomUUID}", source))
 

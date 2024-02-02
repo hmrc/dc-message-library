@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.common.message.model
 
-import org.joda.time.{ DateTime, LocalDate }
+import java.time.{ LocalDate, ZonedDateTime }
 import org.mongodb.scala.bson.ObjectId
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -44,12 +44,21 @@ class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
       validFrom = LocalDate.parse("2015-07-17"),
       alertFrom = Some(LocalDate.parse("2015-07-18")),
       alertDetails = AlertDetails("templateId", Some(taxPayername), Map("key 1" -> "value 1", "key2" -> "value2")),
-      alerts = Some(EmailAlert(None, DateTime.parse("2015-07-17T15:40:08.829Z"), false, None)),
+      alerts = Some(
+        EmailAlert(
+          None,
+          ZonedDateTime.parse("2015-07-17T15:40:08.829Z").toInstant,
+          false,
+          None
+        )
+      ),
       rescindment = Some(
         Rescindment(
-          java.time.Instant.ofEpochMilli(DateTime.parse("2015-07-17T15:40:08.829Z").toInstant.getMillis),
+          ZonedDateTime.parse("2015-07-17T15:40:08.829Z").toInstant,
           Rescindment.Type.GeneratedInError,
-          "blah")),
+          "blah"
+        )
+      ),
       lastUpdated = None,
       hash = "O4KWyUPKQySWUVzQVfoPswBEKfN1gLe9dXi7EzCwp5U=",
       statutory = false,

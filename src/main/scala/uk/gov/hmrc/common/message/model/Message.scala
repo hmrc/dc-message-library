@@ -17,21 +17,20 @@
 package uk.gov.hmrc.common.message.model
 
 import enumeratum.{ Enum, EnumEntry, PlayJsonEnum }
-import org.joda.time.{ DateTime, LocalDate }
+
+import java.time.{ Instant, LocalDate }
 import org.mongodb.scala.bson.ObjectId
 import org.apache.commons.codec.binary.Base64
-import play.api.libs.json.{ Format, JsError, JsObject, JsResult, JsString, JsSuccess, JsValue, Json, OFormat, Reads, Writes }
+import play.api.libs.json.{ Format, JsError, JsObject, JsResult, JsString, JsSuccess, JsValue, Json, OFormat, OWrites, Reads, Writes }
 import uk.gov.hmrc.common.message.model.Rescindment.Type.GeneratedInError
 import uk.gov.hmrc.domain.TaxIds._
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus.ToDo
-import play.api.libs.json.JodaWrites._
-import java.time.Instant
 
 case class MessageContentParameters(data: ContentParameters, templateId: String)
 object MessageContentParameters {
-  implicit val messageTemplateFormats = Json.format[MessageContentParameters]
+  implicit val messageTemplateFormats: OFormat[MessageContentParameters] = Json.format[MessageContentParameters]
 }
 
 case class Rescindment(time: Instant, `type`: Rescindment.Type, ref: String)
@@ -43,7 +42,7 @@ object Rescindment {
     case object GeneratedInError extends Type
 
   }
-  implicit val instantFormat = MongoJavatimeFormats.instantFormat
+  implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
   implicit val rescindmentFormat: Format[Rescindment] = Json.format[Rescindment]
 }
 
@@ -87,12 +86,12 @@ case class Message(
   alertDetails: AlertDetails,
   alerts: Option[EmailAlert] = None,
   alertQueue: Option[String] = None,
-  readTime: Option[DateTime] = None,
-  archiveTime: Option[DateTime] = None,
+  readTime: Option[Instant] = None,
+  archiveTime: Option[Instant] = None,
   contentParameters: Option[MessageContentParameters] = None,
   status: ProcessingStatus = ToDo,
   rescindment: Option[Rescindment] = None,
-  lastUpdated: Option[DateTime],
+  lastUpdated: Option[Instant],
   hash: String,
   statutory: Boolean,
   renderUrl: RenderUrl,
@@ -103,7 +102,7 @@ case class Message(
   verificationBrake: Option[Boolean] = None,
   lifecycle: Option[Lifecycle] = None,
   tags: Option[Map[String, String]] = None,
-  deliveredOn: Option[DateTime] = None,
+  deliveredOn: Option[Instant] = None,
   mailgunStatus: Option[MailgunStatus] = None
 ) extends Alertable {
 
@@ -132,7 +131,7 @@ case class Message(
 object Message {
   import MessageMongoFormats._
 
-  implicit val taxIdWithNameWrites = new Writes[TaxIdWithName] {
+  implicit val taxIdWithNameWrites: Writes[TaxIdWithName] = new Writes[TaxIdWithName] {
     override def writes(taxId: TaxIdWithName): JsValue =
       JsObject(Seq("name" -> JsString(taxId.name), "value" -> JsString(taxId.value)))
   }
@@ -158,7 +157,7 @@ object ConversationItem {
       message.validFrom,
       Some(Base64.encodeBase64String(message.content.getOrElse("").getBytes("UTF-8")))
     )
-  implicit val messageListItemWrites = Json.writes[ConversationItem]
+  implicit val messageListItemWrites: OWrites[ConversationItem] = Json.writes[ConversationItem]
 }
 
 case class RenderUrl(service: String, url: String)
@@ -173,7 +172,7 @@ object AlertDetails {
 
 final case class SendAlertResponse(sendAlert: Boolean)
 object SendAlertResponse {
-  implicit val format = Json.format[SendAlertResponse]
+  implicit val format: OFormat[SendAlertResponse] = Json.format[SendAlertResponse]
 }
 
 case class Adviser(pidId: String)
@@ -181,20 +180,20 @@ object Adviser {
   implicit val adviserFormat: Format[Adviser] = Json.format[Adviser]
 }
 
-case class Notification(count: Int, lastSent: DateTime)
+case class Notification(count: Int, lastSent: Instant)
 object Notification {
-  implicit def notificationFormat(implicit dtf: Format[DateTime]): Format[Notification] = Json.format[Notification]
+  implicit def notificationFormat(implicit dtf: Format[Instant]): Format[Notification] = Json.format[Notification]
 }
 
-case class LifecycleStatus(name: LifecycleStatusType, updated: DateTime)
+case class LifecycleStatus(name: LifecycleStatusType, updated: Instant)
 object LifecycleStatus {
-  implicit def lifecycleStatusFormat(implicit dtf: Format[DateTime]): Format[LifecycleStatus] =
+  implicit def lifecycleStatusFormat(implicit dtf: Format[Instant]): Format[LifecycleStatus] =
     Json.format[LifecycleStatus]
 }
 
-case class Lifecycle(status: LifecycleStatus, startedAt: DateTime, notification: Option[Notification] = None)
+case class Lifecycle(status: LifecycleStatus, startedAt: Instant, notification: Option[Notification] = None)
 object Lifecycle {
-  implicit def lifecycleFormat(implicit dtf: Format[DateTime]): Format[Lifecycle] = Json.format[Lifecycle]
+  implicit def lifecycleFormat(implicit dtf: Format[Instant]): Format[Lifecycle] = Json.format[Lifecycle]
 }
 
 case class Details(
