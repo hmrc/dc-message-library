@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.common.message.model
 
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import org.mongodb.scala.bson.ObjectId
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json

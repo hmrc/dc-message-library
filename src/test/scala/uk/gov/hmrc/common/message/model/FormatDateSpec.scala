@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.common.message.model
 
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import org.scalatestplus.play.PlaySpec
 
 class FormatDateSpec extends PlaySpec {
@@ -24,9 +24,9 @@ class FormatDateSpec extends PlaySpec {
   "The formatDate method" must {
 
     "format a date in yyyy-MM-dd format" in {
-      formatDate(new LocalDate(1111, 11, 11)) mustBe "1111-11-11"
-      formatDate(new LocalDate(1111, 1, 1)) mustBe "1111-01-01"
-      formatDate(new LocalDate(2015, 6, 23)) mustBe "2015-06-23"
+      formatDate(LocalDate.of(1111, 11, 11)) mustBe "1111-11-11"
+      formatDate(LocalDate.of(1111, 1, 1)) mustBe "1111-01-01"
+      formatDate(LocalDate.of(2015, 6, 23)) mustBe "2015-06-23"
     }
   }
 }

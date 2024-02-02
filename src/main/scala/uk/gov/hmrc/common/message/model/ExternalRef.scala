@@ -22,7 +22,7 @@ import play.api.libs.json._
 case class ExternalRef(id: String, source: String)
 
 object ExternalRef {
-  implicit val reads =
+  implicit val reads: Reads[ExternalRef] =
     ((__ \ "id").readNullable[String] and (__ \ "source").readNullable[String]).tupled.flatMap[ExternalRef] {
       case (Some(id), Some(source)) if !(id.isEmpty || source.isEmpty) =>
         Reads[ExternalRef] { _ =>
@@ -34,5 +34,5 @@ object ExternalRef {
         }
     }
 
-  implicit val writes = Json.writes[ExternalRef]
+  implicit val writes: OWrites[ExternalRef] = Json.writes[ExternalRef]
 }

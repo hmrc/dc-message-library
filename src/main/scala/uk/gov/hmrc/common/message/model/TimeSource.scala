@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.common.message.model
 
-import org.joda.time.{ DateTime, DateTimeZone, LocalDate }
+import java.time.{ Instant, LocalDate, ZoneOffset, ZonedDateTime }
 
 trait TimeSource {
-  def now(): DateTime
-  def today(): LocalDate = now().toLocalDate
+  def now(): Instant
+  def today(): LocalDate = LocalDate.ofInstant(now(), ZoneOffset.UTC)
 }
 
 trait SystemTimeSource extends TimeSource {
-  override def now(): DateTime = DateTime.now.withZone(DateTimeZone.UTC)
+  override def now(): Instant = ZonedDateTime.now(java.time.ZoneOffset.UTC).toInstant
 }
 
 object SystemTimeSource extends SystemTimeSource

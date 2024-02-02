@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.common.message.model
 
-import org.joda.time.{ DateTime, LocalDate }
+import java.time.{ Instant, LocalDate }
 import org.mongodb.scala.bson.ObjectId
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -31,15 +31,13 @@ object MessageMongoFormats {
 
   import MongoTaxIdentifierFormats._
   object DetailsFormatter {
-    import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
-    import play.api.libs.json.JodaWrites.DefaultJodaLocalDateWrites
-    implicit val format = Json.format[Details]
+    implicit val format: OFormat[Details] = Json.format[Details]
   }
 
   object LocalDateFormatter {
 
-    val localDateReads = play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
-    val localDateWrites = play.api.libs.json.JodaWrites.DefaultJodaLocalDateWrites
+    val localDateReads = Reads.DefaultLocalDateReads
+    val localDateWrites = Writes.DefaultLocalDateWrites
 
     val localDateFormat: Format[LocalDate] =
       Format(localDateReads, localDateWrites)
@@ -60,7 +58,7 @@ object MessageMongoFormats {
         taxEntity <- (__ \ "recipient").read[TaxEntity]
       } yield RenderUrl("sa-message-renderer", s"/messages/sa/${taxEntity.identifier.value}/${messageId.toString}")
 
-    import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits.jotDateTimeFormat
+    import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats.Implicits.jatInstantFormat
     import uk.gov.hmrc.common.message.model.EmailAlert._
 
     val reads1to21: Reads[(
@@ -73,12 +71,12 @@ object MessageMongoFormats {
       AlertDetails,
       Option[EmailAlert],
       Option[String],
-      Option[DateTime],
-      Option[DateTime],
+      Option[Instant],
+      Option[Instant],
       Option[MessageContentParameters],
       ProcessingStatus,
       Option[Rescindment],
-      Option[DateTime],
+      Option[Instant],
       String,
       Boolean,
       RenderUrl,
@@ -95,12 +93,12 @@ object MessageMongoFormats {
         (__ \ "alertDetails").read[AlertDetails].orElse(Reads.pure(AlertDetails("newMessageAlert", None, Map()))) and
         (__ \ "alerts").readNullable[EmailAlert] and
         (__ \ "alertQueue").readNullable[String] and
-        (__ \ "readTime").readNullable[DateTime] and
-        (__ \ "archiveTime").readNullable[DateTime] and
+        (__ \ "readTime").readNullable[Instant] and
+        (__ \ "archiveTime").readNullable[Instant] and
         (__ \ "contentParameters").readNullable[MessageContentParameters] and
         (__ \ "status").read[ProcessingStatus] and
         (__ \ "rescindment").readNullable[Rescindment] and
-        (__ \ "lastUpdated").readNullable[DateTime] and
+        (__ \ "lastUpdated").readNullable[Instant] and
         (__ \ "hash").read[String] and
         (__ \ "statutory").read[Boolean].orElse(determineStatutoryFromForm) and
         (__ \ "renderUrl").read[RenderUrl].orElse(generateLegacyMessageHeaderDetail) and
@@ -113,13 +111,13 @@ object MessageMongoFormats {
       Option[Boolean],
       Option[Lifecycle],
       Option[Map[String, String]],
-      Option[DateTime],
+      Option[Instant],
       Option[MailgunStatus])] = (
       (__ \ "emailAlertEventUrl").readNullable[String] and
         (__ \ "verificationBrake").readNullable[Boolean] and
         (__ \ "lifecycle").readNullable[Lifecycle] and
         (__ \ "tags").readNullable[Map[String, String]] and
-        (__ \ "deliveredOn").readNullable[DateTime] and
+        (__ \ "deliveredOn").readNullable[Instant] and
         (__ \ "mailgunStatus").readNullable[MailgunStatus]
     ).tupled
     val tupleToMessage: (
@@ -133,12 +131,12 @@ object MessageMongoFormats {
         AlertDetails,
         Option[EmailAlert],
         Option[String],
-        Option[DateTime],
-        Option[DateTime],
+        Option[Instant],
+        Option[Instant],
         Option[MessageContentParameters],
         ProcessingStatus,
         Option[Rescindment],
-        Option[DateTime],
+        Option[Instant],
         String,
         Boolean,
         RenderUrl,
@@ -151,7 +149,7 @@ object MessageMongoFormats {
         Option[Boolean],
         Option[Lifecycle],
         Option[Map[String, String]],
-        Option[DateTime],
+        Option[Instant],
         Option[MailgunStatus])
     ) => Message = {
       case (
@@ -222,12 +220,12 @@ object MessageMongoFormats {
         AlertDetails,
         Option[EmailAlert],
         Option[String],
-        Option[DateTime],
-        Option[DateTime],
+        Option[Instant],
+        Option[Instant],
         Option[MessageContentParameters],
         ProcessingStatus,
         Option[Rescindment],
-        Option[DateTime],
+        Option[Instant],
         String,
         Boolean,
         RenderUrl,
@@ -240,7 +238,7 @@ object MessageMongoFormats {
         Option[Boolean],
         Option[Lifecycle],
         Option[Map[String, String]],
-        Option[DateTime],
+        Option[Instant],
         Option[MailgunStatus])
     ) = { message =>
       (
@@ -291,12 +289,12 @@ object MessageMongoFormats {
       AlertDetails,
       Option[EmailAlert],
       Option[String],
-      Option[DateTime],
-      Option[DateTime],
+      Option[Instant],
+      Option[Instant],
       Option[MessageContentParameters],
       ProcessingStatus,
       Option[Rescindment],
-      Option[DateTime],
+      Option[Instant],
       String,
       Boolean,
       RenderUrl,
@@ -313,12 +311,12 @@ object MessageMongoFormats {
         (__ \ "alertDetails").write[AlertDetails] and
         (__ \ "alerts").writeNullable[EmailAlert] and
         (__ \ "alertQueue").writeNullable[String] and
-        (__ \ "readTime").writeNullable[DateTime] and
-        (__ \ "archiveTime").writeNullable[DateTime] and
+        (__ \ "readTime").writeNullable[Instant] and
+        (__ \ "archiveTime").writeNullable[Instant] and
         (__ \ "contentParameters").writeNullable[MessageContentParameters] and
         (__ \ "status").write[ProcessingStatus] and
         (__ \ "rescindment").writeNullable[Rescindment] and
-        (__ \ "lastUpdated").writeNullable[DateTime] and
+        (__ \ "lastUpdated").writeNullable[Instant] and
         (__ \ "hash").write[String] and
         (__ \ "statutory").write[Boolean] and
         (__ \ "renderUrl").write[RenderUrl] and
@@ -332,13 +330,13 @@ object MessageMongoFormats {
       Option[Boolean],
       Option[Lifecycle],
       Option[Map[String, String]],
-      Option[DateTime],
+      Option[Instant],
       Option[MailgunStatus])] = (
       (__ \ "emailAlertEventUrl").writeNullable[String] and
         (__ \ "verificationBrake").writeNullable[Boolean] and
         (__ \ "lifecycle").writeNullable[Lifecycle] and
         (__ \ "tags").writeNullable[Map[String, String]] and
-        (__ \ "deliveredOn").writeNullable[DateTime] and
+        (__ \ "deliveredOn").writeNullable[Instant] and
         (__ \ "mailgunStatus").writeNullable[MailgunStatus]
     ).tupled
 
@@ -372,7 +370,7 @@ object MongoTaxIdentifierFormats {
           :+ SerialisableTaxId("PSAID", HmrcPodsOrg.apply)
           :+ SerialisableTaxId("PSPID", HmrcPodsPpOrg.apply))
           .find(_.taxIdName == name)
-          .map { _.build(value) } match {
+          .map(_.build(value)) match {
           case Some(taxIdWithName) =>
             Reads[TaxIdWithName] { _ =>
               JsSuccess(taxIdWithName)

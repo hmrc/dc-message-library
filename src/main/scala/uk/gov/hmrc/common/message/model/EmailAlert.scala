@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.common.message.model
 
-import org.joda.time.DateTime
+import java.time.Instant
 import play.api.libs.json._
 
 // TODO it would be good to have different types for success and failure...
 case class EmailAlert(
   emailAddress: Option[String],
-  alertTime: DateTime,
+  alertTime: Instant,
   success: Boolean,
   failureReason: Option[String]
 )
@@ -34,6 +34,6 @@ object EmailAlert {
   def failure(failureReason: String): EmailAlert =
     EmailAlert(None, SystemTimeSource.now(), success = false, Some(failureReason))
 
-  implicit def alertFormat(implicit dtf: Format[DateTime]): OFormat[EmailAlert] =
+  implicit def alertFormat(implicit dtf: Format[Instant]): OFormat[EmailAlert] =
     Json.format[EmailAlert]
 }

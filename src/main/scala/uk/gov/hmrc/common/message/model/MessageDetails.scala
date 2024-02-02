@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.common.message.model
 
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import org.mongodb.scala.bson.ObjectId
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import play.api.libs.json.JodaWrites._
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats
+
 import scala.util.Try
 
 case class MessageDetails(
@@ -32,7 +32,7 @@ case class MessageDetails(
   batchId: Option[String],
   issueDate: Option[LocalDate] = Some(LocalDate.now),
   replyTo: Option[String],
-  threadId: Option[String] = Some((new ObjectId().toString)),
+  threadId: Option[String] = Some(new ObjectId().toString),
   enquiryType: Option[String] = None,
   adviser: Option[Adviser] = None,
   waitTime: Option[String] = None,
@@ -53,14 +53,14 @@ case class MessageDetails(
 }
 
 object MessageDetails {
-  implicit val objectIdFormats = MongoFormats.objectIdFormat
+  implicit val objectIdFormats: Format[ObjectId] = MongoFormats.objectIdFormat
   val reads: Reads[MessageDetails] =
     ((__ \ "formId").read[String] and
       (__ \ "statutory").readNullable[Boolean] and
       (__ \ "paperSent").readNullable[Boolean] and
       (__ \ "sourceData").readNullable[String] and
       (__ \ "batchId").readNullable[String] and
-      (__ \ "issueDate").readNullable[LocalDate](jodaDateReads) and
+      (__ \ "issueDate").readNullable[LocalDate](localDateReads) and
       (__ \ "replyTo").readNullable[String] and
       (__ \ "threadId").readNullable[String] and
       (__ \ "enquiryType").readNullable[String] and
@@ -68,7 +68,8 @@ object MessageDetails {
       (__ \ "waitTime").readNullable[String] and
       (__ \ "topic").readNullable[String] and
       Reads[Option[JsValue]](jsValue => JsSuccess((__ \ "properties").asSingleJson(jsValue).toOption)))(
-      MessageDetails.apply _)
+      MessageDetails.apply _
+    )
 
-  implicit val format = Format(reads, Json.writes[MessageDetails])
+  implicit val format: Format[MessageDetails] = Format(reads, Json.writes[MessageDetails])
 }

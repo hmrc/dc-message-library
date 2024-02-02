@@ -45,11 +45,11 @@ object MessageValidator {
   }
 
   def checkValidSourceData(message: Message): Try[Message] = message.sourceData match {
-    case Some(data) if (data.trim.isEmpty || !Base64.isBase64(data)) =>
+    case Some(data) if data.trim.isEmpty || !Base64.isBase64(data) =>
       Failure(new IllegalArgumentException("sourceData: invalid source data provided"))
-    case Some(data) if (!data.trim.isEmpty || Base64.isBase64(data)) => Success(message)
-    case None if !isGmc(message)                                     => Success(message)
-    case _                                                           => Failure(MessageValidationException("Invalid Message"))
+    case Some(data) if !data.trim.isEmpty || Base64.isBase64(data) => Success(message)
+    case None if !isGmc(message)                                   => Success(message)
+    case _                                                         => Failure(MessageValidationException("Invalid Message"))
   }
 
   def checkEmptyEmailAddress(message: Message): Try[Message] = message.alertDetails.data.get("email") match {
@@ -110,14 +110,15 @@ object MessageValidator {
         "HMCE-VATDEC-ORG",
         "HMRC-CUS-ORG",
         "HMRC-PPT-ORG",
-        "HMRC-MTD-IT")
+        "HMRC-MTD-IT"
+      )
     taxIdentifiers.contains(taxId)
   }
 
   def checkValidAlertQueue(message: Message): Try[Message] = message.alertQueue match {
-    case Some(alertQueue) if (AlertQueueTypes.alertQueueTypes.contains(alertQueue)) => Success(message)
-    case Some(_)                                                                    => Failure(MessageValidationException("Invalid alert queue submitted"))
-    case _                                                                          => Success(message)
+    case Some(alertQueue) if AlertQueueTypes.alertQueueTypes.contains(alertQueue) => Success(message)
+    case Some(_)                                                                  => Failure(MessageValidationException("Invalid alert queue submitted"))
+    case _                                                                        => Success(message)
   }
 }
 

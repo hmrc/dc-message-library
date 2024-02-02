@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.common.message
 
-import org.joda.time.LocalDate
-import org.joda.time.format.DateTimeFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import play.api.libs.json.{ JsValue, Reads }
 
 import scala.util.{ Failure, Success, Try }
@@ -25,18 +25,18 @@ import scala.util.{ Failure, Success, Try }
 package object model {
 
   type ContentParameters = JsValue
-  val defaultJodaDateFormat = "yyyy-MM-dd"
+  val defaultDateFormat = "yyyy-MM-dd"
 
   def formatDate(date: LocalDate): String =
-    "%04d-%02d-%02d".format(date.getYear, date.getMonthOfYear, date.getDayOfMonth)
+    "%04d-%02d-%02d".format(date.getYear, date.getMonthValue, date.getDayOfMonth)
 
-  def jodaDateReads: Reads[LocalDate] =
+  def localDateReads: Reads[LocalDate] =
     Reads[LocalDate](
       js =>
         js.validate[String]
           .map[LocalDate](dtString =>
             Try {
-              LocalDate.parse(dtString, DateTimeFormat.forPattern(defaultJodaDateFormat))
+              LocalDate.parse(dtString, DateTimeFormatter.ofPattern(defaultDateFormat))
             } match {
               case Success(reads) => reads
               case Failure(_)     => throw DateValidationException("Invalid date format provided")
