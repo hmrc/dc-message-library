@@ -61,29 +61,31 @@ object MessageMongoFormats {
     import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats.Implicits.jatInstantFormat
     import uk.gov.hmrc.common.message.model.EmailAlert._
 
-    val reads1to21: Reads[(
-      ObjectId,
-      TaxEntity,
-      String,
-      Option[Details],
-      LocalDate,
-      Option[LocalDate],
-      AlertDetails,
-      Option[EmailAlert],
-      Option[String],
-      Option[Instant],
-      Option[Instant],
-      Option[MessageContentParameters],
-      ProcessingStatus,
-      Option[Rescindment],
-      Option[Instant],
-      String,
-      Boolean,
-      RenderUrl,
-      Option[String],
-      Option[ExternalRef],
-      Option[String]
-    )] = (
+    val reads1to21: Reads[
+      (
+        ObjectId,
+        TaxEntity,
+        String,
+        Option[Details],
+        LocalDate,
+        Option[LocalDate],
+        AlertDetails,
+        Option[EmailAlert],
+        Option[String],
+        Option[Instant],
+        Option[Instant],
+        Option[MessageContentParameters],
+        ProcessingStatus,
+        Option[Rescindment],
+        Option[Instant],
+        String,
+        Boolean,
+        RenderUrl,
+        Option[String],
+        Option[ExternalRef],
+        Option[String]
+      )
+    ] = (
       (__ \ "_id").read[ObjectId] and
         (__ \ "recipient").read[TaxEntity] and
         (__ \ "subject").read[String] and
@@ -106,13 +108,16 @@ object MessageMongoFormats {
         (__ \ "externalRef").readNullable[ExternalRef] and
         (__ \ "content").readNullable[String]
     ).tupled
-    val reads22to27: Reads[(
-      Option[String],
-      Option[Boolean],
-      Option[Lifecycle],
-      Option[Map[String, String]],
-      Option[Instant],
-      Option[MailgunStatus])] = (
+    val reads22to27: Reads[
+      (
+        Option[String],
+        Option[Boolean],
+        Option[Lifecycle],
+        Option[Map[String, String]],
+        Option[Instant],
+        Option[MailgunStatus]
+      )
+    ] = (
       (__ \ "emailAlertEventUrl").readNullable[String] and
         (__ \ "verificationBrake").readNullable[Boolean] and
         (__ \ "lifecycle").readNullable[Lifecycle] and
@@ -150,33 +155,34 @@ object MessageMongoFormats {
         Option[Lifecycle],
         Option[Map[String, String]],
         Option[Instant],
-        Option[MailgunStatus])
+        Option[MailgunStatus]
+      )
     ) => Message = {
       case (
-          (
-            id,
-            recipient,
-            subject,
-            body,
-            validFrom,
-            alertFrom,
-            alertDetails,
-            alerts,
-            alertQueue,
-            readTime,
-            archiveTime,
-            contentParameters,
-            status,
-            rescindment,
-            lastUpdated,
-            hash,
-            statutory,
-            renderUrl,
-            sourceData,
-            externalRef,
-            content
-          ),
-          (emailAlertEventUrl, verificationBrake, lifecycle, tags, deliveredOn, mailgunStatus)
+            (
+              id,
+              recipient,
+              subject,
+              body,
+              validFrom,
+              alertFrom,
+              alertDetails,
+              alerts,
+              alertQueue,
+              readTime,
+              archiveTime,
+              contentParameters,
+              status,
+              rescindment,
+              lastUpdated,
+              hash,
+              statutory,
+              renderUrl,
+              sourceData,
+              externalRef,
+              content
+            ),
+            (emailAlertEventUrl, verificationBrake, lifecycle, tags, deliveredOn, mailgunStatus)
           ) =>
         Message(
           id,
@@ -239,7 +245,8 @@ object MessageMongoFormats {
         Option[Lifecycle],
         Option[Map[String, String]],
         Option[Instant],
-        Option[MailgunStatus])
+        Option[MailgunStatus]
+      )
     ) = { message =>
       (
         (
@@ -271,7 +278,8 @@ object MessageMongoFormats {
           message.lifecycle,
           message.tags,
           message.deliveredOn,
-          message.mailgunStatus)
+          message.mailgunStatus
+        )
       )
     }
 
@@ -279,29 +287,31 @@ object MessageMongoFormats {
       tupleToMessage
     }
 
-    val writes1to21: OWrites[(
-      ObjectId,
-      TaxEntity,
-      String,
-      Option[Details],
-      LocalDate,
-      Option[LocalDate],
-      AlertDetails,
-      Option[EmailAlert],
-      Option[String],
-      Option[Instant],
-      Option[Instant],
-      Option[MessageContentParameters],
-      ProcessingStatus,
-      Option[Rescindment],
-      Option[Instant],
-      String,
-      Boolean,
-      RenderUrl,
-      Option[String],
-      Option[ExternalRef],
-      Option[String]
-    )] = (
+    val writes1to21: OWrites[
+      (
+        ObjectId,
+        TaxEntity,
+        String,
+        Option[Details],
+        LocalDate,
+        Option[LocalDate],
+        AlertDetails,
+        Option[EmailAlert],
+        Option[String],
+        Option[Instant],
+        Option[Instant],
+        Option[MessageContentParameters],
+        ProcessingStatus,
+        Option[Rescindment],
+        Option[Instant],
+        String,
+        Boolean,
+        RenderUrl,
+        Option[String],
+        Option[ExternalRef],
+        Option[String]
+      )
+    ] = (
       (__ \ "_id").write[ObjectId] and
         (__ \ "recipient").write[TaxEntity] and
         (__ \ "subject").write[String] and
@@ -325,13 +335,16 @@ object MessageMongoFormats {
         (__ \ "content").writeNullable[String]
     ).tupled
 
-    val writes22to27: OWrites[(
-      Option[String],
-      Option[Boolean],
-      Option[Lifecycle],
-      Option[Map[String, String]],
-      Option[Instant],
-      Option[MailgunStatus])] = (
+    val writes22to27: OWrites[
+      (
+        Option[String],
+        Option[Boolean],
+        Option[Lifecycle],
+        Option[Map[String, String]],
+        Option[Instant],
+        Option[MailgunStatus]
+      )
+    ] = (
       (__ \ "emailAlertEventUrl").writeNullable[String] and
         (__ \ "verificationBrake").writeNullable[Boolean] and
         (__ \ "lifecycle").writeNullable[Lifecycle] and
@@ -360,26 +373,25 @@ object MessageMongoFormats {
 object MongoTaxIdentifierFormats {
 
   val taxIdentifierReads: Reads[TaxIdWithName] =
-    ((__ \ "name").read[String] and (__ \ "value").read[String]).tupled.flatMap[TaxIdWithName] {
-      case (name, value) =>
-        (TaxIds.defaultSerialisableIds :+ SerialisableTaxId("EMPREF", Epaye.apply)
-          :+ SerialisableTaxId("HMCE-VATDEC-ORG", HmceVatdecOrg.apply)
-          :+ SerialisableTaxId("HMRC-CUS-ORG", HmrcCusOrg.apply)
-          :+ SerialisableTaxId("ETMPREGISTRATIONNUMBER", HmrcPptOrg.apply)
-          :+ SerialisableTaxId("HMRC-IOSS-ORG", HmrcIossOrg.apply)
-          :+ SerialisableTaxId("PSAID", HmrcPodsOrg.apply)
-          :+ SerialisableTaxId("PSPID", HmrcPodsPpOrg.apply))
-          .find(_.taxIdName == name)
-          .map(_.build(value)) match {
-          case Some(taxIdWithName) =>
-            Reads[TaxIdWithName] { _ =>
-              JsSuccess(taxIdWithName)
-            }
-          case None =>
-            Reads[TaxIdWithName] { _ =>
-              JsError(s"could not determine tax id with name = $name and value = $value")
-            }
-        }
+    ((__ \ "name").read[String] and (__ \ "value").read[String]).tupled.flatMap[TaxIdWithName] { case (name, value) =>
+      (TaxIds.defaultSerialisableIds :+ SerialisableTaxId("EMPREF", Epaye.apply)
+        :+ SerialisableTaxId("HMCE-VATDEC-ORG", HmceVatdecOrg.apply)
+        :+ SerialisableTaxId("HMRC-CUS-ORG", HmrcCusOrg.apply)
+        :+ SerialisableTaxId("ETMPREGISTRATIONNUMBER", HmrcPptOrg.apply)
+        :+ SerialisableTaxId("HMRC-IOSS-ORG", HmrcIossOrg.apply)
+        :+ SerialisableTaxId("PSAID", HmrcPodsOrg.apply)
+        :+ SerialisableTaxId("PSPID", HmrcPodsPpOrg.apply))
+        .find(_.taxIdName == name)
+        .map(_.build(value)) match {
+        case Some(taxIdWithName) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(taxIdWithName)
+          }
+        case None =>
+          Reads[TaxIdWithName] { _ =>
+            JsError(s"could not determine tax id with name = $name and value = $value")
+          }
+      }
     }
 
   val taxIdentifierWrites: Writes[TaxIdWithName] = Writes[TaxIdWithName] { taxId =>

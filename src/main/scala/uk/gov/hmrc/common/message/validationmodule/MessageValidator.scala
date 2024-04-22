@@ -41,7 +41,7 @@ object MessageValidator {
   def checkDetailsIsPresent(message: Message): Try[Message] = message match {
     case m if isGmc(m) && m.body.exists(_.form.isDefined) => Success(m)
     case m if !isGmc(m)                                   => Success(m)
-    case _                                                => Failure(MessageValidationException("details: details not provided where it is required"))
+    case _ => Failure(MessageValidationException("details: details not provided where it is required"))
   }
 
   def checkValidSourceData(message: Message): Try[Message] = message.sourceData match {
@@ -49,7 +49,7 @@ object MessageValidator {
       Failure(new IllegalArgumentException("sourceData: invalid source data provided"))
     case Some(data) if !data.trim.isEmpty || Base64.isBase64(data) => Success(message)
     case None if !isGmc(message)                                   => Success(message)
-    case _                                                         => Failure(MessageValidationException("Invalid Message"))
+    case _ => Failure(MessageValidationException("Invalid Message"))
   }
 
   def checkEmptyEmailAddress(message: Message): Try[Message] = message.alertDetails.data.get("email") match {
@@ -76,8 +76,8 @@ object MessageValidator {
 
   def checkInvalidEmailAddress(message: Message): Try[Message] = message.recipient.email match {
     case Some(email) if EmailAddress.isValid(email) => Success(message)
-    case Some(_)                                    => Failure(MessageValidationException("email: invalid email address provided"))
-    case None                                       => Success(message)
+    case Some(_) => Failure(MessageValidationException("email: invalid email address provided"))
+    case None    => Success(message)
   }
 
   def checkEmailAbsentIfInvalidTaxId(message: Message): Try[Message] = message.recipient.email match {
@@ -117,8 +117,8 @@ object MessageValidator {
 
   def checkValidAlertQueue(message: Message): Try[Message] = message.alertQueue match {
     case Some(alertQueue) if AlertQueueTypes.alertQueueTypes.contains(alertQueue) => Success(message)
-    case Some(_)                                                                  => Failure(MessageValidationException("Invalid alert queue submitted"))
-    case _                                                                        => Success(message)
+    case Some(_) => Failure(MessageValidationException("Invalid alert queue submitted"))
+    case _       => Success(message)
   }
 }
 

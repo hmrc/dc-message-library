@@ -89,69 +89,80 @@ class TaxEntitySpec extends PlaySpec {
         "HMRC-MTD-VAT",
         TaxEntity(Regime.vat, HmrcMtdVat("123412342134"), None),
         "HmrcMtdVat",
-        Enrolments("HMRC-MTD-VAT~VRN~123412342134", "HMRC-OSS-ORG~VRN~123412342134")),
+        Enrolments("HMRC-MTD-VAT~VRN~123412342134", "HMRC-OSS-ORG~VRN~123412342134")
+      ),
       (
         "HMRC-MTD-VAT.VRN",
         TaxEntity(Regime.vat, Vrn("123412342134"), None),
         "Vrn",
-        Enrolments("HMRC-MTD-VAT~VRN~123412342134", "HMRC-OSS-ORG~VRN~123412342134")),
+        Enrolments("HMRC-MTD-VAT~VRN~123412342134", "HMRC-OSS-ORG~VRN~123412342134")
+      ),
       (
         "HMRC-VATDEC-ORG",
         TaxEntity(Regime.vat, HmceVatdecOrg("123412342134"), None),
         "HmceVatdecOrg",
-        Enrolments("HMRC-VATDEC-ORG~VATREGNO~123412342134")),
+        Enrolments("HMRC-VATDEC-ORG~VATREGNO~123412342134")
+      ),
       (
         "IR-PAYE",
         TaxEntity(Regime.epaye, Epaye("840Pd00123456"), None),
         "Epaye",
-        Enrolments("IR-PAYE~EMPREF~840Pd00123456")),
+        Enrolments("IR-PAYE~EMPREF~840Pd00123456")
+      ),
       (
         "HMRC-OBTDS-ORG",
         TaxEntity(Regime.sdil, HmrcObtdsOrg("XZSD00000100024"), None),
         "HmrcObtdsOrg SDIL",
-        Enrolments("HMRC-OBTDS-ORG~SD.ETMPREGISTRATIONNUMBER~XZSD00000100024")),
+        Enrolments("HMRC-OBTDS-ORG~SD.ETMPREGISTRATIONNUMBER~XZSD00000100024")
+      ),
       (
         "HMRC-OBTDS-ORG",
         TaxEntity(Regime.fhdds, HmrcObtdsOrg("XZFH00000100024"), None),
         "HmrcObtdsOrg FHDDS",
-        Enrolments("HMRC-OBTDS-ORG~FH.ETMPREGISTRATIONNUMBER~XZFH00000100024")),
+        Enrolments("HMRC-OBTDS-ORG~FH.ETMPREGISTRATIONNUMBER~XZFH00000100024")
+      ),
       (
         "HMRC-CUS-ORG",
         TaxEntity(Regime.cds, HmrcCusOrg("GB123456789"), None),
         "HmrcCusOrg",
-        Enrolments("HMRC-CUS-ORG~EORINUMBER~GB123456789")),
+        Enrolments("HMRC-CUS-ORG~EORINUMBER~GB123456789")
+      ),
       (
         "HMRC-PPT-ORG",
         TaxEntity(Regime.ppt, HmrcPptOrg("XMPPT0000000001"), None),
         "HmrcPptOrg",
-        Enrolments("HMRC-PPT-ORG~ETMPREGISTRATIONNUMBER~XMPPT0000000001")),
+        Enrolments("HMRC-PPT-ORG~ETMPREGISTRATIONNUMBER~XMPPT0000000001")
+      ),
       (
         "HMRC-MTD-IT",
         TaxEntity(Regime.itsa, HmrcMtdItsa("GB123456789"), None),
         "HmrcMtdIt",
-        Enrolments("HMRC-MTD-IT~MTDITID~GB123456789")),
+        Enrolments("HMRC-MTD-IT~MTDITID~GB123456789")
+      ),
       (
         "HMRC-PODS-ORG",
         TaxEntity(Regime.pods, HmrcPodsOrg("AB1231232344"), None),
         "HmrcPodsOrg",
-        Enrolments("HMRC-PODS-ORG~PSAID~AB1231232344")),
+        Enrolments("HMRC-PODS-ORG~PSAID~AB1231232344")
+      ),
       (
         "HMRC-PODSPP-ORG",
         TaxEntity(Regime.pods, HmrcPodsPpOrg("AB1231232344"), None),
         "HmrcPodsPpOrg",
-        Enrolments("HMRC-PODSPP-ORG~PSPID~AB1231232344")),
+        Enrolments("HMRC-PODSPP-ORG~PSPID~AB1231232344")
+      ),
       (
         "HMRC-IOSS-ORG",
         TaxEntity(Regime.ioss, HmrcIossOrg("AB1231232344"), None),
         "HmrcIossOrg",
-        Enrolments("HMRC-IOSS-ORG~IOSSNumber~AB1231232344"))
+        Enrolments("HMRC-IOSS-ORG~IOSSNumber~AB1231232344")
+      )
     )
 
-    testCases.foreach {
-      case (to, taxEntity, from, expected) =>
-        s"produce $to enrolment from $from tax entity" in {
-          TaxEntity.getEnrolments(taxEntity) mustBe expected
-        }
+    testCases.foreach { case (to, taxEntity, from, expected) =>
+      s"produce $to enrolment from $from tax entity" in {
+        TaxEntity.getEnrolments(taxEntity) mustBe expected
+      }
     }
     "throw exception" in {
       val thrown = the[RuntimeException] thrownBy TaxEntity.getEnrolments(TaxEntity(Regime.vat, HmrcObtdsOrg("foobar")))
@@ -167,7 +178,8 @@ class TaxEntitySpec extends PlaySpec {
     "construct TaxEntity when regime matches identifier's one" in {
       TaxEntity.create(identifier = Nino("AB123456C"), regime = Some(Regime.paye)) mustBe TaxEntity(
         Regime.paye,
-        Nino("AB123456C"))
+        Nino("AB123456C")
+      )
     }
     "throw exception when regime doesn't match identifier's one" in {
       val thrown = the[RuntimeException] thrownBy TaxEntity

@@ -31,33 +31,33 @@ class EmailAddressSpec extends AnyWordSpec with ScalaCheckPropertyChecks with Ma
     }
 
     "throw an exception for an invalid email" in {
-      an[IllegalArgumentException] should be thrownBy { EmailAddress("sausages") }
+      an[IllegalArgumentException] should be thrownBy EmailAddress("sausages")
     }
 
     "throw an exception for an valid email starting with invalid characters" in {
       forAll(validEmailAddresses()) { address =>
-        an[IllegalArgumentException] should be thrownBy { EmailAddress("§" + address) }
+        an[IllegalArgumentException] should be thrownBy EmailAddress("§" + address)
       }
     }
 
     "throw an exception for an valid email ending with invalid characters" in {
       forAll(validEmailAddresses()) { address =>
-        an[IllegalArgumentException] should be thrownBy { EmailAddress(address + "§") }
+        an[IllegalArgumentException] should be thrownBy EmailAddress(address + "§")
       }
     }
 
     "throw an exception for an empty email" in {
-      an[IllegalArgumentException] should be thrownBy { EmailAddress("") }
+      an[IllegalArgumentException] should be thrownBy EmailAddress("")
     }
 
     "throw an exception for a repeated email" in {
-      an[IllegalArgumentException] should be thrownBy { EmailAddress("test@domain.comtest@domain.com") }
+      an[IllegalArgumentException] should be thrownBy EmailAddress("test@domain.comtest@domain.com")
     }
 
     "throw an exception when the '@' is missing" in {
       forAll { s: String =>
         whenever(!s.contains("@")) {
-          an[IllegalArgumentException] should be thrownBy { EmailAddress(s) }
+          an[IllegalArgumentException] should be thrownBy EmailAddress(s)
         }
       }
     }

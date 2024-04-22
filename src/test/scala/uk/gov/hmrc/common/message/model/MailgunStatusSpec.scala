@@ -28,7 +28,7 @@ class MailgunStatusSpec extends PlaySpec {
       JsString("delivered").as[MailgunStatus] mustBe Delivered
     }
     "return error if Json cannot be converted to ProcessingStatus" in {
-      assertThrows[JsResultException] { JsString("unknown").as[MailgunStatus] }
+      assertThrows[JsResultException](JsString("unknown").as[MailgunStatus])
     }
   }
 }

@@ -170,12 +170,14 @@ class MessageSpec extends PlaySpec {
         "id",
         "subject",
         Some(
-          Details(None, Some("tax-summary-notification"), None, None, issueDate = Some(LocalDate.parse("2023-01-01")))),
+          Details(None, Some("tax-summary-notification"), None, None, issueDate = Some(LocalDate.parse("2023-01-01")))
+        ),
         LocalDate.parse("2023-01-01"),
         None
       )
       Json.toJson(conversationItem) mustBe Json.parse(
-        """{"id":"id","subject":"subject","body":{"type":"tax-summary-notification","issueDate":"2023-01-01"},"validFrom":"2023-01-01"}""")
+        """{"id":"id","subject":"subject","body":{"type":"tax-summary-notification","issueDate":"2023-01-01"},"validFrom":"2023-01-01"}"""
+      )
     }
   }
 
@@ -189,7 +191,7 @@ class MessageSpec extends PlaySpec {
       )
 
       message.hardCopyAuditData must {
-        contain("messageId"     -> "6409cd09f156deb4633d3c56") and
+        contain("messageId" -> "6409cd09f156deb4633d3c56") and
           contain("HMRC-MTD-IT" -> "XCIT00000564721")
       }
     }
@@ -204,7 +206,7 @@ class MessageSpec extends PlaySpec {
 
       message.hardCopyAuditData must {
         contain("messageId" -> "6409cd09f156deb4633d3c56") and
-          contain("nino"    -> "CE123456D")
+          contain("nino" -> "CE123456D")
       }
     }
   }

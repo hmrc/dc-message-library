@@ -68,11 +68,10 @@ class TaxIdentifierMongoFormatsSpec extends PlaySpec {
 
     "fail when reading an element with an unknown types" in {
       val json = Json.parse("""{"name": "bbb", "value": "aaa"}""")
-      Inside.inside(Json.fromJson[TaxIdWithName](json)) {
-        case JsError(errors) =>
-          errors.head._2.head mustBe JsonValidationError(
-            "could not determine tax id with name = bbb and value = aaa"
-          )
+      Inside.inside(Json.fromJson[TaxIdWithName](json)) { case JsError(errors) =>
+        errors.head._2.head mustBe JsonValidationError(
+          "could not determine tax id with name = bbb and value = aaa"
+        )
       }
     }
   }

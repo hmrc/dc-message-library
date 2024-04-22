@@ -32,11 +32,11 @@ case class TaxpayerName(
 
   def asMap: Map[String, String] =
     Seq(
-      title.map("title"                   -> _),
-      forename.map("forename"             -> _),
+      title.map("title" -> _),
+      forename.map("forename" -> _),
       secondForename.map("secondForename" -> _),
-      surname.map("surname"               -> _),
-      honours.map("honours"               -> _),
+      surname.map("surname" -> _),
+      honours.map("honours" -> _),
       line1.map(l1 => if (l1.trim.isEmpty) "line1" -> "Customer" else "line1" -> l1),
       line2.map("line2" -> _),
       line3.map("line3" -> _)

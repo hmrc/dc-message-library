@@ -50,7 +50,9 @@ class MessageValidatorSpec extends AnyWordSpecLike with MockitoSugar with Matche
           None,
           None,
           None,
-          None)),
+          None
+        )
+      ),
       validFrom = LocalDate.now(),
       alertFrom = None,
       alertDetails = AlertDetails("template-id", None, Map()),
