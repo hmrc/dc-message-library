@@ -48,7 +48,8 @@ class RecipientSpec extends PlaySpec {
     }
     "work with invalid value" in {
       implicitly[Reads[Regime.Value]].reads(JsString("invalid-regime")) mustBe JsError(
-        Seq(JsPath() -> Seq(JsonValidationError("error.expected.validenumvalue"))))
+        Seq(JsPath() -> Seq(JsonValidationError("error.expected.validenumvalue")))
+      )
     }
 
   }
@@ -82,88 +83,111 @@ class RecipientSpec extends PlaySpec {
   "Recipient deserialisation" must {
 
     "work with valid recipient" in {
-      val recipient = Json.parse("""{
-                                   |       "taxIdentifier":{
-                                   |           "name":"HMRC-OBTDS-ORG",
-                                   |           "value":"XZFH00000100024"
-                                   |       },
-                                   |       "regime":"fhdds"
+      val recipient = Json
+        .parse("""{
+                 |       "taxIdentifier":{
+                 |           "name":"HMRC-OBTDS-ORG",
+                 |           "value":"XZFH00000100024"
+                 |       },
+                 |       "regime":"fhdds"
 
-       }""".stripMargin).as[Recipient]
+       }""".stripMargin)
+        .as[Recipient]
       recipient mustBe Recipient(
         taxIdentifier = HmrcObtdsOrg("XZFH00000100024"),
         name = None,
-        regime = Some(Regime.fhdds))
+        regime = Some(Regime.fhdds)
+      )
     }
 
     "work with valid recipient for IR-PAYE" in {
-      val recipient = Json.parse("""{
-                                   |       "taxIdentifier":{
-                                   |           "name":"IR-PAYE.EMPREF",
-                                   |           "value":"000AB12345"
-                                   |       },
-                                   |       "regime":"epaye"
+      val recipient = Json
+        .parse("""{
+                 |       "taxIdentifier":{
+                 |           "name":"IR-PAYE.EMPREF",
+                 |           "value":"000AB12345"
+                 |       },
+                 |       "regime":"epaye"
 
-       }""".stripMargin).as[Recipient]
+       }""".stripMargin)
+        .as[Recipient]
       recipient mustBe Recipient(taxIdentifier = Epaye("000AB12345"), name = None, regime = Some(Regime.epaye))
     }
 
     "return error for an invalid IR-PAYE EMPREF value" in {
-      val error = intercept[JsResultException] { Json.parse("""{
-                                                              |       "taxIdentifier":{
-                                                              |           "name":"IR-PAYE.EMPREF",
-                                                              |           "value":"AB12345"
-                                                              |       },
-                                                              |       "regime":"epaye"
-       }""".stripMargin).as[Recipient] }
+      val error = intercept[JsResultException] {
+        Json
+          .parse("""{
+                   |       "taxIdentifier":{
+                   |           "name":"IR-PAYE.EMPREF",
+                   |           "value":"AB12345"
+                   |       },
+                   |       "regime":"epaye"
+       }""".stripMargin)
+          .as[Recipient]
+      }
 
       error.errors.head._2.head.message mustBe "The backend has rejected the message due to an invalid EMPREF value - AB12345"
     }
 
     "return error for a missing IR-PAYE EMPREF value" in {
-      val error = intercept[JsResultException] { Json.parse("""{
-                                                              |       "taxIdentifier":{
-                                                              |           "name":"IR-PAYE.EMPREF"
-                                                              |       },
-                                                              |       "regime":"epaye"
-       }""".stripMargin).as[Recipient] }
+      val error = intercept[JsResultException] {
+        Json
+          .parse("""{
+                   |       "taxIdentifier":{
+                   |           "name":"IR-PAYE.EMPREF"
+                   |       },
+                   |       "regime":"epaye"
+       }""".stripMargin)
+          .as[Recipient]
+      }
 
       error.errors.head._2.head.message mustBe "The backend has rejected the message due to a missing tax identifier value."
     }
 
     "return error for a missing IR-PAYE EMPREF name" in {
-      val error = intercept[JsResultException] { Json.parse("""{
-                                                              |       "taxIdentifier":{
-                                                              |           "value":"000AB12345"
-                                                              |       },
-                                                              |       "regime":"epaye"
-       }""".stripMargin).as[Recipient] }
+      val error = intercept[JsResultException] {
+        Json
+          .parse("""{
+                   |       "taxIdentifier":{
+                   |           "value":"000AB12345"
+                   |       },
+                   |       "regime":"epaye"
+       }""".stripMargin)
+          .as[Recipient]
+      }
 
       error.errors.head._2.head.message mustBe "The backend has rejected the message due to a missing tax identifier name."
     }
 
     "return error for an unknown tax identifier name" in {
-      val error = intercept[JsResultException] { Json.parse("""{
-                                                              |       "taxIdentifier":{
-                                                              |           "name":"IR-UNKNOWN",
-                                                              |           "value":"AB12345"
-                                                              |       },
-                                                              |       "regime":"epaye"
-       }""".stripMargin).as[Recipient] }
+      val error = intercept[JsResultException] {
+        Json
+          .parse("""{
+                   |       "taxIdentifier":{
+                   |           "name":"IR-UNKNOWN",
+                   |           "value":"AB12345"
+                   |       },
+                   |       "regime":"epaye"
+       }""".stripMargin)
+          .as[Recipient]
+      }
 
       error.errors.head._2.head.message mustBe "The backend has rejected the message due to an unknown tax identifier."
     }
 
     "Work for IR-PAYEs - case insensitive" in {
       val recipient: Seq[Recipient] = List("EMPREF", "empref", "EmpRef").map { ref =>
-        Json.parse(s"""{
-                      |       "taxIdentifier":{
-                      |           "name":"IR-PAYE.$ref",
-                      |           "value":"840Pd00123456"
-                      |       },
-                      |       "regime":"epaye"
+        Json
+          .parse(s"""{
+                    |       "taxIdentifier":{
+                    |           "name":"IR-PAYE.$ref",
+                    |           "value":"840Pd00123456"
+                    |       },
+                    |       "regime":"epaye"
 
-       }""".stripMargin).as[Recipient]
+       }""".stripMargin)
+          .as[Recipient]
       }
       recipient mustBe List(
         Recipient(taxIdentifier = Epaye("840Pd00123456"), name = None, regime = Some(Regime.epaye)),
@@ -175,14 +199,16 @@ class RecipientSpec extends PlaySpec {
     "Work for HMRC-PPT-ORGs - case insensitive" in {
       val recipient: Seq[Recipient] =
         List("ETMPREGISTRATIONNUMBER", "etmpregistrationnumber", "EtmpRegistrationNumber").map { ref =>
-          Json.parse(s"""{
-                        |       "taxIdentifier":{
-                        |           "name":"HMRC-PPT-ORG.$ref",
-                        |           "value":"XMPPT0000000001"
-                        |       },
-                        |       "regime":"ppt"
+          Json
+            .parse(s"""{
+                      |       "taxIdentifier":{
+                      |           "name":"HMRC-PPT-ORG.$ref",
+                      |           "value":"XMPPT0000000001"
+                      |       },
+                      |       "regime":"ppt"
 
-       }""".stripMargin).as[Recipient]
+       }""".stripMargin)
+            .as[Recipient]
         }
       recipient mustBe List(
         Recipient(taxIdentifier = HmrcPptOrg("XMPPT0000000001"), name = None, regime = Some(Regime.ppt)),
@@ -193,14 +219,16 @@ class RecipientSpec extends PlaySpec {
 
     "Work for HMRC-PODS-ORGs - case insensitive" in {
       val recipient: Seq[Recipient] = List("PSAID", "psaid", "PsaId").map { ref =>
-        Json.parse(s"""{
-                      |       "taxIdentifier":{
-                      |           "name":"HMRC-PODS-ORG.$ref",
-                      |           "value":"A2100006"
-                      |       },
-                      |       "regime":"pods"
+        Json
+          .parse(s"""{
+                    |       "taxIdentifier":{
+                    |           "name":"HMRC-PODS-ORG.$ref",
+                    |           "value":"A2100006"
+                    |       },
+                    |       "regime":"pods"
 
-       }""".stripMargin).as[Recipient]
+       }""".stripMargin)
+          .as[Recipient]
       }
       recipient mustBe List(
         Recipient(taxIdentifier = HmrcPodsOrg("A2100006"), name = None, regime = Some(Regime.pods)),
@@ -211,14 +239,16 @@ class RecipientSpec extends PlaySpec {
 
     "Work for HMRC-PODSPP-ORGs - case insensitive" in {
       val recipient: Seq[Recipient] = List("PSPID", "pspid", "PspId").map { ref =>
-        Json.parse(s"""{
-                      |       "taxIdentifier":{
-                      |           "name":"HMRC-PODSPP-ORG.$ref",
-                      |           "value":"A2100006"
-                      |       },
-                      |       "regime":"pods"
+        Json
+          .parse(s"""{
+                    |       "taxIdentifier":{
+                    |           "name":"HMRC-PODSPP-ORG.$ref",
+                    |           "value":"A2100006"
+                    |       },
+                    |       "regime":"pods"
 
-       }""".stripMargin).as[Recipient]
+       }""".stripMargin)
+          .as[Recipient]
       }
       recipient mustBe List(
         Recipient(taxIdentifier = HmrcPodsPpOrg("A2100006"), name = None, regime = Some(Regime.pods)),

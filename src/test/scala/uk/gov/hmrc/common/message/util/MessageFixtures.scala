@@ -88,7 +88,8 @@ object MessageFixtures {
     readTime: Option[Instant] = None,
     archiveTime: Option[Instant] = None,
     alerts: Option[EmailAlert] = Some(
-      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), Instant.now(), true, None)),
+      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), Instant.now(), true, None)
+    ),
     alertDetails: AlertDetails = AlertDetails("templateId", None, Map()),
     status: ProcessingStatus = ToDo,
     lastUpdated: Option[Instant] = Some(SystemTimeSource.now()),
@@ -124,20 +125,20 @@ object MessageFixtures {
         replyTo = replyTo,
         batchId = batchId
       )
-    )(
-      _ =>
-        Details(
-          form = Some(form),
-          `type` = messageType,
-          suppressedAt = Some(suppressedAt),
-          detailsId = Some(detailsId),
-          threadId = threadId,
-          enquiryType = enquiryType,
-          adviser = adviser,
-          replyTo = replyTo,
-          batchId = batchId,
-          issueDate = issueDate
-      ))
+    )(_ =>
+      Details(
+        form = Some(form),
+        `type` = messageType,
+        suppressedAt = Some(suppressedAt),
+        detailsId = Some(detailsId),
+        threadId = threadId,
+        enquiryType = enquiryType,
+        adviser = adviser,
+        replyTo = replyTo,
+        batchId = batchId,
+        issueDate = issueDate
+      )
+    )
 
     Message(
       id = id,
@@ -178,7 +179,8 @@ object MessageFixtures {
     readTime: Option[Instant] = None,
     archiveTime: Option[Instant] = None,
     alerts: Option[EmailAlert] = Some(
-      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), Instant.now(), true, None)),
+      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), Instant.now(), true, None)
+    ),
     alertDetails: AlertDetails = AlertDetails("templateId", None, Map()),
     status: ProcessingStatus = ToDo,
     lastUpdated: Option[Instant] = Some(SystemTimeSource.now()),
@@ -246,7 +248,8 @@ object MessageFixtures {
     readTime: Option[Instant] = None,
     archiveTime: Option[Instant] = None,
     alerts: Option[EmailAlert] = Some(
-      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), Instant.now(), true, None)),
+      EmailAlert(emailAddress = Some(s"${UUID.randomUUID}@test.com"), Instant.now(), true, None)
+    ),
     status: ProcessingStatus = ToDo,
     lastUpdated: Option[Instant] = Some(SystemTimeSource.now()),
     contentParameters: Option[MessageContentParameters] = None,
@@ -500,7 +503,9 @@ object MessageFixtures {
         emailAddress = Some(s"${UUID.randomUUID}@test.com"),
         dateTime.atOffset(ZoneOffset.UTC).toInstant,
         true,
-        None))
+        None
+      )
+    )
 
   def testExtRef(source: String) = Some(ExternalRef(s"${UUID.randomUUID}", source))
 

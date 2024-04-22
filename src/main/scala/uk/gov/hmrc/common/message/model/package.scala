@@ -31,15 +31,16 @@ package object model {
     "%04d-%02d-%02d".format(date.getYear, date.getMonthValue, date.getDayOfMonth)
 
   def localDateReads: Reads[LocalDate] =
-    Reads[LocalDate](
-      js =>
-        js.validate[String]
-          .map[LocalDate](dtString =>
-            Try {
-              LocalDate.parse(dtString, DateTimeFormatter.ofPattern(defaultDateFormat))
-            } match {
-              case Success(reads) => reads
-              case Failure(_)     => throw DateValidationException("Invalid date format provided")
-          }))
+    Reads[LocalDate](js =>
+      js.validate[String]
+        .map[LocalDate](dtString =>
+          Try {
+            LocalDate.parse(dtString, DateTimeFormatter.ofPattern(defaultDateFormat))
+          } match {
+            case Success(reads) => reads
+            case Failure(_)     => throw DateValidationException("Invalid date format provided")
+          }
+        )
+    )
 }
 case class DateValidationException(message: String) extends RuntimeException(message)

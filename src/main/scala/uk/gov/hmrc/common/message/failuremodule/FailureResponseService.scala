@@ -48,151 +48,186 @@ object FailureResponseService {
       (OK, "Submission has not passed validation. Invalid payload.") -> ErrorMessage(
         OK,
         "Submission has not passed validation. Invalid payload.",
-        INVALID_PAYLOAD),
+        INVALID_PAYLOAD
+      ),
       (OK, "Submission has not passed validation. Invalid header CorrelationId.") -> ErrorMessage(
         OK,
         "Submission has not passed validation. Invalid header CorrelationId.",
-        INVALID_CORRELATIONID),
+        INVALID_CORRELATIONID
+      ),
       (OK, "The remote endpoint has indicated that the request is invalid.") -> ErrorMessage(
         OK,
         "The remote endpoint has indicated that the request is invalid.",
-        INVALID_REQUEST),
+        INVALID_REQUEST
+      ),
       (OK, "Unknown eis error") -> ErrorMessage(OK, "Unknown eis error", SERVER_ERROR),
       (BAD_REQUEST, "Submission has not passed validation. Invalid payload.") -> ErrorMessage(
         BAD_REQUEST,
         "Submission has not passed validation. Invalid payload.",
-        INVALID_PAYLOAD),
+        INVALID_PAYLOAD
+      ),
       (BAD_REQUEST, "Submission has not passed validation. Invalid header CorrelationId.") -> ErrorMessage(
         BAD_REQUEST,
         "Submission has not passed validation. Invalid header CorrelationId.",
-        INVALID_CORRELATIONID),
+        INVALID_CORRELATIONID
+      ),
       (BAD_REQUEST, "The remote endpoint has indicated that the request is invalid.") -> ErrorMessage(
         BAD_REQUEST,
         "The remote endpoint has indicated that the request is invalid.",
-        INVALID_REQUEST),
+        INVALID_REQUEST
+      ),
       (BAD_REQUEST, "Unknown eis error") -> ErrorMessage(BAD_REQUEST, "Unknown eis error", SERVER_ERROR),
       (BAD_REQUEST, "The backend has rejected the message due to an unknown tax identifier.") -> ErrorMessage(
         BAD_REQUEST,
         "The backend has rejected the message due to an unknown tax identifier.",
-        UNKNOWN_TAX_IDENTIFIER),
+        UNKNOWN_TAX_IDENTIFIER
+      ),
       (BAD_REQUEST, "The backend has rejected the message due to a missing tax identifier name.") -> ErrorMessage(
         BAD_REQUEST,
         "The backend has rejected the message due to a missing tax identifier name.",
-        MISSING_TAX_IDENTIFIER_NAME),
+        MISSING_TAX_IDENTIFIER_NAME
+      ),
       (BAD_REQUEST, "The backend has rejected the message due to a missing tax identifier value.") -> ErrorMessage(
         BAD_REQUEST,
         "The backend has rejected the message due to a missing tax identifier value.",
-        MISSING_TAX_IDENTIFIER_VALUE),
+        MISSING_TAX_IDENTIFIER_VALUE
+      ),
       (BAD_REQUEST, "Missing or empty externalRef id or source") -> ErrorMessage(
         BAD_REQUEST,
         "Missing or empty externalRef id or source",
-        INVALID_PAYLOAD),
+        INVALID_PAYLOAD
+      ),
       (
         BAD_REQUEST,
-        """The "details" object was not provided when the request to the Messages service had "source" set to "gmc"""") ->
+        """The "details" object was not provided when the request to the Messages service had "source" set to "gmc""""
+      ) ->
         ErrorMessage(
           BAD_REQUEST,
           """The "details" object was not provided when the request to the Messages service had "source" set to "gmc"""",
-          MISSING_DETAILS),
+          MISSING_DETAILS
+        ),
       (BAD_REQUEST, "The backend has rejected the message due to the email address being undeliverable.") ->
         ErrorMessage(
           BAD_REQUEST,
           "The backend has rejected the message due to the email address being undeliverable.",
-          EMAIL_NOT_VERIFIED),
+          EMAIL_NOT_VERIFIED
+        ),
       (BAD_REQUEST, "details: details not provided where it is required") -> ErrorMessage(
         BAD_REQUEST,
         "details: details not provided where it is required",
-        MISSING_DETAILS),
+        MISSING_DETAILS
+      ),
       (BAD_REQUEST, "sourceData: invalid source data provided") -> ErrorMessage(
         BAD_REQUEST,
         "sourceData: invalid source data provided",
-        INVALID_PAYLOAD),
+        INVALID_PAYLOAD
+      ),
       (BAD_REQUEST, "Invalid Message") -> ErrorMessage(BAD_REQUEST, "Invalid Message", INVALID_PAYLOAD),
       (BAD_REQUEST, "alertQueue: invalid alert queue provided") -> ErrorMessage(
         BAD_REQUEST,
         "alertQueue: invalid alert queue provided",
-        INVALID_PAYLOAD),
+        INVALID_PAYLOAD
+      ),
       (BAD_REQUEST, "Issue date after the valid from date") -> ErrorMessage(
         BAD_REQUEST,
         "Issue date after the valid from date",
-        INVALID_PAYLOAD),
+        INVALID_PAYLOAD
+      ),
       (BAD_REQUEST, "Invalid date format provided") -> ErrorMessage(
         BAD_REQUEST,
         "Invalid date format provided",
-        INVALID_PAYLOAD),
+        INVALID_PAYLOAD
+      ),
       (BAD_REQUEST, "could not parse body due to unmatched regimes") -> ErrorMessage(
         BAD_REQUEST,
         "Invalid regime",
-        INVALID_PAYLOAD),
+        INVALID_PAYLOAD
+      ),
       (BAD_REQUEST, "email: invalid email address provided") -> ErrorMessage(
         BAD_REQUEST,
         "email: invalid email address provided",
-        EMAIL_NOT_VERIFIED),
+        EMAIL_NOT_VERIFIED
+      ),
       (BAD_REQUEST, "email: email address not provided") -> ErrorMessage(
         BAD_REQUEST,
         "email: email address not provided",
-        EMAIL_NOT_VERIFIED),
+        EMAIL_NOT_VERIFIED
+      ),
       (BAD_REQUEST, "email: not verified or bounced") -> ErrorMessage(
         BAD_REQUEST,
         "email: not verified or bounced",
-        EMAIL_NOT_VERIFIED),
+        EMAIL_NOT_VERIFIED
+      ),
       (BAD_REQUEST, "email: not verified as user not opted in") -> ErrorMessage(
         BAD_REQUEST,
         "email: not verified as user not opted in",
-        EMAIL_NOT_VERIFIED),
+        EMAIL_NOT_VERIFIED
+      ),
       (BAD_REQUEST, "email: not verified as preferences not found") -> ErrorMessage(
         BAD_REQUEST,
         "email: not verified as preferences not found",
-        EMAIL_NOT_VERIFIED),
+        EMAIL_NOT_VERIFIED
+      ),
       (BAD_REQUEST, "email: not verified for unknown reason") -> ErrorMessage(
         BAD_REQUEST,
         "email: not verified for unknown reason",
-        EMAIL_NOT_VERIFIED),
+        EMAIL_NOT_VERIFIED
+      ),
       (BAD_REQUEST, "Invalid alert queue submitted") -> ErrorMessage(
         BAD_REQUEST,
         "Invalid alert queue submitted",
-        INVALID_PAYLOAD),
+        INVALID_PAYLOAD
+      ),
       (NOT_FOUND, "The backend has rejected the message due to not being able to find the tax payer") ->
         ErrorMessage(
           NOT_FOUND,
           "The backend has rejected the message due to not being able to find the tax payer",
-          TAXPAYER_NOT_FOUND),
+          TAXPAYER_NOT_FOUND
+        ),
       (NOT_FOUND, "The backend has rejected the message due to not being able to verify the email address.") ->
         ErrorMessage(
           NOT_FOUND,
           "The backend has rejected the message due to not being able to verify the email address.",
-          EMAIL_NOT_VERIFIED),
+          EMAIL_NOT_VERIFIED
+        ),
       (UNAUTHORIZED, "Unauthorised") -> ErrorMessage(UNAUTHORIZED, "Unauthorised", SERVER_ERROR),
       (
         Status.CONFLICT,
-        "The backend has rejected the message due to duplicated message content or external reference ID.") ->
+        "The backend has rejected the message due to duplicated message content or external reference ID."
+      ) ->
         ErrorMessage(
           Status.CONFLICT,
           "The backend has rejected the message due to duplicated message content or external reference ID.",
-          CONFLICT),
+          CONFLICT
+        ),
       (INTERNAL_SERVER_ERROR, "IF is currently experiencing problems that require live service intervention.") ->
         ErrorMessage(
           INTERNAL_SERVER_ERROR,
           "IF is currently experiencing problems that require live service intervention.",
-          SERVER_ERROR),
+          SERVER_ERROR
+        ),
       (INTERNAL_SERVER_ERROR, "Dependent systems are currently not responding.") -> ErrorMessage(
         INTERNAL_SERVER_ERROR,
         "Dependent systems are currently not responding.",
-        SERVICE_UNAVAILABLE),
+        SERVICE_UNAVAILABLE
+      ),
       (INTERNAL_SERVER_ERROR, "Failed to parse message") -> ErrorMessage(
         INTERNAL_SERVER_ERROR,
         "Failed to parse message",
-        SERVER_ERROR),
+        SERVER_ERROR
+      ),
       (INTERNAL_SERVER_ERROR, "Unknown eis error") -> ErrorMessage(
         INTERNAL_SERVER_ERROR,
         "Unknown eis error",
-        SERVER_ERROR)
+        SERVER_ERROR
+      )
     )
 
   def errorResponseJson(
     errorMessage: String,
     responseCode: Int = BAD_REQUEST,
-    showErrorID: Boolean = false): JsValue = {
+    showErrorID: Boolean = false
+  ): JsValue = {
     def helper(err: ErrorMessage): JsValue =
       if (showErrorID) {
         Json.toJson(FailureResponse(err.errorID, err.errorDescription))
@@ -205,7 +240,8 @@ object FailureResponseService {
   def errorResponseResult(
     errorMessage: String,
     responseCode: Int = BAD_REQUEST,
-    showErrorID: Boolean = false): Result = {
+    showErrorID: Boolean = false
+  ): Result = {
     def getJson(err: ErrorMessage): JsValue =
       if (showErrorID) {
         Json.toJson(FailureResponse(err.errorID, err.errorDescription))

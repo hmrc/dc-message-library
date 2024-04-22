@@ -31,7 +31,7 @@ class TaxpayerNameSpec extends PlaySpec {
   val line3 = "line3    "
 
   def salutation(name: TaxpayerName): String = {
-    def part(namePart: Option[String]): String = namePart.map { " " + _ }.getOrElse("")
+    def part(namePart: Option[String]): String = namePart.map(" " + _).getOrElse("")
 
     def salutationName =
       part(name.title) + part(name.forename) + part(name.secondForename) + part(name.surname) + part(name.honours)

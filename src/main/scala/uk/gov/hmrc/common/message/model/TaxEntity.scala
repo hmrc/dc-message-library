@@ -31,9 +31,11 @@ object TaxEntity {
   def create(identifier: TaxIdWithName, email: Option[String] = None, regime: Option[Regime.Value] = None): TaxEntity =
     TaxEntity(
       regime.foldLeft(regimeOf(identifier))((b, a) =>
-        if (a == b) a else throw new RuntimeException(s"unmatched regimes: $a and $b")),
+        if (a == b) a else throw new RuntimeException(s"unmatched regimes: $a and $b")
+      ),
       identifier,
-      email)
+      email
+    )
 
   // scalastyle:off
   def getEnrolments(taxEntity: TaxEntity): Enrolments =
@@ -49,11 +51,11 @@ object TaxEntity {
         Enrolments(s"HMRC-MTD-VAT~VRN~$value", s"HMRC-OSS-ORG~VRN~$value")
       case TaxEntity(Regime.vat, HmrcOssOrg(value), _) =>
         Enrolments(s"HMRC-MTD-VAT~VRN~$value", s"HMRC-OSS-ORG~VRN~$value")
-      case TaxEntity(Regime.vat, HmceVatdecOrg(value), _)  => Enrolments(s"HMRC-VATDEC-ORG~VATREGNO~$value")
-      case TaxEntity(Regime.epaye, id, _)                  => Enrolments(s"IR-PAYE~EMPREF~${id.value}")
-      case TaxEntity(Regime.cds, id, _)                    => Enrolments(s"HMRC-CUS-ORG~EORINUMBER~${id.value}")
-      case TaxEntity(Regime.ppt, id, _)                    => Enrolments(s"HMRC-PPT-ORG~ETMPREGISTRATIONNUMBER~${id.value}")
-      case TaxEntity(Regime.itsa, id, _)                   => Enrolments(s"HMRC-MTD-IT~MTDITID~${id.value}")
+      case TaxEntity(Regime.vat, HmceVatdecOrg(value), _) => Enrolments(s"HMRC-VATDEC-ORG~VATREGNO~$value")
+      case TaxEntity(Regime.epaye, id, _)                 => Enrolments(s"IR-PAYE~EMPREF~${id.value}")
+      case TaxEntity(Regime.cds, id, _)                   => Enrolments(s"HMRC-CUS-ORG~EORINUMBER~${id.value}")
+      case TaxEntity(Regime.ppt, id, _)  => Enrolments(s"HMRC-PPT-ORG~ETMPREGISTRATIONNUMBER~${id.value}")
+      case TaxEntity(Regime.itsa, id, _) => Enrolments(s"HMRC-MTD-IT~MTDITID~${id.value}")
       case TaxEntity(Regime.pods, HmrcPodsOrg(value), _)   => Enrolments(s"HMRC-PODS-ORG~PSAID~$value")
       case TaxEntity(Regime.pods, HmrcPodsPpOrg(value), _) => Enrolments(s"HMRC-PODSPP-ORG~PSPID~$value")
       case TaxEntity(Regime.ioss, HmrcIossOrg(value), _)   => Enrolments(s"HMRC-IOSS-ORG~IOSSNumber~$value")

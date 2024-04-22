@@ -18,7 +18,7 @@ package uk.gov.hmrc.common.message.model
 
 import org.apache.commons.codec.binary.Base64
 
-import java.time.{ LocalDate, Instant }
+import java.time.{ Instant, LocalDate }
 import org.mongodb.scala.bson.ObjectId
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -41,19 +41,37 @@ object MessageRESTFormats extends AlertEmailTemplateMapper {
       Reads[Option[Map[String, String]]](jsValue =>
         (__ \ "alertDetails" \ "data").asSingleJson(jsValue) match {
           case JsDefined(value) =>
-            value.validate[Map[String, String]].map(Some.apply).orElse(JsError("sourceData: invalid source data provided"))
+            value
+              .validate[Map[String, String]]
+              .map(Some.apply)
+              .orElse(JsError("sourceData: invalid source data provided"))
           case _: JsUndefined => JsSuccess(None)
         }
       ) and
       Reads[Option[Map[String, String]]](jsValue =>
-        ( __ \ "tags").asSingleJson(jsValue) match {
-          case JsDefined(value) => value.validate[Map[String, String]]
-            .map(Some.apply)
-            .orElse(JsError("tags : invalid data provided"))
+        (__ \ "tags").asSingleJson(jsValue) match {
+          case JsDefined(value) =>
+            value
+              .validate[Map[String, String]]
+              .map(Some.apply)
+              .orElse(JsError("tags : invalid data provided"))
           case _: JsUndefined => JsSuccess(None)
         }
       )) {
-      (externalRef, recipient, messageType, subject, vf, deliveredOn, content, messageDetails, alertQueue, emailAlertEventUrl, alertDetailsData, tags) =>
+      (
+        externalRef,
+        recipient,
+        messageType,
+        subject,
+        vf,
+        deliveredOn,
+        content,
+        messageDetails,
+        alertQueue,
+        emailAlertEventUrl,
+        alertDetailsData,
+        tags
+      ) =>
         val issueDate = messageDetails.flatMap(_.issueDate).getOrElse(LocalDate.now)
 
         val validFrom = vf.filter(_.isAfter(issueDate)).getOrElse(issueDate)
@@ -82,7 +100,8 @@ object MessageRESTFormats extends AlertEmailTemplateMapper {
         val email = recipient.email.fold[Map[String, String]](Map.empty)(v => Map("email" -> v))
         val responseTime: Map[String, String] =
           messageDetails.flatMap(_.waitTime).fold[Map[String, String]](Map.empty)(v => Map("waitTime" -> v))
-        val data = email ++ responseTime ++ Map("date" -> validFrom.toString, "subject" -> subject) ++ alertDetailsData.getOrElse(Map())
+        val data = email ++ responseTime ++ Map("date" -> validFrom.toString, "subject" -> subject) ++ alertDetailsData
+          .getOrElse(Map())
 
         val rendererService = externalRef.source.toUpperCase match {
           case "2WSM" => "two-way-message"

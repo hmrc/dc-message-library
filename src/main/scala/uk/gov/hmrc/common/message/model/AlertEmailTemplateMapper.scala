@@ -37,13 +37,13 @@ trait AlertEmailTemplateMapper {
   // scalastyle:off
   def emailTemplateFromMessageFormId(formId: String, requestAlertTemplateId: Option[String] = None): String =
     (formId, requestAlertTemplateId) match {
-      case (_, Some(templateId)) if templateId != "newMessageAlert"                  => templateId
-      case (form, _) if form.toLowerCase == "atsv2_cy"                               => "annual_tax_summaries_message_alert_cy"
-      case (form, _) if form.toLowerCase == "atsv2"                                  => "annual_tax_summaries_message_alert"
-      case (form, _) if form.startsWith("SA316")                                     => "newMessageAlert_SA316"
-      case (form, _) if form.startsWith("SA309")                                     => "newMessageAlert_SA309"
-      case (form, _) if form.startsWith("SA300")                                     => "newMessageAlert_SA300"
-      case (form, _) if form.startsWith("SS300")                                     => "newMessageAlert_SS300"
+      case (_, Some(templateId)) if templateId != "newMessageAlert" => templateId
+      case (form, _) if form.toLowerCase == "atsv2_cy"              => "annual_tax_summaries_message_alert_cy"
+      case (form, _) if form.toLowerCase == "atsv2"                 => "annual_tax_summaries_message_alert"
+      case (form, _) if form.startsWith("SA316")                    => "newMessageAlert_SA316"
+      case (form, _) if form.startsWith("SA309")                    => "newMessageAlert_SA309"
+      case (form, _) if form.startsWith("SA300")                    => "newMessageAlert_SA300"
+      case (form, _) if form.startsWith("SS300")                    => "newMessageAlert_SS300"
       case (form, _) if form.startsWith("P800") && form.toLowerCase.endsWith("_cy")  => "newMessageAlert_P800_cy"
       case (form, _) if form.startsWith("P800")                                      => "newMessageAlert_P800"
       case (form, _) if form.startsWith("PA302") && form.toLowerCase.endsWith("_cy") => "newMessageAlert_PA302_cy"
@@ -52,7 +52,7 @@ trait AlertEmailTemplateMapper {
       case (form, _) if form.startsWith("LPI1")                                      => "newMessageAlert_LPI1"
       case (form, _) if form.startsWith("LPP4") && form.toLowerCase.endsWith("_cy")  => "newMessageAlert_LPP4_cy"
       case (form, _) if form.startsWith("LPP4")                                      => "newMessageAlert_LPP4"
-      case (form, _) if form.toLowerCase.startsWith("itsa")                          => getTemplateId(form, itsaTemplates, "itsa")
+      case (form, _) if form.toLowerCase.startsWith("itsa") => getTemplateId(form, itsaTemplates, "itsa")
       case (form, _) if form.toLowerCase.endsWith("ioss") || form.toLowerCase.endsWith("ioss_cy") =>
         getTemplateId(form, iossTemplates, "ioss")
       case (form, _) =>

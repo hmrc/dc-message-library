@@ -257,7 +257,7 @@ object MailgunStatus {
     override def reads(json: JsValue): JsResult[MailgunStatus] =
       json match {
         case JsString(status) if status == Delivered.name => JsSuccess(Delivered)
-        case other                                        => JsError(s"Could not convert to ProcessingStatus from $other")
+        case other => JsError(s"Could not convert to ProcessingStatus from $other")
       }
   }
 
