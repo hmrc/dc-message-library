@@ -22,7 +22,7 @@ import play.api.libs.json._
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.domain._
 import uk.gov.hmrc.common.message.model.MongoTaxIdentifierFormats._
-import uk.gov.hmrc.common.message.model.TaxEntity.HmrcIossOrg
+import uk.gov.hmrc.common.message.model.TaxEntity.{ HmrcAdOrg, HmrcIossOrg }
 
 class TaxIdentifierMongoFormatsSpec extends PlaySpec {
   "Mongo JSON Formats for TaxIdWithName" must {
@@ -39,6 +39,11 @@ class TaxIdentifierMongoFormatsSpec extends PlaySpec {
     "write a HMRC-IOSS-ORG as an element with name and value fields" in {
       val json = Json.toJson[TaxIdWithName](HmrcIossOrg("XX9999999999"))
       json mustBe Json.parse("""{"name": "HMRC-IOSS-ORG", "value" :"XX9999999999"}""")
+    }
+
+    "write a HMRC-AD-ORG as an element with name and value fields" in {
+      val json = Json.toJson[TaxIdWithName](HmrcAdOrg("XMADP1234567890"))
+      json mustBe Json.parse("""{"name": "HMRC-AD-ORG", "value" :"XMADP1234567890"}""")
     }
 
     "write a UAR as an element with name and value fields" in {
