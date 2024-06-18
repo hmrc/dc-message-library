@@ -20,7 +20,7 @@ import java.time.{ Instant, LocalDate }
 import org.mongodb.scala.bson.ObjectId
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmceVatdecOrg, HmrcCusOrg, HmrcIossOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
+import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmceVatdecOrg, HmrcAdOrg, HmrcCusOrg, HmrcIossOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.domain._
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus
@@ -379,6 +379,7 @@ object MongoTaxIdentifierFormats {
         :+ SerialisableTaxId("HMRC-CUS-ORG", HmrcCusOrg.apply)
         :+ SerialisableTaxId("ETMPREGISTRATIONNUMBER", HmrcPptOrg.apply)
         :+ SerialisableTaxId("HMRC-IOSS-ORG", HmrcIossOrg.apply)
+        :+ SerialisableTaxId("HMRC-AD-ORG", HmrcAdOrg.apply)
         :+ SerialisableTaxId("PSAID", HmrcPodsOrg.apply)
         :+ SerialisableTaxId("PSPID", HmrcPodsPpOrg.apply))
         .find(_.taxIdName == name)

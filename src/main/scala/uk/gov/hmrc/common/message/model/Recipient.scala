@@ -20,13 +20,13 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.domain._
-import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmceVatdecOrg, HmrcCusOrg, HmrcIossOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
+import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmceVatdecOrg, HmrcAdOrg, HmrcCusOrg, HmrcIossOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
 
 sealed trait Regime
 
 object Regime extends Enumeration {
   type Regime = Value
-  val paye, sa, ct, fhdds, vat, epaye, sdil, cds, itsa, ppt, pods, ioss = Value
+  val paye, sa, ct, fhdds, vat, epaye, sdil, cds, itsa, ppt, pods, ad, ioss = Value
 
   implicit val format: Format[Regime] = Format(Reads.enumNameReads(Regime), Writes.enumNameWrites)
 }
@@ -105,6 +105,10 @@ object TaxIdentifierRESTV2Formats {
         case (Some("HMRC-IOSS-ORG"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcIossOrg(value))
+          }
+        case (Some("HMRC-AD-ORG"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(HmrcAdOrg(value))
           }
         case (Some(hmrcPptOrg), Some(value))
             if caseInsensitiveIdentifier(hmrcPptOrg, "HMRC-PPT-ORG.(?i)ETMPREGISTRATIONNUMBER") =>
