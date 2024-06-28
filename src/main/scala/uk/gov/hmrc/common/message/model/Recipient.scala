@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.common.message.model
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
-import uk.gov.hmrc.domain._
+import uk.gov.hmrc.domain.*
 import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmceVatdecOrg, HmrcAdOrg, HmrcCusOrg, HmrcIossOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
 
 sealed trait Regime
@@ -28,7 +28,7 @@ object Regime extends Enumeration {
   type Regime = Value
   val paye, sa, ct, fhdds, vat, epaye, sdil, cds, itsa, ppt, pods, ad, ioss = Value
 
-  implicit val format: Format[Regime] = Format(Reads.enumNameReads(Regime), Writes.enumNameWrites)
+  implicit val format: Format[Regime] = Json.formatEnum(this)
 }
 
 case class Recipient(
