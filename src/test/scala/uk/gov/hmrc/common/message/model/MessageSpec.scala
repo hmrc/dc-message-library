@@ -19,7 +19,7 @@ package uk.gov.hmrc.common.message.model
 import java.time.LocalDate
 import org.mongodb.scala.bson.ObjectId
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json.Json
+import play.api.libs.json.{ JsObject, JsString, JsValue, Json }
 import uk.gov.hmrc.common.message.model.MessageRESTFormats._
 import uk.gov.hmrc.common.message.util.MessageFixtures.testMessageWithContent
 import uk.gov.hmrc.domain.{ HmrcMtdItsa, Nino }
@@ -162,6 +162,73 @@ class MessageSpec extends PlaySpec {
       )
       Json.toJson(messageDetails).as[MessageDetails] mustBe messageDetails
     }
+  }
+
+  "Details" must {
+    "deserialize from empty Json" in {
+      import uk.gov.hmrc.common.message.model.MessageMongoFormats.DetailsFormatter.format
+      val details = Json.parse(s"""{}""").as[Details]
+
+      details mustBe Details(
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None
+      )
+    }
+
+    // format: off
+    "deserialize from non-empty Json" in {
+      import uk.gov.hmrc.common.message.model.MessageMongoFormats.DetailsFormatter.format
+      val detailsJson = Json.parse(s"""{
+                                      | "form":         "form",
+                                      | "type":         "form-type",
+                                      | "suppressedAt": "suppressed-at",
+                                      | "detailsId":    "details-id",
+                                      | "paperSent":    true,
+                                      | "batchId":      "batch-id",
+                                      | "issueDate":    "2024-07-16",
+                                      | "replyTo":      "reply-to",
+                                      | "threadId":     "thread-id",
+                                      | "enquiryType":  "enquiry-type",
+                                      | "adviser":      { "pidId": "pid-id" },
+                                      | "waitTime":     "wait-time",
+                                      | "topic":        "topic",
+                                      | "envelopId":    "envelop-id",
+                                      | "properties":   { "Hello": "world" }
+                                      |}""".stripMargin)
+      val details = detailsJson.as[Details]
+
+      details mustBe Details(
+        form          = Some("form"),
+        `type`        = Some("form-type"),
+        suppressedAt  = Some("suppressed-at"),
+        detailsId     = Some("details-id"),
+        paperSent     = Some(true),
+        batchId       = Some("batch-id"),
+        issueDate     = Some(LocalDate.of(2024, 7, 16)),
+        replyTo       = Some("reply-to"),
+        threadId      = Some("thread-id"),
+        enquiryType   = Some("enquiry-type"),
+        adviser       = Some(Adviser(pidId = "pid-id")),
+        waitTime      = Some("wait-time"),
+        topic         = Some("topic"),
+        envelopId     = Some("envelop-id"),
+        properties    = Some(JsObject(Seq("Hello" -> JsString("world"))))
+      )
+    }
+    // format: on
   }
 
   "ConversationItem" must {

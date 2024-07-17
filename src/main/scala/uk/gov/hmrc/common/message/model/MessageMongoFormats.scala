@@ -31,7 +31,26 @@ object MessageMongoFormats {
 
   import MongoTaxIdentifierFormats._
   object DetailsFormatter {
-    implicit val format: OFormat[Details] = Json.format[Details]
+    implicit val writes: OWrites[Details] = Json.writes[Details]
+    // format: off
+    implicit val reads: Reads[Details] =
+       ((__ \ "form"        ).readNullable[String]
+      ~ (__ \ "type"        ).readNullable[String]
+      ~ (__ \ "suppressedAt").readNullable[String]
+      ~ (__ \ "detailsId"   ).readNullable[String]
+      ~ (__ \ "paperSent"   ).readNullable[Boolean]
+      ~ (__ \ "batchId"     ).readNullable[String]
+      ~ (__ \ "issueDate"   ).readNullable[LocalDate](LocalDateFormatter.localDateReads)
+      ~ (__ \ "replyTo"     ).readNullable[String]
+      ~ (__ \ "threadId"    ).readNullable[String]
+      ~ (__ \ "enquiryType" ).readNullable[String]
+      ~ (__ \ "adviser"     ).readNullable[Adviser]
+      ~ (__ \ "waitTime"    ).readNullable[String]
+      ~ (__ \ "topic"       ).readNullable[String]
+      ~ (__ \ "envelopId"   ).readNullable[String]
+      ~ (__ \ "properties"  ).readNullable[JsValue])(Details.apply _)
+    // format: on
+    implicit val format: Format[Details] = Format(reads, writes)
   }
 
   object LocalDateFormatter {
