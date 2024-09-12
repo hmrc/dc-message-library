@@ -52,6 +52,10 @@ trait AlertEmailTemplateMapper {
       case (form, _) if form.startsWith("LPI1")                                      => "newMessageAlert_LPI1"
       case (form, _) if form.startsWith("LPP4") && form.toLowerCase.endsWith("_cy")  => "newMessageAlert_LPP4_cy"
       case (form, _) if form.startsWith("LPP4")                                      => "newMessageAlert_LPP4"
+      case (form, _) if form.startsWith("P2") && form.toLowerCase.endsWith("_cy")    => "newMessageAlert_P2_cy"
+      case (form, _) if form.startsWith("P2")                                        => "newMessageAlert_P2"
+      case (form, _) if form.startsWith("P2A") && form.toLowerCase.endsWith("_cy")   => "newMessageAlert_P2A_cy"
+      case (form, _) if form.startsWith("P2A")                                       => "newMessageAlert_P2A"
       case (form, _) if form.toLowerCase.startsWith("itsa") => getTemplateId(form, itsaTemplates, "itsa")
       case (form, _) if form.toLowerCase.endsWith("ioss") || form.toLowerCase.endsWith("ioss_cy") =>
         getTemplateId(form, iossTemplates, "ioss")
