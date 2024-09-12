@@ -34,46 +34,6 @@ trait AlertEmailTemplateMapper {
     "CA001"
   )
 
-  // scalastyle:off
-  def emailTemplateFromMessageFormId(formId: String, requestAlertTemplateId: Option[String] = None): String =
-    (formId, requestAlertTemplateId) match {
-      case (_, Some(templateId)) if templateId != "newMessageAlert" => templateId
-      case (form, _) if form.toLowerCase == "atsv2_cy"              => "annual_tax_summaries_message_alert_cy"
-      case (form, _) if form.toLowerCase == "atsv2"                 => "annual_tax_summaries_message_alert"
-      case (form, _) if form.startsWith("SA316")                    => "newMessageAlert_SA316"
-      case (form, _) if form.startsWith("SA309")                    => "newMessageAlert_SA309"
-      case (form, _) if form.startsWith("SA300")                    => "newMessageAlert_SA300"
-      case (form, _) if form.startsWith("SS300")                    => "newMessageAlert_SS300"
-      case (form, _) if form.startsWith("P800") && form.toLowerCase.endsWith("_cy")  => "newMessageAlert_P800_cy"
-      case (form, _) if form.startsWith("P800")                                      => "newMessageAlert_P800"
-      case (form, _) if form.startsWith("PA302") && form.toLowerCase.endsWith("_cy") => "newMessageAlert_PA302_cy"
-      case (form, _) if form.startsWith("PA302")                                     => "newMessageAlert_PA302"
-      case (form, _) if form.startsWith("LPI1") && form.toLowerCase.endsWith("_cy")  => "newMessageAlert_LPI1_cy"
-      case (form, _) if form.startsWith("LPI1")                                      => "newMessageAlert_LPI1"
-      case (form, _) if form.startsWith("LPP4") && form.toLowerCase.endsWith("_cy")  => "newMessageAlert_LPP4_cy"
-      case (form, _) if form.startsWith("LPP4")                                      => "newMessageAlert_LPP4"
-      case (form, _) if form.startsWith("P2") && form.toLowerCase.endsWith("_cy")    => "newMessageAlert_P2_cy"
-      case (form, _) if form.startsWith("P2")                                        => "newMessageAlert_P2"
-      case (form, _) if form.startsWith("P2A") && form.toLowerCase.endsWith("_cy")   => "newMessageAlert_P2A_cy"
-      case (form, _) if form.startsWith("P2A")                                       => "newMessageAlert_P2A"
-      case (form, _) if form.toLowerCase.startsWith("itsa") => getTemplateId(form, itsaTemplates, "itsa")
-      case (form, _) if form.toLowerCase.endsWith("ioss") || form.toLowerCase.endsWith("ioss_cy") =>
-        getTemplateId(form, iossTemplates, "ioss")
-      case (form, _) =>
-        templatesToMapToNewMessageAlert.find(fId => form.startsWith(fId)) match {
-          case Some(formId)                          => s"newMessageAlert_$formId"
-          case _ if form.toLowerCase.endsWith("_cy") => "newMessageAlert_cy"
-          case _                                     => "newMessageAlert"
-        }
-    }
-
-  private def getTemplateId(formId: String, templates: Map[String, String], default: String): String =
-    templates.toList.find(r => r._1.equals(formId.toLowerCase)) match {
-      case Some((_, templateId))       => templateId
-      case _ if formId.endsWith("_cy") => s"new_message_alert_${default}_cy"
-      case _                           => s"new_message_alert_$default"
-    }
-
   lazy val itsaTemplates = Map(
     "itsaqu1"       -> "new_message_alert_itsaqu1",
     "itsaqu1_cy"    -> "new_message_alert_itsaqu1_cy",
@@ -133,5 +93,44 @@ trait AlertEmailTemplateMapper {
     "m08ioss"     -> "new_message_alert_m08_ioss",
     "m08ioss_cy"  -> "new_message_alert_m08_ioss_cy"
   )
+
+  // scalastyle:off
+  def emailTemplateFromMessageFormId(formId: String, requestAlertTemplateId: Option[String] = None): String =
+    (formId.toLowerCase, requestAlertTemplateId) match {
+      case (_, Some(templateId)) if templateId != "newMessageAlert"       => templateId
+      case ("atsv2_cy", _)                                                => "annual_tax_summaries_message_alert_cy"
+      case ("atsv2", _)                                                   => "annual_tax_summaries_message_alert"
+      case ("p2", _)                                                      => "daily_tax_estimate_message_alert"
+      case ("p2_cy", _)                                                   => "daily_tax_estimate_message_alert_cy"
+      case ("p2a", _)                                                     => "annual_tax_estimate_message_alert"
+      case ("p2a_cy", _)                                                  => "annual_tax_estimate_message_alert_cy"
+      case (form, _) if form.startsWith("sa316")                          => "newMessageAlert_SA316"
+      case (form, _) if form.startsWith("sa309")                          => "newMessageAlert_SA309"
+      case (form, _) if form.startsWith("sa300")                          => "newMessageAlert_SA300"
+      case (form, _) if form.startsWith("ss300")                          => "newMessageAlert_SS300"
+      case (form, _) if form.startsWith("p800") && form.endsWith("_cy")   => "newMessageAlert_P800_cy"
+      case (form, _) if form.startsWith("p800")                           => "newMessageAlert_P800"
+      case (form, _) if form.startsWith("pa302") && form.endsWith("_cy")  => "newMessageAlert_PA302_cy"
+      case (form, _) if form.startsWith("pa302")                          => "newMessageAlert_PA302"
+      case (form, _) if form.startsWith("lpi1") && form.endsWith("_cy")   => "newMessageAlert_LPI1_cy"
+      case (form, _) if form.startsWith("lpi1")                           => "newMessageAlert_LPI1"
+      case (form, _) if form.startsWith("lpp4") && form.endsWith("_cy")   => "newMessageAlert_LPP4_cy"
+      case (form, _) if form.startsWith("lpp4")                           => "newMessageAlert_LPP4"
+      case (form, _) if form.startsWith("itsa")                           => getTemplateId(form, itsaTemplates, "itsa")
+      case (form, _) if form.endsWith("ioss") || form.endsWith("ioss_cy") => getTemplateId(form, iossTemplates, "ioss")
+      case (form, _) =>
+        templatesToMapToNewMessageAlert.find(fId => form.startsWith(fId.toLowerCase)) match {
+          case Some(formId)              => s"newMessageAlert_$formId"
+          case _ if form.endsWith("_cy") => "newMessageAlert_cy"
+          case _                         => "newMessageAlert"
+        }
+    }
+  private def getTemplateId(formId: String, templates: Map[String, String], default: String): String =
+    templates.find(r => r._1.equals(formId)) match {
+      case Some((_, templateId))       => templateId
+      case _ if formId.endsWith("_cy") => s"new_message_alert_${default}_cy"
+      case _                           => s"new_message_alert_$default"
+    }
+
   // scalastyle:on
 }
