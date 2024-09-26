@@ -28,7 +28,8 @@ val compileDependencies: Seq[ModuleID] = Seq(
   "commons-codec"      % "commons-codec"                     % "1.16.0",
   "org.playframework" %% "play-json"                         % "3.0.2",
   "com.beachape"      %% "enumeratum"                        % "1.7.3",
-  "com.beachape"      %% "enumeratum-play-json"              % "1.8.0"
+  "com.beachape"      %% "enumeratum-play-json"              % "1.8.0",
+  "org.jsoup"          % "jsoup"                             % "1.15.4"
 )
 
 val testDependencies: Seq[ModuleID] = Seq(
