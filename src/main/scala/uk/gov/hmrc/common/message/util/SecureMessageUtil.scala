@@ -45,9 +45,6 @@ object SecureMessageUtil {
   private def validateLang(doc: Document): Boolean =
     doc.getElementsByTag("section").size() match {
       case 0 => true
-      case 1 =>
-        doc.getElementsByAttribute("lang").size == 1 &&
-        doc.getElementsByAttributeValueMatching("lang", langPattern).size() > 0
       case n =>
         (doc.getElementsByAttribute("lang").size == n) &&
         (doc.getElementsByAttributeValueMatching("lang", langPattern).size() > 0)
@@ -56,7 +53,6 @@ object SecureMessageUtil {
   private def validateSubject(doc: Document, hasExternalSubject: Boolean): Boolean =
     doc.getElementsByTag("section").size() match {
       case 0 => hasExternalSubject
-      case 1 => hasExternalSubject || doc.getElementsByAttribute("subject").size == 1
       case n => hasExternalSubject || doc.getElementsByAttribute("subject").size == n
     }
 
@@ -74,7 +70,7 @@ object SecureMessageUtil {
     val validFrom = (body \ "validFrom").asOpt[LocalDate]
 
     val recipient = (body \ "recipient").as[Recipient]
-    val (content, language) = createContent((body \ "content").as[String], (body \ "subject").asOpt[String])
+    val (content, language) = createContent((body \ "content").as[String], (body \ "lang").asOpt[String])
 
     def createRecipient: JsValue = {
       var recipientJson = Json.obj(
