@@ -62,21 +62,21 @@ object SecureMessageUtil {
   private def encodeBase64String(input: String): String =
     new String(Base64.encodeBase64(input.getBytes("UTF-8")))
 
-  def createSecureMessage(body: JsValue): JsValue = {
+  def createSecureMessage(v3Request: JsValue): JsValue = {
 
-    val alertQueue = (body \ "alertQueue").asOpt[String]
-    val alertDetails = (body \ "alertDetails").asOpt[JsValue]
-    val tags = (body \ "tags").asOpt[String]
-    val validFrom = (body \ "validFrom").asOpt[LocalDate]
+    val alertQueue = (v3Request \ "alertQueue").asOpt[String]
+    val alertDetails = (v3Request \ "alertDetails").asOpt[JsValue]
+    val tags = (v3Request \ "tags").asOpt[String]
+    val validFrom = (v3Request \ "validFrom").asOpt[LocalDate]
 
-    val recipient = (body \ "recipient").as[Recipient]
-    val (content, language) = createContent((body \ "content").as[String], (body \ "lang").asOpt[String])
+    val recipient = (v3Request \ "recipient").as[Recipient]
+    val (content, language) = createContent((v3Request \ "content").as[String], (v3Request \ "subject").asOpt[String])
 
     def createRecipient: JsValue = {
       var recipientJson = Json.obj(
         "taxIdentifier" -> Json.obj(
-          "name"  -> (body \ "recipient" \ "taxIdentifier" \ "name").as[String],
-          "value" -> (body \ "recipient" \ "taxIdentifier" \ "value").as[String]
+          "name"  -> (v3Request \ "recipient" \ "taxIdentifier" \ "name").as[String],
+          "value" -> (v3Request \ "recipient" \ "taxIdentifier" \ "value").as[String]
         )
       )
 
@@ -90,53 +90,53 @@ object SecureMessageUtil {
 
     def messageDetails: JsValue = {
 
-      var details = Json.obj("formId" -> (body \ "details" \ "formId").as[String])
+      var details = Json.obj("formId" -> (v3Request \ "details" \ "formId").as[String])
 
-      val statutory = (body \ "details" \ "statutory").asOpt[Boolean]
+      val statutory = (v3Request \ "details" \ "statutory").asOpt[Boolean]
       if (statutory.isDefined)
         details = details ++ Json.obj("statutory" -> statutory)
 
-      val paperSent = (body \ "details" \ "paperSent").asOpt[Boolean]
+      val paperSent = (v3Request \ "details" \ "paperSent").asOpt[Boolean]
       if (paperSent.isDefined)
         details = details ++ Json.obj("paperSent" -> paperSent)
 
-      val sourceData = (body \ "details" \ "sourceData").asOpt[String]
+      val sourceData = (v3Request \ "details" \ "sourceData").asOpt[String]
       if (sourceData.isDefined)
         details = details ++ Json.obj("sourceData" -> sourceData)
 
-      val batchId = (body \ "details" \ "batchId").asOpt[String]
+      val batchId = (v3Request \ "details" \ "batchId").asOpt[String]
       if (batchId.isDefined)
         details = details ++ Json.obj("batchId" -> batchId)
 
-      val issueDate = (body \ "details" \ "issueDate").asOpt[LocalDate]
+      val issueDate = (v3Request \ "details" \ "issueDate").asOpt[LocalDate]
       if (issueDate.isDefined)
         details = details ++ Json.obj("issueDate" -> issueDate)
 
-      val replyTo = (body \ "details" \ "replyTo").asOpt[String]
+      val replyTo = (v3Request \ "details" \ "replyTo").asOpt[String]
       if (replyTo.isDefined)
         details = details ++ Json.obj("replyTo" -> replyTo)
 
-      val threadId = (body \ "details" \ "threadId").asOpt[String]
+      val threadId = (v3Request \ "details" \ "threadId").asOpt[String]
       if (threadId.isDefined)
         details = details ++ Json.obj("threadId" -> threadId)
 
-      val enquiryType = (body \ "details" \ "enquiryType").asOpt[String]
+      val enquiryType = (v3Request \ "details" \ "enquiryType").asOpt[String]
       if (enquiryType.isDefined)
         details = details ++ Json.obj("enquiryType" -> enquiryType)
 
-      val adviser = (body \ "details" \ "adviser").asOpt[Adviser]
+      val adviser = (v3Request \ "details" \ "adviser").asOpt[Adviser]
       if (adviser.isDefined)
         details = details ++ Json.obj("adviser" -> adviser)
 
-      val waitTime = (body \ "details" \ "waitTime").asOpt[String]
+      val waitTime = (v3Request \ "details" \ "waitTime").asOpt[String]
       if (waitTime.isDefined)
         details = details ++ Json.obj("waitTime" -> waitTime)
 
-      val topic = (body \ "details" \ "topic").asOpt[String]
+      val topic = (v3Request \ "details" \ "topic").asOpt[String]
       if (topic.isDefined)
         details = details ++ Json.obj("topic" -> topic)
 
-      val properties = (body \ "details" \ "properties").asOpt[JsValue]
+      val properties = (v3Request \ "details" \ "properties").asOpt[JsValue]
       if (properties.isDefined)
         details = details ++ Json.obj("properties" -> properties)
 
@@ -144,9 +144,9 @@ object SecureMessageUtil {
     }
 
     var secureMessage = Json.obj(
-      "externalRef" -> (body \ "externalRef").as[ExternalRef],
+      "externalRef" -> (v3Request \ "externalRef").as[ExternalRef],
       "recipient"   -> createRecipient,
-      "messageType" -> (body \ "messageType").as[String],
+      "messageType" -> (v3Request \ "messageType").as[String],
       "details"     -> messageDetails,
       "content"     -> Json.toJson(content),
       "language"    -> language
