@@ -20,7 +20,7 @@ import org.apache.commons.codec.binary.Base64
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import play.api.libs.json.{ JsValue, Json, OFormat }
+import play.api.libs.json.{ JsObject, JsValue, Json, OFormat }
 import uk.gov.hmrc.common.message.model.*
 import uk.gov.hmrc.common.message.validationmodule.MessageValidationException
 
@@ -88,9 +88,13 @@ object SecureMessageUtil {
       recipientJson
     }
 
-    def messageDetails: JsValue = {
+    def messageDetails: JsObject = {
 
-      var details = Json.obj("formId" -> (v3Request \ "details" \ "formId").as[String])
+      var details = Json.obj()
+
+      val formId = (v3Request \ "details" \ "formId").asOpt[String]
+      if (formId.isDefined)
+        details = details ++ Json.obj("formId" -> formId)
 
       val statutory = (v3Request \ "details" \ "statutory").asOpt[Boolean]
       if (statutory.isDefined)
@@ -147,10 +151,13 @@ object SecureMessageUtil {
       "externalRef" -> (v3Request \ "externalRef").as[ExternalRef],
       "recipient"   -> createRecipient,
       "messageType" -> (v3Request \ "messageType").as[String],
-      "details"     -> messageDetails,
       "content"     -> Json.toJson(content),
       "language"    -> language
     )
+
+    val details: JsObject = messageDetails
+    if (details.value.nonEmpty)
+      secureMessage = secureMessage ++ Json.obj("details" -> details)
 
     if (validFrom.isDefined) {
       secureMessage = secureMessage ++ Json.obj("validFrom" -> validFrom)

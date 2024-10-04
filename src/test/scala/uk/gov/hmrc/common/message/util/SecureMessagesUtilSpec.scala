@@ -71,6 +71,10 @@ class SecureMessageUtilSpec extends AnyWordSpecLike with MockitoSugar with Match
       SecureMessageUtil.createSecureMessage(newMessage) mustBe newMessageV4
     }
 
+    "Successfully creates a secure message for the given legacy v3 message for non-gmc" in {
+      SecureMessageUtil.createSecureMessage(newMessageNonGmc) mustBe newMessageNonGmcV4
+    }
+
     "Successfully creates a secure message for the v3 message having new content" in {
       SecureMessageUtil.createSecureMessage(newMessage_withNewContent) mustBe newMessageV4_withNewContent
     }
@@ -148,5 +152,8 @@ trait TestData {
 
   val newMessage_withVRN = Resources.readJson("messages/controller/v3/GMC_VRN.json")
   val newMessageV4_withVRN = Resources.readJson("messages/controller/v4/GMC_VRN.json")
+
+  val newMessageNonGmc = Resources.readJson("messages/controller/v3/NON_GMC.json")
+  val newMessageNonGmcV4 = Resources.readJson("messages/controller/v4/NON_GMC.json")
 
 }
