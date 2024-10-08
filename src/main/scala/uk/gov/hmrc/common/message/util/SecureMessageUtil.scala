@@ -66,7 +66,7 @@ object SecureMessageUtil {
 
     val alertQueue = (v3Request \ "alertQueue").asOpt[String]
     val alertDetails = (v3Request \ "alertDetails").asOpt[JsValue]
-    val tags = (v3Request \ "tags").asOpt[String]
+    val tags = (v3Request \ "tags").asOpt[JsValue]
     val validFrom = (v3Request \ "validFrom").asOpt[LocalDate]
 
     val recipient = (v3Request \ "recipient").as[Recipient]
