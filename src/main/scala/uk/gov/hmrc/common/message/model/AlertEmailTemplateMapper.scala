@@ -100,10 +100,6 @@ trait AlertEmailTemplateMapper {
       case (_, Some(templateId)) if templateId != "newMessageAlert"       => templateId
       case ("atsv2_cy", _)                                                => "annual_tax_summaries_message_alert_cy"
       case ("atsv2", _)                                                   => "annual_tax_summaries_message_alert"
-      case ("p2", _)                                                      => "daily_tax_estimate_message_alert"
-      case ("p2_cy", _)                                                   => "daily_tax_estimate_message_alert_cy"
-      case ("p2a", _)                                                     => "annual_tax_estimate_message_alert"
-      case ("p2a_cy", _)                                                  => "annual_tax_estimate_message_alert_cy"
       case (form, _) if form.startsWith("sa316")                          => "newMessageAlert_SA316"
       case (form, _) if form.startsWith("sa309")                          => "newMessageAlert_SA309"
       case (form, _) if form.startsWith("sa300")                          => "newMessageAlert_SA300"
