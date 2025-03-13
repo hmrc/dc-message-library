@@ -74,7 +74,7 @@ object TaxEntity {
       case x: HmrcObtdsOrg if x.value matches "^..FH.*$" => Regime.fhdds
       case _: HmrcMtdVat                                 => Regime.vat
       case _: Vrn                                        => Regime.vat
-      case _: HmrcOssOrg                                 => Regime.vat
+      case _: HmrcOssOrg                                 => Regime.oss
       case _: Epaye                                      => Regime.epaye
       case _: HmceVatdecOrg                              => Regime.vat
       case _: HmrcCusOrg                                 => Regime.cds
@@ -83,16 +83,16 @@ object TaxEntity {
       case _: HmrcPodsOrg                                => Regime.pods
       case _: HmrcPodsPpOrg                              => Regime.pods
       case _: HmrcIossOrg                                => Regime.ioss
-      case _: HmrcOssOrg                                 => Regime.oss
       case _: HmrcAdOrg                                  => Regime.ad
       case x                                             => throw new RuntimeException(s"unsupported identifier $x")
     }
   // scalastyle:on
 
-  def forAudit(entity: TaxEntity): Map[String, String] = entity.identifier match {
-    case x: TaxIdWithName => Map(x.name -> x.value)
-    case _                => Map.empty
-  }
+  def forAudit(entity: TaxEntity): Map[String, String] = Option(entity.identifier)
+    .collect { case x: TaxIdWithName =>
+      Map(x.name -> x.value)
+    }
+    .getOrElse(Map.empty)
 
   implicit def taxEntityFormat(implicit taxId: Format[TaxIdWithName]): Format[TaxEntity] = Json.format[TaxEntity]
 
