@@ -19,12 +19,12 @@ import sbt.Keys._
 ThisBuild / majorVersion := 1
 ThisBuild / scalaVersion := "3.3.3"
 
-val hmrcMongoVersion = "2.1.0"
+val hmrcMongoVersion = "2.5.0"
 
 val compileDependencies: Seq[ModuleID] = Seq(
   "uk.gov.hmrc"       %% "domain-play-30"                    % "10.0.0",
   "uk.gov.hmrc.mongo" %% "hmrc-mongo-work-item-repo-play-30" % hmrcMongoVersion,
-  "uk.gov.hmrc"       %% "http-verbs-play-30"                % "15.0.0",
+  "uk.gov.hmrc"       %% "http-verbs-play-30"                % "15.2.0",
   "commons-codec"      % "commons-codec"                     % "1.16.0",
   "org.playframework" %% "play-json"                         % "3.0.2",
   "com.beachape"      %% "enumeratum"                        % "1.7.3",

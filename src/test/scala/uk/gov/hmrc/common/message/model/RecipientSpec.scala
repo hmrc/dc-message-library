@@ -17,9 +17,9 @@
 package uk.gov.hmrc.common.message.model
 
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json._
-import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
-import uk.gov.hmrc.domain._
+import play.api.libs.json.*
+import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmrcOssOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
+import uk.gov.hmrc.domain.*
 
 class RecipientSpec extends PlaySpec {
 
@@ -45,6 +45,9 @@ class RecipientSpec extends PlaySpec {
     }
     "work with valid itsa value" in {
       JsString("itsa").asOpt[Regime.Value].value mustBe Regime.itsa
+    }
+    "work with valid oss value" in {
+      JsString("oss").asOpt[Regime.Value].value mustBe Regime.oss
     }
     "work with invalid value" in {
       implicitly[Reads[Regime.Value]].reads(JsString("invalid-regime")) mustBe JsError(
@@ -77,6 +80,9 @@ class RecipientSpec extends PlaySpec {
     "serialise Regime.itsa to JsString" in {
       Json.toJson(Regime.itsa) mustBe JsString("itsa")
     }
+    "serialise Regime.oss to JsString" in {
+      Json.toJson(Regime.oss) mustBe JsString("oss")
+    }
 
   }
 
@@ -98,6 +104,40 @@ class RecipientSpec extends PlaySpec {
         name = None,
         regime = Some(Regime.fhdds)
       )
+    }
+
+    "work with valid recipient for HMRC-OSS-ORG" in {
+      val recipient = Json
+        .parse("""{
+                 |       "taxIdentifier":{
+                 |           "name":"HMRC-OSS-ORG",
+                 |           "value":"999 9999 99"
+                 |       },
+                 |       "regime":"oss"
+
+       }""".stripMargin)
+        .as[Recipient]
+      recipient mustBe Recipient(
+        taxIdentifier = HmrcOssOrg("999 9999 99"),
+        name = None,
+        regime = Some(Regime.oss)
+      )
+    }
+
+    "return error for an invalid HMRC-OSS-ORG value" in {
+      val error = intercept[IllegalArgumentException] {
+        Json
+          .parse("""{
+                   |       "taxIdentifier":{
+                   |           "name":"HMRC-OSS-ORG",
+                   |           "value":"999999999"
+                   |       },
+                   |       "regime":"oss"
+       }""".stripMargin)
+          .as[Recipient]
+      }
+
+      error.getMessage mustBe "requirement failed: 999999999 is not a valid HMRC-OSS-ORG."
     }
 
     "work with valid recipient for IR-PAYE" in {
