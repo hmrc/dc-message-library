@@ -140,7 +140,7 @@ object TaxEntity {
       new SimpleObjectReads[HmrcOssOrg]("HMRC-OSS-ORG", HmrcOssOrg.apply)
 
     val validOssValue = "\\d{3} \\d{4} \\d{2}"
-    def isValid(ossValue: String) = ossValue != null && ossValue.matches(validOssValue)
+    def isValid(ossValue: String) = Option(ossValue).exists(_.matches(validOssValue))
   }
 
   case class HmrcPptOrg(value: String) extends TaxIdentifier with SimpleName {
