@@ -106,7 +106,7 @@ class RecipientSpec extends PlaySpec {
       )
     }
 
-    "work with valid recipient for HMRC-OSS-ORG" in {
+    "work with identifier value having spaces for HMRC-OSS-ORG" in {
       val recipient = Json
         .parse("""{
                  |       "taxIdentifier":{
@@ -124,20 +124,22 @@ class RecipientSpec extends PlaySpec {
       )
     }
 
-    "return error for an invalid HMRC-OSS-ORG value" in {
-      val error = intercept[IllegalArgumentException] {
-        Json
-          .parse("""{
-                   |       "taxIdentifier":{
-                   |           "name":"HMRC-OSS-ORG",
-                   |           "value":"999999999"
-                   |       },
-                   |       "regime":"oss"
-       }""".stripMargin)
-          .as[Recipient]
-      }
+    "work with identifier value having no spaces for HMRC-OSS-ORG" in {
+      val recipient = Json
+        .parse("""{
+                 |       "taxIdentifier":{
+                 |           "name":"HMRC-OSS-ORG",
+                 |           "value":"999999999"
+                 |       },
+                 |       "regime":"oss"
 
-      error.getMessage mustBe "requirement failed: 999999999 is not a valid HMRC-OSS-ORG."
+           }""".stripMargin)
+        .as[Recipient]
+      recipient mustBe Recipient(
+        taxIdentifier = HmrcOssOrg("999999999"),
+        name = None,
+        regime = Some(Regime.oss)
+      )
     }
 
     "work with valid recipient for IR-PAYE" in {

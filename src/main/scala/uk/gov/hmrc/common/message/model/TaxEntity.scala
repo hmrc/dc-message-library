@@ -59,9 +59,9 @@ object TaxEntity {
       case TaxEntity(Regime.pods, HmrcPodsOrg(value), _)   => Enrolments(s"HMRC-PODS-ORG~PSAID~$value")
       case TaxEntity(Regime.pods, HmrcPodsPpOrg(value), _) => Enrolments(s"HMRC-PODSPP-ORG~PSPID~$value")
       case TaxEntity(Regime.ioss, HmrcIossOrg(value), _)   => Enrolments(s"HMRC-IOSS-ORG~IOSSNumber~$value")
-      case TaxEntity(Regime.oss, HmrcOssOrg(value), _) => Enrolments(s"HMRC-OSS-ORG~VRN~${value.replaceAll("\\s", "")}")
-      case TaxEntity(Regime.ad, HmrcAdOrg(value), _)   => Enrolments(s"HMRC-AD-ORG~APPAID~$value")
-      case r                                           => throw new RuntimeException(s"unsupported tax entity $r")
+      case TaxEntity(Regime.oss, HmrcOssOrg(value), _)     => Enrolments(s"HMRC-OSS-ORG~VRN~$value")
+      case TaxEntity(Regime.ad, HmrcAdOrg(value), _)       => Enrolments(s"HMRC-AD-ORG~APPAID~$value")
+      case r                                               => throw new RuntimeException(s"unsupported tax entity $r")
     }
 
   // https://confluence.tools.tax.service.gov.uk/pages/viewpage.action?spaceKey=DF&title=HMRC-OBTDS-ORG+GG+Service
@@ -129,7 +129,6 @@ object TaxEntity {
   }
 
   case class HmrcOssOrg(value: String) extends TaxIdentifier with SimpleName {
-    require(HmrcOssOrg.isValid(value), s"$value is not a valid HMRC-OSS-ORG.")
     override def toString: String = value
     val name = "HMRC-OSS-ORG"
   }
@@ -138,9 +137,6 @@ object TaxEntity {
     implicit val orgWrite: Writes[HmrcOssOrg] = new SimpleObjectWrites[HmrcOssOrg](_.value)
     implicit val orgRead: Reads[HmrcOssOrg] =
       new SimpleObjectReads[HmrcOssOrg]("HMRC-OSS-ORG", HmrcOssOrg.apply)
-
-    val validOssValue = "\\d{3} \\d{4} \\d{2}"
-    def isValid(ossValue: String) = Option(ossValue).exists(_.matches(validOssValue))
   }
 
   case class HmrcPptOrg(value: String) extends TaxIdentifier with SimpleName {

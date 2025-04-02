@@ -161,7 +161,7 @@ class TaxEntitySpec extends PlaySpec {
         "HMRC-OSS-ORG",
         TaxEntity(Regime.oss, HmrcOssOrg("999 9999 99"), None),
         "HmrcOssOrg",
-        Enrolments("HMRC-OSS-ORG~VRN~999999999")
+        Enrolments("HMRC-OSS-ORG~VRN~999 9999 99")
       )
     )
 
