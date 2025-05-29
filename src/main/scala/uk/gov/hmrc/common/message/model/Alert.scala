@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,10 @@
 
 package uk.gov.hmrc.common.message.model
 
-import play.api.libs.json.*
+import play.api.libs.json.{ Format, Json }
 
-final case class MessagesCount(total: Int, unread: Int) {
-  def +(m: MessagesCount): MessagesCount = MessagesCount(total + m.total, unread + m.unread)
-}
-
-object MessagesCount {
-  implicit val formatMessageCount: OFormat[MessagesCount] = Json.format[MessagesCount]
-
-  def empty: MessagesCount = MessagesCount(0, 0)
+final case class Alert(templateId: String, parameters: Option[Map[String, String]])
+object Alert {
+  implicit val alertFormat: Format[Alert] =
+    Json.format[Alert]
 }
