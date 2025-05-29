@@ -16,18 +16,14 @@
 
 package uk.gov.hmrc.common.message.model
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
+import play.api.libs.json.*
 
 final case class MessagesCount(total: Int, unread: Int) {
   def +(m: MessagesCount): MessagesCount = MessagesCount(total + m.total, unread + m.unread)
 }
 
 object MessagesCount {
-  implicit val messagesCountWrites: Writes[MessagesCount] = (
-    (__ \ "total").write[Int] and
-      (__ \ "unread").write[Int]
-  )(m => (m.total, m.unread))
+  implicit val formatMessageCount: OFormat[MessagesCount] = Json.format[MessagesCount]
 
   def empty: MessagesCount = MessagesCount(0, 0)
 }
