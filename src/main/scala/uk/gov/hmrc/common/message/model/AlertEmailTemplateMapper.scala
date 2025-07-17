@@ -114,6 +114,8 @@ trait AlertEmailTemplateMapper {
       case (form, _) if form.startsWith("lpp4")                           => "newMessageAlert_LPP4"
       case (form, _) if form.startsWith("itsa")                           => getTemplateId(form, itsaTemplates, "itsa")
       case (form, _) if form.endsWith("ioss") || form.endsWith("ioss_cy") => getTemplateId(form, iossTemplates, "ioss")
+      case (form, _) if form.endsWith("oss")                              => "new_message_alert_ioss"
+      case (form, _) if form.endsWith("oss_cy")                           => "new_message_alert_ioss_cy"
       case (form, _) =>
         templatesToMapToNewMessageAlert.find(fId => form.startsWith(fId.toLowerCase)) match {
           case Some(formId)              => s"newMessageAlert_$formId"
