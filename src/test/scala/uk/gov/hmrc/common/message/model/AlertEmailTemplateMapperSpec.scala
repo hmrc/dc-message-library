@@ -110,6 +110,26 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
         emailTemplateFromMessageFormId(t) mustBe "new_message_alert_ioss_cy"
       }
     }
+
+    "map all the GIOSS templates to `new_message_alert_gioss`" in {
+      val gIossFormIds = List(
+        "M01GIOSS",
+        "M02GIOSS",
+        "M03GIOSS",
+        "M04GIOSS",
+        "M05GIOSS",
+        "M06GIOSS",
+        "M07GIOSS",
+        "M08GIOSS",
+        "M09GIOSS",
+        "M10GIOSS",
+        "M11GIOSS",
+        "M12GIOSS"
+      )
+      gIossFormIds.foreach { t =>
+        emailTemplateFromMessageFormId(t) mustBe "new_message_alert_gioss"
+      }
+    }
   }
 
   "The alert email template mapper - Welsh" must {
