@@ -16,26 +16,20 @@
 
 package uk.gov.hmrc.common.message.model
 
-import enumeratum.{ Enum, EnumEntry, PlayJsonEnum }
-import play.api.libs.json.{ Format, JsString, JsSuccess, Reads, Writes }
+import play.api.libs.json._
 
-import scala.collection.immutable
+enum Language(val entryName: String) {
+  case English extends Language("en")
+  case Welsh extends Language("cy")
+}
 
-sealed abstract class Language(override val entryName: String) extends EnumEntry
+object Language {
+  implicit val format: Format[Language] = new Format[Language] {
+    def reads(json: JsValue): JsResult[Language] = json match {
+      case JsString("cy") | JsString("CY") => JsSuccess(Welsh)
+      case _                               => JsSuccess(English)
+    }
 
-case object Language extends Enum[Language] with PlayJsonEnum[Language] {
-
-  val values: immutable.IndexedSeq[Language] = findValues
-
-  case object English extends Language("en")
-
-  case object Welsh extends Language("cy")
-
-  implicit val languageReads: Reads[Language] = Reads[Language] {
-    case JsString(value) => JsSuccess[Language](Language.withNameInsensitiveOption(value).getOrElse(Language.English))
-    case _               => JsSuccess[Language](Language.English)
+    def writes(language: Language): JsValue = JsString(language.entryName)
   }
-  implicit val languageWrites: Writes[Language] = (e: Language) => JsString(e.entryName)
-
-  implicit val languageFormat: Format[Language] = Format(languageReads, languageWrites)
 }
