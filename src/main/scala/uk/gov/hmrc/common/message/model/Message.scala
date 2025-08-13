@@ -31,22 +31,23 @@ object MessageContentParameters {
   implicit val messageTemplateFormats: OFormat[MessageContentParameters] = Json.format[MessageContentParameters]
 }
 
-case class Rescindment(time: Instant, `type`: Rescindment.Type, ref: String)
-object Rescindment {
-  enum Type {
-    case GeneratedInError
-  }
+enum RescindmentType {
+  case GeneratedInError
+}
 
-  object Type {
-    implicit val format: Format[Type] = new Format[Type] {
-      def reads(json: JsValue): JsResult[Type] = json match {
-        case JsString("GeneratedInError") => JsSuccess(GeneratedInError)
-        case _                            => JsError("Invalid type value")
-      }
-
-      def writes(t: Type): JsValue = JsString(t.toString)
+object RescindmentType {
+  implicit val format: Format[RescindmentType] = new Format[RescindmentType] {
+    def reads(json: JsValue): JsResult[RescindmentType] = json match {
+      case JsString("GeneratedInError") => JsSuccess(GeneratedInError)
+      case _                            => JsError("Invalid type value")
     }
+
+    def writes(t: RescindmentType): JsValue = JsString(t.toString)
   }
+}
+
+case class Rescindment(time: Instant, `type`: RescindmentType, ref: String)
+object Rescindment {
   implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
   implicit val rescindmentFormat: Format[Rescindment] = Json.format[Rescindment]
 }
