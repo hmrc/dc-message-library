@@ -16,13 +16,10 @@
 
 package uk.gov.hmrc.common.message.model
 
-import enumeratum.{ Enum, EnumEntry, PlayJsonEnum }
-
 import java.time.{ Instant, LocalDate }
 import org.mongodb.scala.bson.ObjectId
 import org.apache.commons.codec.binary.Base64
-import play.api.libs.json.{ Format, JsError, JsObject, JsResult, JsString, JsSuccess, JsValue, Json, OFormat, OWrites, Reads, Writes }
-import uk.gov.hmrc.common.message.model.Rescindment.Type.GeneratedInError
+import play.api.libs.json.*
 import uk.gov.hmrc.domain.TaxIds._
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus
@@ -33,15 +30,23 @@ object MessageContentParameters {
   implicit val messageTemplateFormats: OFormat[MessageContentParameters] = Json.format[MessageContentParameters]
 }
 
-case class Rescindment(time: Instant, `type`: Rescindment.Type, ref: String)
-object Rescindment {
-  sealed trait Type extends EnumEntry
-  object Type extends Enum[Type] with PlayJsonEnum[Type] {
-    val values = findValues
+enum RescindmentType {
+  case GeneratedInError
+}
 
-    case object GeneratedInError extends Type
+object RescindmentType {
+  implicit val format: Format[RescindmentType] = new Format[RescindmentType] {
+    def reads(json: JsValue): JsResult[RescindmentType] = json match {
+      case JsString("GeneratedInError") => JsSuccess(GeneratedInError)
+      case _                            => JsError("Invalid type value")
+    }
 
+    def writes(t: RescindmentType): JsValue = JsString(t.toString)
   }
+}
+
+case class Rescindment(time: Instant, `type`: RescindmentType, ref: String)
+object Rescindment {
   implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
   implicit val rescindmentFormat: Format[Rescindment] = Json.format[Rescindment]
 }
@@ -107,9 +112,6 @@ case class Message(
 ) extends Alertable {
 
   def alertParams: Map[String, String] = alertDetails.data
-
-  @deprecated("We should remove this and replace with just rescindment", "28/7/15")
-  def sentInError: Option[Boolean] = rescindment.map(_.`type` == GeneratedInError)
 
   override def alertTemplateName: String = alertDetails.templateId
 
