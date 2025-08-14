@@ -16,19 +16,27 @@
 
 package uk.gov.hmrc.common.message.model
 
-import enumeratum.EnumEntry.UpperSnakecase
-import enumeratum.{ Enum, EnumEntry, PlayJsonEnum }
+import play.api.libs.json.{ Format, JsError, JsResult, JsString, JsSuccess, JsValue }
 
-import scala.collection.immutable
+enum LifecycleStatusType(val entryName: String) {
+  case Submitted extends LifecycleStatusType("SUBMITTED")
+  case SubmissionFailed extends LifecycleStatusType("SUBMISSION_FAILED")
+  case Delivered extends LifecycleStatusType("DELIVERED")
+  case DeliveryFailed extends LifecycleStatusType("DELIVERY_FAILED")
+  case Responded extends LifecycleStatusType("RESPONDED")
+}
 
-sealed trait LifecycleStatusType extends EnumEntry with UpperSnakecase
+object LifecycleStatusType {
+  implicit val format: Format[LifecycleStatusType] = new Format[LifecycleStatusType] {
+    def reads(json: JsValue): JsResult[LifecycleStatusType] = json match {
+      case JsString("SUBMITTED")         => JsSuccess(Submitted)
+      case JsString("SUBMISSION_FAILED") => JsSuccess(SubmissionFailed)
+      case JsString("DELIVERED")         => JsSuccess(Delivered)
+      case JsString("DELIVERY_FAILED")   => JsSuccess(DeliveryFailed)
+      case JsString("RESPONDED")         => JsSuccess(Responded)
+      case _                             => JsError("Invalid Lifecycle Status Type")
+    }
 
-object LifecycleStatusType extends Enum[LifecycleStatusType] with PlayJsonEnum[LifecycleStatusType] {
-  case object Submitted extends LifecycleStatusType
-  case object SubmissionFailed extends LifecycleStatusType
-  case object Delivered extends LifecycleStatusType
-  case object DeliveryFailed extends LifecycleStatusType
-  case object Responded extends LifecycleStatusType
-
-  override def values: immutable.IndexedSeq[LifecycleStatusType] = findValues
+    def writes(status: LifecycleStatusType): JsValue = JsString(status.entryName)
+  }
 }

@@ -55,7 +55,7 @@ class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
       rescindment = Some(
         Rescindment(
           ZonedDateTime.parse("2015-07-17T15:40:08.829Z").toInstant,
-          Rescindment.Type.GeneratedInError,
+          RescindmentType.GeneratedInError,
           "blah"
         )
       ),
