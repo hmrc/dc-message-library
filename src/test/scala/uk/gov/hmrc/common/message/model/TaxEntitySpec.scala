@@ -70,6 +70,9 @@ class TaxEntitySpec extends PlaySpec {
     "produce ioss regime from HmrcIossOrg taxId" in {
       TaxEntity.regimeOf(HmrcIossOrg("XX9999999999")) mustBe Regime.ioss
     }
+    "produce ioss regime from HmrcIossInt taxId" in {
+      TaxEntity.regimeOf(HmrcIossInt("IN9001234567")) mustBe Regime.ioss
+    }
     "produce ppt regime from HmrcPptOrg taxId" in {
       TaxEntity.regimeOf(HmrcPptOrg("XMPPT0000000001")) mustBe Regime.ppt
     }
@@ -158,6 +161,12 @@ class TaxEntitySpec extends PlaySpec {
         Enrolments("HMRC-IOSS-ORG~IOSSNumber~AB1231232344")
       ),
       (
+        "HMRC-IOSS-INT",
+        TaxEntity(Regime.ioss, HmrcIossInt("IN9001234567"), None),
+        "HmrcIossInt",
+        Enrolments("HMRC-IOSS-INT~IntNumber~IN9001234567")
+      ),
+      (
         "HMRC-OSS-ORG",
         TaxEntity(Regime.oss, HmrcOssOrg("999 9999 99"), None),
         "HmrcOssOrg",
@@ -228,6 +237,12 @@ class TaxEntitySpec extends PlaySpec {
   "HmrcIossOrg toString" must {
     "return value" in {
       HmrcIossOrg("XX9999999999").toString mustBe "XX9999999999"
+    }
+  }
+
+  "HmrcIossInt toString" must {
+    "return value" in {
+      HmrcIossInt("IN9001234567").toString mustBe "IN9001234567"
     }
   }
 }

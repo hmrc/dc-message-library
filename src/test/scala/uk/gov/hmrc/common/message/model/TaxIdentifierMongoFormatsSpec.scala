@@ -18,11 +18,11 @@ package uk.gov.hmrc.common.message.model
 
 import org.scalatest.Inside
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json._
+import play.api.libs.json.*
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
-import uk.gov.hmrc.domain._
-import uk.gov.hmrc.common.message.model.MongoTaxIdentifierFormats._
-import uk.gov.hmrc.common.message.model.TaxEntity.{ HmrcAdOrg, HmrcIossOrg }
+import uk.gov.hmrc.domain.*
+import uk.gov.hmrc.common.message.model.MongoTaxIdentifierFormats.*
+import uk.gov.hmrc.common.message.model.TaxEntity.{ HmrcAdOrg, HmrcIossInt, HmrcIossOrg }
 
 class TaxIdentifierMongoFormatsSpec extends PlaySpec {
   "Mongo JSON Formats for TaxIdWithName" must {
@@ -39,6 +39,11 @@ class TaxIdentifierMongoFormatsSpec extends PlaySpec {
     "write a HMRC-IOSS-ORG as an element with name and value fields" in {
       val json = Json.toJson[TaxIdWithName](HmrcIossOrg("XX9999999999"))
       json mustBe Json.parse("""{"name": "HMRC-IOSS-ORG", "value" :"XX9999999999"}""")
+    }
+
+    "write a HMRC-IOSS-INT as an element with name and value fields" in {
+      val json = Json.toJson[TaxIdWithName](HmrcIossInt("IN9001234567"))
+      json mustBe Json.parse("""{"name": "HMRC-IOSS-INT", "value" :"IN9001234567"}""")
     }
 
     "write a HMRC-AD-ORG as an element with name and value fields" in {
