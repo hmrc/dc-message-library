@@ -18,9 +18,9 @@ package uk.gov.hmrc.common.message.model
 
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.*
-import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
+import uk.gov.hmrc.common.message.model.TaxEntity.*
 import uk.gov.hmrc.domain.*
-import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmceVatdecOrg, HmrcAdOrg, HmrcCusOrg, HmrcIossOrg, HmrcOssOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
+import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 
 sealed trait Regime
 
@@ -105,6 +105,10 @@ object TaxIdentifierRESTV2Formats {
         case (Some("HMRC-IOSS-ORG"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcIossOrg(value))
+          }
+        case (Some("HMRC-IOSS-INT"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(HmrcIossInt(value))
           }
         case (Some("HMRC-OSS-ORG"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
