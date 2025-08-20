@@ -71,18 +71,32 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
         "ITSAFD2"    -> "new_message_alert_itsafd2",
         "ITSAFD3"    -> "new_message_alert_itsafd3",
         "ITSAPOA-CN" -> "new_message_alert_itsapoa-cn",
-        "ITSAUC1"    -> "new_message_alert_itsauc1",
-        "LSP1"       -> "new_message_alert_itsa",
-        "LSP2"       -> "new_message_alert_itsa",
-        "LSP3"       -> "new_message_alert_itsa",
-        "LSP4"       -> "new_message_alert_itsa",
-        "LSP1_cy"    -> "new_message_alert_itsa_cy",
-        "LSP2_cy"    -> "new_message_alert_itsa_cy",
-        "LSP3_cy"    -> "new_message_alert_itsa_cy",
-        "LSP4_cy"    -> "new_message_alert_itsa_cy"
+        "ITSAUC1"    -> "new_message_alert_itsauc1"
       )
       itsaFormId.foreach { t =>
         emailTemplateFromMessageFormId(t._1) mustBe t._2
+      }
+    }
+
+    "map new ITSA formIds to `new_message_alert_itsa` temple" in {
+      val formIds = List(
+        "LSP1",
+        "LSP2",
+        "LSP3",
+        "LSP4"
+      )
+      formIds.foreach { t =>
+        emailTemplateFromMessageFormId(t) mustBe "new_message_alert_itsa"
+      }
+
+      val welshFormIds = List(
+        "LSP1_cy",
+        "LSP2_cy",
+        "LSP3_cy",
+        "LSP4_cy"
+      )
+      welshFormIds.foreach { t =>
+        emailTemplateFromMessageFormId(t) mustBe "new_message_alert_itsa_cy"
       }
     }
 
