@@ -110,6 +110,10 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcIossInt(value))
           }
+        case (Some("HMRC-IOSS-NETP"), Some(value)) =>
+          Reads[TaxIdWithName] { _ =>
+            JsSuccess(HmrcIossNetp(value))
+          }
         case (Some("HMRC-OSS-ORG"), Some(value)) =>
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcOssOrg(value))

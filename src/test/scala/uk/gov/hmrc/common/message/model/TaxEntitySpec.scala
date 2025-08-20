@@ -167,6 +167,12 @@ class TaxEntitySpec extends PlaySpec {
         Enrolments("HMRC-IOSS-INT~IntNumber~IN9001234567")
       ),
       (
+        "HMRC-IOSS-NETP",
+        TaxEntity(Regime.ioss, HmrcIossNetp("IM9001234567"), None),
+        "HmrcIossNetp",
+        Enrolments("HMRC-IOSS-NETP~IOSSNumber~IM9001234567")
+      ),
+      (
         "HMRC-OSS-ORG",
         TaxEntity(Regime.oss, HmrcOssOrg("999 9999 99"), None),
         "HmrcOssOrg",

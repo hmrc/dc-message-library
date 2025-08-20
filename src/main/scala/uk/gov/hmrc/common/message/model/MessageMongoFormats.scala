@@ -16,20 +16,21 @@
 
 package uk.gov.hmrc.common.message.model
 
-import java.time.{ Instant, LocalDate }
 import org.mongodb.scala.bson.ObjectId
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.*
-import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmceVatdecOrg, HmrcAdOrg, HmrcCusOrg, HmrcIossInt, HmrcIossOrg, HmrcOssOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
-import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
+import uk.gov.hmrc.common.message.model.TaxEntity.*
 import uk.gov.hmrc.domain.*
+import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
+import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus.Implicits.format
-import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
+
+import java.time.{ Instant, LocalDate }
 
 object MessageMongoFormats {
 
-  import MongoTaxIdentifierFormats._
+  import MongoTaxIdentifierFormats.*
   object DetailsFormatter {
     implicit val writes: OWrites[Details] = Json.writes[Details]
     // format: off
@@ -77,8 +78,8 @@ object MessageMongoFormats {
         taxEntity <- (__ \ "recipient").read[TaxEntity]
       } yield RenderUrl("sa-message-renderer", s"/messages/sa/${taxEntity.identifier.value}/${messageId.toString}")
 
+    import uk.gov.hmrc.common.message.model.EmailAlert.*
     import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats.Implicits.jatInstantFormat
-    import uk.gov.hmrc.common.message.model.EmailAlert._
 
     val reads1to21: Reads[
       (
@@ -399,6 +400,7 @@ object MongoTaxIdentifierFormats {
         :+ SerialisableTaxId("ETMPREGISTRATIONNUMBER", HmrcPptOrg.apply)
         :+ SerialisableTaxId("HMRC-IOSS-ORG", HmrcIossOrg.apply)
         :+ SerialisableTaxId("HMRC-IOSS-INT", HmrcIossInt.apply)
+        :+ SerialisableTaxId("HMRC-IOSS-NETP", HmrcIossNetp.apply)
         :+ SerialisableTaxId("HMRC-OSS-ORG", HmrcOssOrg.apply)
         :+ SerialisableTaxId("HMRC-AD-ORG", HmrcAdOrg.apply)
         :+ SerialisableTaxId("PSAID", HmrcPodsOrg.apply)
