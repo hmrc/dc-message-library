@@ -78,7 +78,7 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
       }
     }
 
-    "map new ITSA formIds to `new_message_alert_itsa` temple" in {
+    "map new ITSA formIds to default template `new_message_alert_itsa`" in {
       val formIds = List(
         "LSP1",
         "LSP2",
