@@ -71,7 +71,15 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
         "ITSAFD2"    -> "new_message_alert_itsafd2",
         "ITSAFD3"    -> "new_message_alert_itsafd3",
         "ITSAPOA-CN" -> "new_message_alert_itsapoa-cn",
-        "ITSAUC1"    -> "new_message_alert_itsauc1"
+        "ITSAUC1"    -> "new_message_alert_itsauc1",
+        "LSP1"       -> "new_message_alert_itsa",
+        "LSP2"       -> "new_message_alert_itsa",
+        "LSP3"       -> "new_message_alert_itsa",
+        "LSP4"       -> "new_message_alert_itsa",
+        "LSP1_cy"    -> "new_message_alert_itsa_cy",
+        "LSP2_cy"    -> "new_message_alert_itsa_cy",
+        "LSP3_cy"    -> "new_message_alert_itsa_cy",
+        "LSP4_cy"    -> "new_message_alert_itsa_cy"
       )
       itsaFormId.foreach { t =>
         emailTemplateFromMessageFormId(t._1) mustBe t._2
