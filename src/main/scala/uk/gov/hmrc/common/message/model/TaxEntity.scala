@@ -60,6 +60,7 @@ object TaxEntity {
       case TaxEntity(Regime.pods, HmrcPodsPpOrg(value), _) => Enrolments(s"HMRC-PODSPP-ORG~PSPID~$value")
       case TaxEntity(Regime.ioss, HmrcIossOrg(value), _)   => Enrolments(s"HMRC-IOSS-ORG~IOSSNumber~$value")
       case TaxEntity(Regime.ioss, HmrcIossInt(value), _)   => Enrolments(s"HMRC-IOSS-INT~IntNumber~$value")
+      case TaxEntity(Regime.ioss, HmrcIossNetp(value), _)  => Enrolments(s"HMRC-IOSS-NETP~IOSSNumber~$value")
       case TaxEntity(Regime.oss, HmrcOssOrg(value), _)     => Enrolments(s"HMRC-OSS-ORG~VRN~$value")
       case TaxEntity(Regime.ad, HmrcAdOrg(value), _)       => Enrolments(s"HMRC-AD-ORG~APPAID~$value")
       case r                                               => throw new RuntimeException(s"unsupported tax entity $r")
@@ -85,6 +86,7 @@ object TaxEntity {
       case _: HmrcPodsPpOrg                              => Regime.pods
       case _: HmrcIossOrg                                => Regime.ioss
       case _: HmrcIossInt                                => Regime.ioss
+      case _: HmrcIossNetp                               => Regime.ioss
       case _: HmrcAdOrg                                  => Regime.ad
       case x                                             => throw new RuntimeException(s"unsupported identifier $x")
     }
@@ -195,6 +197,18 @@ object TaxEntity {
     implicit val orgWrite: Writes[HmrcIossInt] = new SimpleObjectWrites[HmrcIossInt](_.value)
     implicit val orgRead: Reads[HmrcIossInt] =
       new SimpleObjectReads[HmrcIossInt]("HMRC-IOSS-INT", HmrcIossInt.apply)
+  }
+
+  case class HmrcIossNetp(value: String) extends TaxIdentifier with SimpleName {
+    override def toString: String = value
+
+    val name = "HMRC-IOSS-NETP"
+  }
+
+  object HmrcIossNetp extends (String => HmrcIossNetp) {
+    implicit val orgWrite: Writes[HmrcIossNetp] = new SimpleObjectWrites[HmrcIossNetp](_.value)
+    implicit val orgRead: Reads[HmrcIossNetp] =
+      new SimpleObjectReads[HmrcIossNetp]("HMRC-IOSS-NETP", HmrcIossNetp.apply)
   }
 
   case class HmrcAdOrg(value: String) extends TaxIdentifier with SimpleName {
