@@ -97,29 +97,29 @@ trait AlertEmailTemplateMapper {
   // scalastyle:off
   def emailTemplateFromMessageFormId(formId: String, requestAlertTemplateId: Option[String] = None): String =
     (formId.toLowerCase, requestAlertTemplateId) match {
-      case (_, Some(templateId)) if templateId != "newMessageAlert"       => templateId
-      case ("atsv2_cy", _)                                                => "annual_tax_summaries_message_alert_cy"
-      case ("atsv2", _)                                                   => "annual_tax_summaries_message_alert"
-      case (form, _) if form.startsWith("sa316")                          => "newMessageAlert_SA316"
-      case (form, _) if form.startsWith("sa309")                          => "newMessageAlert_SA309"
-      case (form, _) if form.startsWith("sa300")                          => "newMessageAlert_SA300"
-      case (form, _) if form.startsWith("ss300")                          => "newMessageAlert_SS300"
-      case (form, _) if form.startsWith("p800") && form.endsWith("_cy")   => "newMessageAlert_P800_cy"
-      case (form, _) if form.startsWith("p800")                           => "newMessageAlert_P800"
-      case (form, _) if form.startsWith("pa302") && form.endsWith("_cy")  => "newMessageAlert_PA302_cy"
-      case (form, _) if form.startsWith("pa302")                          => "newMessageAlert_PA302"
-      case (form, _) if form.startsWith("lpi1") && form.endsWith("_cy")   => "newMessageAlert_LPI1_cy"
-      case (form, _) if form.startsWith("lpi1")                           => "newMessageAlert_LPI1"
-      case (form, _) if form.startsWith("lpp4") && form.endsWith("_cy")   => "newMessageAlert_LPP4_cy"
-      case (form, _) if form.startsWith("lpp4")                           => "newMessageAlert_LPP4"
-      case (form, _) if form.startsWith("itsa")                           => getTemplateId(form, itsaTemplates, "itsa")
-      case (form, _) if form.startsWith("lsp") && form.endsWith("_cy")    => "new_message_alert_itsa_cy"
-      case (form, _) if form.startsWith("lsp")                            => "new_message_alert_itsa"
-      case (form, _) if form.endsWith("agioss")                           => "new_message_alert_ioss_netp"
-      case (form, _) if form.endsWith("gioss")                            => "new_message_alert_gioss"
-      case (form, _) if form.endsWith("ioss") || form.endsWith("ioss_cy") => getTemplateId(form, iossTemplates, "ioss")
-      case (form, _) if form.endsWith("oss")                              => "new_message_alert_ioss"
-      case (form, _) if form.endsWith("oss_cy")                           => "new_message_alert_ioss_cy"
+      case (_, Some(templateId)) if templateId != "newMessageAlert"        => templateId
+      case ("atsv2_cy", _)                                                 => "annual_tax_summaries_message_alert_cy"
+      case ("atsv2", _)                                                    => "annual_tax_summaries_message_alert"
+      case (form, _) if form.startsWith("sa316")                           => "newMessageAlert_SA316"
+      case (form, _) if form.startsWith("sa309")                           => "newMessageAlert_SA309"
+      case (form, _) if form.startsWith("sa300")                           => "newMessageAlert_SA300"
+      case (form, _) if form.startsWith("ss300")                           => "newMessageAlert_SS300"
+      case (form, _) if form.startsWith("p800") && form.endsWith("_cy")    => "newMessageAlert_P800_cy"
+      case (form, _) if form.startsWith("p800")                            => "newMessageAlert_P800"
+      case (form, _) if form.startsWith("pa302") && form.endsWith("_cy")   => "newMessageAlert_PA302_cy"
+      case (form, _) if form.startsWith("pa302")                           => "newMessageAlert_PA302"
+      case (form, _) if form.startsWith("lpi1") && form.endsWith("_cy")    => "newMessageAlert_LPI1_cy"
+      case (form, _) if form.startsWith("lpi1")                            => "newMessageAlert_LPI1"
+      case (form, _) if form.startsWith("lpp4") && form.endsWith("_cy")    => "newMessageAlert_LPP4_cy"
+      case (form, _) if form.startsWith("lpp4")                            => "newMessageAlert_LPP4"
+      case (form, _) if form.startsWith("itsa")                            => getTemplateId(form, itsaTemplates, "itsa")
+      case (form, _) if form.startsWith("lsp") && form.endsWith("itsa_cy") => "new_message_alert_itsa_cy"
+      case (form, _) if form.startsWith("lsp") && form.endsWith("itsa")    => "new_message_alert_itsa"
+      case (form, _) if form.endsWith("agioss")                            => "new_message_alert_ioss_netp"
+      case (form, _) if form.endsWith("gioss")                             => "new_message_alert_gioss"
+      case (form, _) if form.endsWith("ioss") || form.endsWith("ioss_cy")  => getTemplateId(form, iossTemplates, "ioss")
+      case (form, _) if form.endsWith("oss")                               => "new_message_alert_ioss"
+      case (form, _) if form.endsWith("oss_cy")                            => "new_message_alert_ioss_cy"
       case (form, _) =>
         templatesToMapToNewMessageAlert.find(fId => form.startsWith(fId.toLowerCase)) match {
           case Some(formId)              => s"newMessageAlert_$formId"

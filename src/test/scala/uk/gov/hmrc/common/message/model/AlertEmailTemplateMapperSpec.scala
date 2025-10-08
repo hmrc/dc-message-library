@@ -80,10 +80,10 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
 
     "map new ITSA formIds to default template `new_message_alert_itsa`" in {
       val formIds = List(
-        "LSP1",
-        "LSP2",
-        "LSP3",
-        "LSP4",
+        "LSP1_ITSA",
+        "LSP2_ITSA",
+        "LSP3_ITSA",
+        "LSP4_ITSA",
         "ITSAMIG1"
       )
       formIds.foreach { t =>
@@ -91,10 +91,10 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
       }
 
       val welshFormIds = List(
-        "LSP1_cy",
-        "LSP2_cy",
-        "LSP3_cy",
-        "LSP4_cy",
+        "LSP1_ITSA_cy",
+        "LSP2_ITSA_cy",
+        "LSP3_ITSA_cy",
+        "LSP4_ITSA_cy",
         "ITSAMIG1_cy"
       )
       welshFormIds.foreach { t =>
