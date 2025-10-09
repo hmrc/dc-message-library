@@ -16,15 +16,13 @@
 
 package uk.gov.hmrc.common.message.model
 
-import uk.gov.hmrc.domain.{ Generator, Nino, SaUtr, SaUtrGenerator }
+import uk.gov.hmrc.domain.{ Nino, NinoGenerator, SaUtr, SaUtrGenerator }
 
 import java.util.UUID
-import scala.util.Random
 
 object GenerateRandom {
-  val rand = new Random()
-  val ninoGenerator = new Generator(rand)
-  val utrGenerator = new SaUtrGenerator(rand)
+  val ninoGenerator: NinoGenerator = NinoGenerator()
+  val utrGenerator: SaUtrGenerator = SaUtrGenerator()
 
   def email(): String = s"${UUID.randomUUID()}@TEST.com"
 
