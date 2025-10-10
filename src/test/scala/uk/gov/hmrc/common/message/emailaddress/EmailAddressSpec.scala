@@ -68,10 +68,12 @@ class EmailAddressSpec extends AnyWordSpec with ScalaCheckPropertyChecks with Ma
       val e: String = EmailAddress("test@domain.com")
       e should be("test@domain.com")
     }
+
     "toString to a String of the address" in {
       val e = EmailAddress("test@domain.com")
       e.toString should be("test@domain.com")
     }
+
     "have a local part" in forAll(validMailbox, validDomain) { (mailbox, domain) =>
       val exampleAddr = EmailAddress(s"$mailbox@$domain")
       exampleAddr.mailbox should (be(a[Mailbox]) and have(Symbol("value")(mailbox)))
@@ -83,9 +85,11 @@ class EmailAddressSpec extends AnyWordSpec with ScalaCheckPropertyChecks with Ma
     "be extractable from an address" in forAll(validMailbox, validDomain) { (mailbox, domain) =>
       EmailAddress(s"$mailbox@$domain").domain should (be(a[Domain]) and have(Symbol("value")(domain)))
     }
+
     "be creatable for a valid domain" in forAll(validDomain) { domain =>
       EmailAddress.Domain(domain) should (be(a[Domain]) and have(Symbol("value")(domain)))
     }
+
     "not create for invalid domains" in {
       an[IllegalArgumentException] should be thrownBy EmailAddress.Domain("")
       an[IllegalArgumentException] should be thrownBy EmailAddress.Domain("e.")
@@ -93,20 +97,25 @@ class EmailAddressSpec extends AnyWordSpec with ScalaCheckPropertyChecks with Ma
       an[IllegalArgumentException] should be thrownBy EmailAddress.Domain(".com")
       an[IllegalArgumentException] should be thrownBy EmailAddress.Domain("*domain")
     }
+
     "compare equal if identical" in forAll(validDomain, validMailbox, validMailbox) { (domain, mailboxA, mailboxB) =>
       val exampleA = EmailAddress(s"$mailboxA@$domain")
       val exampleB = EmailAddress(s"$mailboxB@$domain")
       exampleA.domain should equal(exampleB.domain)
     }
+
     "not compare equal if completely different" in forAll(validMailbox, validDomain, validDomain) {
       (mailbox, domainA, domainB) =>
         val exampleA = EmailAddress(s"$mailbox@$domainA")
         val exampleB = EmailAddress(s"$mailbox@$domainB")
+
         exampleA.domain should not equal exampleB.domain
     }
+
     "toString to a String of the domain" in {
       Domain("domain.com").toString should be("domain.com")
     }
+
     "implicitly convert to a String of the domain" in {
       val e: String = Domain("domain.com")
       e should be("domain.com")
@@ -118,20 +127,24 @@ class EmailAddressSpec extends AnyWordSpec with ScalaCheckPropertyChecks with Ma
     "be extractable from an address" in forAll(validMailbox, validDomain) { (mailbox, domain) =>
       EmailAddress(s"$mailbox@$domain").mailbox should (be(a[Mailbox]) and have(Symbol("value")(mailbox)))
     }
+
     "compare equal" in forAll(validMailbox, validDomain, validDomain) { (mailbox, domainA, domainB) =>
       val exampleA = EmailAddress(s"$mailbox@$domainA")
       val exampleB = EmailAddress(s"$mailbox@$domainB")
       exampleA.mailbox should equal(exampleB.mailbox)
     }
+
     "not compare equal if completely different" in forAll(validDomain, validMailbox, validMailbox) {
       (domain, mailboxA, mailboxB) =>
         val exampleA = EmailAddress(s"$mailboxA@$domain")
         val exampleB = EmailAddress(s"$mailboxB@$domain")
         exampleA.mailbox should not equal exampleB.mailbox
     }
+
     "toString to a String of the domain" in {
       EmailAddress("test@domain.com").mailbox.toString should be("test")
     }
+
     "implicitly convert to a String of the domain" in {
       val e: String = EmailAddress("test@domain.com").mailbox
       e should be("test")
