@@ -34,7 +34,7 @@ trait AlertEmailTemplateMapper {
     "CA001"
   )
 
-  lazy val itsaTemplates = Map(
+  lazy val itsaTemplates: Map[String, String] = Map(
     "itsaqu1"       -> "new_message_alert_itsaqu1",
     "itsaqu1_cy"    -> "new_message_alert_itsaqu1_cy",
     "itsaqu2"       -> "new_message_alert_itsaqu2",
@@ -65,7 +65,7 @@ trait AlertEmailTemplateMapper {
     "itsauc1_cy"    -> "new_message_alert_itsauc1_cy"
   )
 
-  lazy val iossTemplates = Map(
+  lazy val iossTemplates: Map[String, String] = Map(
     "m01ioss"     -> "new_message_alert_m01_ioss",
     "m01ioss_cy"  -> "new_message_alert_m01_ioss_cy",
     "m01aioss"    -> "new_message_alert_m01a_ioss",
@@ -110,6 +110,8 @@ trait AlertEmailTemplateMapper {
       case (form, _) if form.startsWith("pa302")                           => "newMessageAlert_PA302"
       case (form, _) if form.startsWith("lpi1") && form.endsWith("_cy")    => "newMessageAlert_LPI1_cy"
       case (form, _) if form.startsWith("lpi1")                            => "newMessageAlert_LPI1"
+      case (form, _) if isFormIdForDefaultItsaTemplate(form)               => "new_message_alert_itsa"
+      case (form, _) if isFormIdForDefaultItsaTemplate(form, "cy")         => "new_message_alert_itsa_cy"
       case (form, _) if form.startsWith("lpp4") && form.endsWith("_cy")    => "newMessageAlert_LPP4_cy"
       case (form, _) if form.startsWith("lpp4")                            => "newMessageAlert_LPP4"
       case (form, _) if form.startsWith("ad") && form.endsWith("_cy")      => "newMessageAlert_AD_cy"
@@ -136,5 +138,13 @@ trait AlertEmailTemplateMapper {
       case _                           => s"new_message_alert_$default"
     }
 
+  private def isFormIdForDefaultItsaTemplate(formId: String, lang: String = "en"): Boolean = {
+    val itsaFormIds_EN = List("lpp1a_itsa", "lpp1b_itsa", "lpp2_itsa", "lpp4_itsa", "par1_itsa")
+    val itsaFormIds_CY = List("lpp1a_itsa_cy", "lpp1b_itsa_cy", "lpp2_itsa_cy", "lpp4_itsa_cy", "par1_itsa_cy")
+
+    val formIdMap = Map("en" -> itsaFormIds_EN, "cy" -> itsaFormIds_CY)
+
+    formIdMap(lang).contains(formId)
+  }
   // scalastyle:on
 }
