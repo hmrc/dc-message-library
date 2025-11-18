@@ -16,7 +16,27 @@
 
 package uk.gov.hmrc.common.message.model
 
-trait TemplateId {
-  val ITSA_DEFAULT_TEMPLATE_EN = "new_message_alert_itsa"
-  val ITSA_DEFAULT_TEMPLATE_CY = "new_message_alert_itsa_cy"
+import org.scalatestplus.play.PlaySpec
+
+class FormIdsSpec extends PlaySpec {
+
+  "ITSA_FORM_IDS_EN" should {
+
+    "return correct list of itsa form ids for English in lowercase" in {
+      FormIds.ITSA_FORM_IDS_EN mustBe List("lpp1a_itsa", "lpp1b_itsa", "lpp2_itsa", "lpp4_itsa", "par1_itsa")
+    }
+  }
+
+  "ITSA_FORM_IDS_CY" should {
+
+    "return correct list of itsa form ids for Welsh in lowercase" in {
+      FormIds.ITSA_FORM_IDS_CY mustBe List(
+        "lpp1a_itsa_cy",
+        "lpp1b_itsa_cy",
+        "lpp2_itsa_cy",
+        "lpp4_itsa_cy",
+        "par1_itsa_cy"
+      )
+    }
+  }
 }

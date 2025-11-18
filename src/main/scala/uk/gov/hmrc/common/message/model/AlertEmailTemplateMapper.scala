@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.common.message.model
 
+import uk.gov.hmrc.common.message.model.FormIds.{ ITSA_FORM_IDS_CY, ITSA_FORM_IDS_EN }
+
 trait AlertEmailTemplateMapper extends TemplateId {
 
   val templatesToMapToNewMessageAlert: Seq[String] = Seq(
@@ -110,15 +112,15 @@ trait AlertEmailTemplateMapper extends TemplateId {
       case (form, _) if form.startsWith("pa302")                           => "newMessageAlert_PA302"
       case (form, _) if form.startsWith("lpi1") && form.endsWith("_cy")    => "newMessageAlert_LPI1_cy"
       case (form, _) if form.startsWith("lpi1")                            => "newMessageAlert_LPI1"
-      case (form, _) if isFormIdOfDefaultItsaTemplate(form)                => DEFAULT_ITSA_TEMPLATE_EN
-      case (form, _) if isFormIdOfDefaultItsaTemplate(form, "cy")          => DEFAULT_ITSA_TEMPLATE_CY
+      case (form, _) if ITSA_FORM_IDS_EN.contains(form)                    => ITSA_DEFAULT_TEMPLATE_EN
+      case (form, _) if ITSA_FORM_IDS_CY.contains(form)                    => ITSA_DEFAULT_TEMPLATE_CY
       case (form, _) if form.startsWith("lpp4") && form.endsWith("_cy")    => "newMessageAlert_LPP4_cy"
       case (form, _) if form.startsWith("lpp4")                            => "newMessageAlert_LPP4"
       case (form, _) if form.startsWith("ad") && form.endsWith("_cy")      => "newMessageAlert_AD_cy"
       case (form, _) if form.startsWith("ad")                              => "newMessageAlert_AD"
       case (form, _) if form.startsWith("itsa")                            => getTemplateId(form, itsaTemplates, "itsa")
-      case (form, _) if form.startsWith("lsp") && form.endsWith("itsa_cy") => DEFAULT_ITSA_TEMPLATE_CY
-      case (form, _) if form.startsWith("lsp") && form.endsWith("itsa")    => DEFAULT_ITSA_TEMPLATE_EN
+      case (form, _) if form.startsWith("lsp") && form.endsWith("itsa_cy") => ITSA_DEFAULT_TEMPLATE_CY
+      case (form, _) if form.startsWith("lsp") && form.endsWith("itsa")    => ITSA_DEFAULT_TEMPLATE_EN
       case (form, _) if form.endsWith("agioss")                            => "new_message_alert_ioss_netp"
       case (form, _) if form.endsWith("gioss")                             => "new_message_alert_gioss"
       case (form, _) if form.endsWith("ioss") || form.endsWith("ioss_cy")  => getTemplateId(form, iossTemplates, "ioss")
@@ -137,14 +139,5 @@ trait AlertEmailTemplateMapper extends TemplateId {
       case _ if formId.endsWith("_cy") => s"new_message_alert_${default}_cy"
       case _                           => s"new_message_alert_$default"
     }
-
-  private def isFormIdOfDefaultItsaTemplate(formId: String, lang: String = "en"): Boolean = {
-    val itsaFormIds_EN = List("lpp1a_itsa", "lpp1b_itsa", "lpp2_itsa", "lpp4_itsa", "par1_itsa")
-    val itsaFormIds_CY = List("lpp1a_itsa_cy", "lpp1b_itsa_cy", "lpp2_itsa_cy", "lpp4_itsa_cy", "par1_itsa_cy")
-
-    val formIdMap = Map("en" -> itsaFormIds_EN, "cy" -> itsaFormIds_CY)
-
-    formIdMap(lang).contains(formId)
-  }
   // scalastyle:on
 }
