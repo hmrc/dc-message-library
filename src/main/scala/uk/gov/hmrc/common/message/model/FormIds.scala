@@ -17,9 +17,9 @@
 package uk.gov.hmrc.common.message.model
 
 object FormIds {
-  val ITSA_FORM_IDS_EN: List[String] =
-    List("LPP1A_ITSA", "LPP1B_ITSA", "LPP2_ITSA", "LPP4_ITSA", "PAR1_ITSA").map(_.toLowerCase)
+  val ITSA_FORM_IDS_EN: Seq[String] =
+    Seq("LPP1A_ITSA", "LPP1B_ITSA", "LPP2_ITSA", "LPP4_ITSA", "PAR1_ITSA").map(_.toLowerCase)
 
-  val ITSA_FORM_IDS_CY: List[String] =
-    List("LPP1A_ITSA_cy", "LPP1B_ITSA_cy", "LPP2_ITSA_cy", "LPP4_ITSA_cy", "PAR1_ITSA_cy").map(_.toLowerCase)
+  val ITSA_FORM_IDS_CY: Seq[String] =
+    Seq("LPP1A_ITSA_cy", "LPP1B_ITSA_cy", "LPP2_ITSA_cy", "LPP4_ITSA_cy", "PAR1_ITSA_cy").map(_.toLowerCase)
 }

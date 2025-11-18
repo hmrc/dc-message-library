@@ -133,6 +133,7 @@ trait AlertEmailTemplateMapper extends TemplateId {
           case _                         => "newMessageAlert"
         }
     }
+
   private def getTemplateId(formId: String, templates: Map[String, String], default: String): String =
     templates.find(r => r._1.equals(formId)) match {
       case Some((_, templateId))       => templateId
