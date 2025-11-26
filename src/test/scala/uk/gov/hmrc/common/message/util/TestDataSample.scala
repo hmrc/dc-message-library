@@ -18,15 +18,20 @@ package uk.gov.hmrc.common.message.util
 
 import java.time.temporal.ChronoUnit.DAYS
 import uk.gov.hmrc.common.message.model.LifecycleStatusType.Submitted
-import uk.gov.hmrc.common.message.model.{ Lifecycle, LifecycleStatus, Notification }
+import uk.gov.hmrc.common.message.model.{ Lifecycle, LifecycleStatus, LifecycleStatusType, Notification }
 
 import java.time.Instant
 
 object TestDataSample {
+
+  val TWO = 2
+  val THREE = 3
   val FIVE = 5
+  val SIX = 6
 
   val TEST_TEMPLATE_ID = "test_template"
   val TEST_TEMPLATE_ID_MAP: Map[String, String] = Map("SA309A_CY" -> "myTemplateId_cy", "SA309A" -> "myTemplateId")
+  val TEST_ENVELOP_ID = "test_envelopeId"
 
   private val TEST_EPOCH_SECONDS = 112345678912334L
   val TEST_TIME_INSTANT: Instant = Instant.ofEpochSecond(TEST_EPOCH_SECONDS)

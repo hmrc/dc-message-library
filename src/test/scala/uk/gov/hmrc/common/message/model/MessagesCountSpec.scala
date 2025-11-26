@@ -17,16 +17,17 @@
 package uk.gov.hmrc.common.message.model
 
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json.Json
+import play.api.libs.json.{ JsResultException, Json }
+import uk.gov.hmrc.common.message.util.TestDataSample.{ FIVE, SIX, THREE, TWO }
 
-class MessageCountSpec extends PlaySpec {
+class MessagesCountSpec extends PlaySpec {
 
-  "MessageCount" must {
+  "(+)" must {
 
     "add both read and unread when + is applied" in {
-      MessagesCount(1, 0) + MessagesCount(5, 0) mustBe MessagesCount(6, 0)
-      MessagesCount(0, 1) + MessagesCount(0, 2) mustBe MessagesCount(0, 3)
-      MessagesCount(1, 1) + MessagesCount(5, 2) mustBe MessagesCount(6, 3)
+      MessagesCount(1, 0) + MessagesCount(FIVE, 0) mustBe MessagesCount(SIX, 0)
+      MessagesCount(0, 1) + MessagesCount(0, TWO) mustBe MessagesCount(0, THREE)
+      MessagesCount(1, 1) + MessagesCount(FIVE, TWO) mustBe MessagesCount(SIX, THREE)
     }
 
     "be the same when adding empty" in {
@@ -40,5 +41,30 @@ class MessageCountSpec extends PlaySpec {
       val expectedResult = Json.obj("total" -> 1, "unread" -> 0)
       result mustBe expectedResult
     }
+  }
+
+  "formatMessageCount" should {
+    import MessagesCount.formatMessageCount
+
+    "read the json correctly" in new Setup {
+      Json.parse(msgCountJsonString).as[MessagesCount] mustBe msgCount
+    }
+
+    "throw exception for the invalid json" in new Setup {
+      intercept[JsResultException] {
+        Json.parse(msgCountInvalidJsonString).as[MessagesCount]
+      }
+    }
+
+    "write the object correctly" in new Setup {
+      Json.toJson(msgCount) mustBe Json.parse(msgCountJsonString)
+    }
+  }
+
+  trait Setup {
+    val msgCount: MessagesCount = MessagesCount(total = FIVE, unread = TWO)
+
+    val msgCountJsonString: String = """{"total":5,"unread":2}""".stripMargin
+    val msgCountInvalidJsonString: String = """{"unread":2}""".stripMargin
   }
 }

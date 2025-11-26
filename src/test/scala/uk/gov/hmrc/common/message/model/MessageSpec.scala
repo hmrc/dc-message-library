@@ -20,9 +20,10 @@ import java.time.LocalDate
 import org.mongodb.scala.bson.ObjectId
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{ JsNull, JsObject, JsResultException, JsString, JsValue, Json }
+import uk.gov.hmrc.common.message.model.LifecycleStatusType.Submitted
 import uk.gov.hmrc.common.message.model.MessageRESTFormats.*
 import uk.gov.hmrc.common.message.util.MessageFixtures.testMessageWithContent
-import uk.gov.hmrc.common.message.util.TestDataSample.{ TEST_LIFECYCLE, TEST_TEMPLATE_ID }
+import uk.gov.hmrc.common.message.util.TestDataSample.{ TEST_ENVELOP_ID, TEST_LIFECYCLE, TEST_TEMPLATE_ID }
 import uk.gov.hmrc.domain.{ HmrcMtdItsa, Nino }
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
@@ -315,9 +316,29 @@ class MessageSpec extends PlaySpec {
     }
   }
 
+  "MessageStatus.format" should {
+    import MessageStatus.format
+
+    "read the json correctly" in new Setup {
+      Json.parse(msgStatusJsonString).as[MessageStatus] mustBe msgStatus
+    }
+
+    "throw exception for the invalid json" in new Setup {
+      intercept[JsResultException] {
+        Json.parse(msgStatusInvalidJsonString).as[MessageStatus]
+      }
+    }
+
+    "write the object correctly" in new Setup {
+      Json.toJson(msgStatus) mustBe Json.parse(msgStatusJsonString)
+    }
+  }
+
   trait Setup {
     val msgContentParameters: MessageContentParameters =
       MessageContentParameters(data = JsNull, templateId = TEST_TEMPLATE_ID)
+
+    val msgStatus: MessageStatus = MessageStatus(envelopeId = Some(TEST_ENVELOP_ID), status = Some(Submitted))
 
     val lifeCycleJsonString: String =
       """{
@@ -335,5 +356,8 @@ class MessageSpec extends PlaySpec {
 
     val msgContentParametersJsString: String = """{"data":null,"templateId":"test_template"}""".stripMargin
     val msgContentParametersInvalidJsString: String = """{"templateId":"test_template"}""".stripMargin
+
+    val msgStatusJsonString: String = """{"envelopeId":"test_envelopeId","status":"SUBMITTED"}""".stripMargin
+    val msgStatusInvalidJsonString: String = """{"envelopeId":5,"status":"SUBMITTED"}""".stripMargin
   }
 }
