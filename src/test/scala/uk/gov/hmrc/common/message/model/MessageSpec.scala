@@ -19,9 +19,10 @@ package uk.gov.hmrc.common.message.model
 import java.time.LocalDate
 import org.mongodb.scala.bson.ObjectId
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json.{ JsObject, JsString, JsValue, Json }
-import uk.gov.hmrc.common.message.model.MessageRESTFormats._
+import play.api.libs.json.{ JsNull, JsObject, JsResultException, JsString, JsValue, Json }
+import uk.gov.hmrc.common.message.model.MessageRESTFormats.*
 import uk.gov.hmrc.common.message.util.MessageFixtures.testMessageWithContent
+import uk.gov.hmrc.common.message.util.TestDataSample.{ TEST_LIFECYCLE, TEST_TEMPLATE_ID }
 import uk.gov.hmrc.domain.{ HmrcMtdItsa, Nino }
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
@@ -276,5 +277,63 @@ class MessageSpec extends PlaySpec {
           contain("nino" -> "CE123456D")
       }
     }
+  }
+
+  "Lifecycle.lifecycleFormat" must {
+    import Lifecycle.lifecycleFormat
+
+    "read the json correctly" in new Setup {
+      Json.parse(lifeCycleJsonString).as[Lifecycle] mustBe TEST_LIFECYCLE
+    }
+
+    "throw exception for the invalid json" in new Setup {
+      intercept[JsResultException] {
+        Json.parse(lifeCycleInvalidJsonString).as[Lifecycle]
+      }
+    }
+
+    "write the object correctly" in new Setup {
+      Json.toJson(TEST_LIFECYCLE) mustBe Json.parse(lifeCycleJsonString)
+    }
+  }
+
+  "MessageContentParameters.messageTemplateFormats" should {
+    import MessageContentParameters.messageTemplateFormats
+
+    "read the json correctly" in new Setup {
+      Json.parse(msgContentParametersJsString).as[MessageContentParameters] mustBe msgContentParameters
+    }
+
+    "throw exception for the invalid json" in new Setup {
+      intercept[JsResultException] {
+        Json.parse(msgContentParametersInvalidJsString).as[MessageContentParameters]
+      }
+    }
+
+    "write the object correctly" in new Setup {
+      Json.toJson(msgContentParameters) mustBe Json.parse(msgContentParametersJsString)
+    }
+  }
+
+  trait Setup {
+    val msgContentParameters: MessageContentParameters =
+      MessageContentParameters(data = JsNull, templateId = TEST_TEMPLATE_ID)
+
+    val lifeCycleJsonString: String =
+      """{
+        |"status":{"name":"SUBMITTED","updated":"+3562062-11-04T15:12:14Z"},
+        |"startedAt":"+3562062-11-03T15:12:14Z",
+        |"notification":{"count":5,"lastSent":"+3562062-11-03T15:12:14Z"}
+        |}""".stripMargin
+
+    val lifeCycleInvalidJsonString: String =
+      """{
+        |"status":{"updated":"+3562062-11-04T15:12:14Z"},
+        |"startedAt":"+3562062-11-03T15:12:14Z",
+        |"notification":{"count":5,"lastSent":"+3562062-11-03T15:12:14Z"}
+        |}""".stripMargin
+
+    val msgContentParametersJsString: String = """{"data":null,"templateId":"test_template"}""".stripMargin
+    val msgContentParametersInvalidJsString: String = """{"templateId":"test_template"}""".stripMargin
   }
 }

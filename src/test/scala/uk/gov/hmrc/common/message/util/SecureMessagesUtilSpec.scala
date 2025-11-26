@@ -21,6 +21,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.libs.json.JsValue
 import uk.gov.hmrc.common.message.model.*
 import uk.gov.hmrc.domain.HmrcMtdVat
 
@@ -93,7 +94,7 @@ class SecureMessageUtilSpec extends AnyWordSpecLike with MockitoSugar with Match
 }
 
 trait TestData {
-  val legacyContent =
+  val legacyContent: String =
     """
       |<p>You need to file a Self Assessment tax return for the 2021 to 2022 tax year if you haven't already. The tax year ended on 5 April 2022.</p>
       |<p>You must file your online return by 31 January 2023.</p>
@@ -105,7 +106,7 @@ trait TestData {
       |<p>You'll have to buy <a href=\"https://www.gov.uk/government/publications/self-assessment-commercial-software-suppliers\">commercial software</a> if you need to send a partnership or trust and estate tax return online, or if you're a minister of religion or lived abroad as a non-resident.</p>
       |""".stripMargin
 
-  val validContentWithSection =
+  val validContentWithSection: String =
     """<section lang="en" subject="Test Subject">
       |    <p>You need to file a Self Assessment tax return for the 2021 to 2022 tax year if you haven't already. The tax year ended on 5 April 2022.</p>
       |    <p>You must file your online return by 31 January 2023.</p>
@@ -122,7 +123,7 @@ trait TestData {
       |    and estate tax return online, or if you're a minister of religion or lived abroad as a non-resident.</p>
       |</section>""".stripMargin
 
-  val inValidContentWithMissingInfo =
+  val inValidContentWithMissingInfo: String =
     """<section>
       |    <p>You need to file a Self Assessment tax return for the 2021 to 2022 tax year if you haven't already. The tax year ended on 5 April 2022.</p>
       |    <p>You must file your online return by 31 January 2023.</p>
@@ -139,21 +140,21 @@ trait TestData {
       |    and estate tax return online, or if you're a minister of religion or lived abroad as a non-resident.</p>
       |</section>""".stripMargin
 
-  val newMessage = Resources.readJson("messages/controller/v3/GMC.json")
-  val newMessageV4 = Resources.readJson("messages/controller/v4/GMC.json")
+  val newMessage: JsValue = Resources.readJson("messages/controller/v3/GMC.json")
+  val newMessageV4: JsValue = Resources.readJson("messages/controller/v4/GMC.json")
 
-  val newMessage_withNewContent = Resources.readJson("messages/controller/v3/GMC_New_Content.json")
-  val newMessageV4_withNewContent = Resources.readJson("messages/controller/v4/GMC_New_Content.json")
+  val newMessage_withNewContent: JsValue = Resources.readJson("messages/controller/v3/GMC_New_Content.json")
+  val newMessageV4_withNewContent: JsValue = Resources.readJson("messages/controller/v4/GMC_New_Content.json")
 
-  val newMessage_withNewContentWithoutSubject =
+  val newMessage_withNewContentWithoutSubject: JsValue =
     Resources.readJson("messages/controller/v3/GMC_New_Content_without_subject.json")
-  val newMessageV4_withNewContentWithoutSubject =
+
+  val newMessageV4_withNewContentWithoutSubject: JsValue =
     Resources.readJson("messages/controller/v4/GMC_New_Content_without_subject.json")
 
-  val newMessage_withVRN = Resources.readJson("messages/controller/v3/GMC_VRN.json")
-  val newMessageV4_withVRN = Resources.readJson("messages/controller/v4/GMC_VRN.json")
+  val newMessage_withVRN: JsValue = Resources.readJson("messages/controller/v3/GMC_VRN.json")
+  val newMessageV4_withVRN: JsValue = Resources.readJson("messages/controller/v4/GMC_VRN.json")
 
-  val newMessageNonGmc = Resources.readJson("messages/controller/v3/NON_GMC.json")
-  val newMessageNonGmcV4 = Resources.readJson("messages/controller/v4/NON_GMC.json")
-
+  val newMessageNonGmc: JsValue = Resources.readJson("messages/controller/v3/NON_GMC.json")
+  val newMessageNonGmcV4: JsValue = Resources.readJson("messages/controller/v4/NON_GMC.json")
 }

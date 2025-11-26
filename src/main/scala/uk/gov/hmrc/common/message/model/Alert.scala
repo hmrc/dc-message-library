@@ -19,7 +19,7 @@ package uk.gov.hmrc.common.message.model
 import play.api.libs.json.{ Format, Json }
 
 final case class Alert(templateId: String, parameters: Option[Map[String, String]])
+
 object Alert {
-  implicit val alertFormat: Format[Alert] =
-    Json.format[Alert]
+  implicit val alertFormat: Format[Alert] = Json.format[Alert]
 }
