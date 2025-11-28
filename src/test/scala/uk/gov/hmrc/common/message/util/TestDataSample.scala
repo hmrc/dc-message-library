@@ -18,11 +18,13 @@ package uk.gov.hmrc.common.message.util
 
 import java.time.temporal.ChronoUnit.DAYS
 import uk.gov.hmrc.common.message.model.LifecycleStatusType.Submitted
-import uk.gov.hmrc.common.message.model.{ Lifecycle, LifecycleStatus, LifecycleStatusType, Notification }
+import uk.gov.hmrc.common.message.model.{ ExternalRef, Lifecycle, LifecycleStatus, LifecycleStatusType, Notification, RenderUrl }
+import uk.gov.hmrc.domain.SaUtr
 
-import java.time.Instant
+import java.time.{ Instant, LocalDate }
 
 object TestDataSample {
+  val EMPTY_STRING = ""
 
   val TWO = 2
   val THREE = 3
@@ -43,4 +45,27 @@ object TestDataSample {
 
   val TEST_LIFECYCLE: Lifecycle =
     Lifecycle(status = TEST_LIFECYCLE_STATUS, startedAt = TEST_TIME_INSTANT, notification = Some(TEST_NOTIFICATION))
+
+  val TEST_FORM_TYPE = "test_type"
+  val TEST_BATCH_ID = "123456"
+
+  val TEST_YEAR = 2025
+  val TEST_MONTH = 11
+  val TEST_DAY = 28
+
+  val TEST_LOCAL_DATE: LocalDate = LocalDate.of(TEST_YEAR, TEST_MONTH, TEST_DAY)
+
+  val TEST_SAUTR: SaUtr = SaUtr("1234567890")
+  val TEST_EMAIL = "test@test.com"
+  val TEST_MAIL_SUBJECT = "RE: Subject"
+  val TEST_THREAD_ID = "5c85a5000000000000000000"
+  val TEST_HASH = "*hash*"
+  val TEST_DETAILS_ID = "5c85a50000"
+  val TEST_SOURCE_DATA = "ew0KICAgIm5hbWUiOiAiRGFuaWVsIiwNCiAgICJzZWF0IiA6ICJ5ZXMiDQp9"
+  val TEST_REF_ID = "883412342899"
+  val TEST_SOURCE_MDTP = "mdtp"
+  val TEST_SOURCE_GMC = "gmc"
+
+  val TEST_RENDER_URL: RenderUrl = RenderUrl(service = "my-service", url = "service-url")
+  val TEST_EXTERNAL_REF: ExternalRef = ExternalRef(TEST_REF_ID, TEST_SOURCE_MDTP)
 }
