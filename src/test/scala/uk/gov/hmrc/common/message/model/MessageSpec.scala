@@ -23,7 +23,7 @@ import play.api.libs.json.{ JsNull, JsObject, JsResultException, JsString, JsVal
 import uk.gov.hmrc.common.message.model.LifecycleStatusType.Submitted
 import uk.gov.hmrc.common.message.model.MessageRESTFormats.*
 import uk.gov.hmrc.common.message.util.MessageFixtures.testMessageWithContent
-import uk.gov.hmrc.common.message.util.TestDataSample.{ TEST_ENVELOP_ID, TEST_LIFECYCLE, TEST_TEMPLATE_ID }
+import uk.gov.hmrc.common.message.util.TestDataSample.{ TEST_ENVELOP_ID, TEST_ID, TEST_LIFECYCLE, TEST_TEMPLATE_ID }
 import uk.gov.hmrc.domain.{ HmrcMtdItsa, Nino }
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
@@ -334,11 +334,31 @@ class MessageSpec extends PlaySpec {
     }
   }
 
+  "Adviser.adviserFormat" should {
+    import Adviser.adviserFormat
+
+    "read the json correctly" in new Setup {
+      Json.parse(adviserJsonString).as[Adviser] mustBe adviser
+    }
+
+    "throw exception for the invalid json" in new Setup {
+      intercept[JsResultException] {
+        Json.parse(adviserInvalidJsonString).as[Adviser]
+      }
+    }
+
+    "write the object correctly" in new Setup {
+      Json.toJson(adviser) mustBe Json.parse(adviserJsonString)
+    }
+  }
+
   trait Setup {
     val msgContentParameters: MessageContentParameters =
       MessageContentParameters(data = JsNull, templateId = TEST_TEMPLATE_ID)
 
     val msgStatus: MessageStatus = MessageStatus(envelopeId = Some(TEST_ENVELOP_ID), status = Some(Submitted))
+
+    val adviser: Adviser = Adviser(pidId = TEST_ID)
 
     val lifeCycleJsonString: String =
       """{
@@ -359,5 +379,8 @@ class MessageSpec extends PlaySpec {
 
     val msgStatusJsonString: String = """{"envelopeId":"test_envelopeId","status":"SUBMITTED"}""".stripMargin
     val msgStatusInvalidJsonString: String = """{"envelopeId":5,"status":"SUBMITTED"}""".stripMargin
+
+    val adviserJsonString: String = """{"pidId":"test_id"}""".stripMargin
+    val adviserInvalidJsonString: String = """{}""".stripMargin
   }
 }

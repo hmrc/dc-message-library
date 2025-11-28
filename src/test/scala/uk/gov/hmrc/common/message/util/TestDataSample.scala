@@ -31,6 +31,7 @@ object TestDataSample {
   val FIVE = 5
   val SIX = 6
 
+  val TEST_ID = "test_id"
   val TEST_TEMPLATE_ID = "test_template"
   val TEST_TEMPLATE_ID_MAP: Map[String, String] = Map("SA309A_CY" -> "myTemplateId_cy", "SA309A" -> "myTemplateId")
   val TEST_ENVELOP_ID = "test_envelopeId"
