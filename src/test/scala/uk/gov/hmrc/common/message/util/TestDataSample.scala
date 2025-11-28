@@ -35,6 +35,8 @@ object TestDataSample {
   val TEST_TEMPLATE_ID = "test_template"
   val TEST_TEMPLATE_ID_MAP: Map[String, String] = Map("SA309A_CY" -> "myTemplateId_cy", "SA309A" -> "myTemplateId")
   val TEST_ENVELOP_ID = "test_envelopeId"
+  val TEST_SUBJECT = "test_subject"
+  val TEST_BODY = "test_body"
 
   private val TEST_EPOCH_SECONDS = 112345678912334L
   val TEST_TIME_INSTANT: Instant = Instant.ofEpochSecond(TEST_EPOCH_SECONDS)

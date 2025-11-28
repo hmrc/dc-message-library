@@ -21,9 +21,11 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.JsValue
+import play.api.libs.json.{ JsResultException, JsValue, Json }
 import uk.gov.hmrc.common.message.model.*
 import uk.gov.hmrc.domain.HmrcMtdVat
+import uk.gov.hmrc.common.message.util.SecureMessageUtil.Content
+import uk.gov.hmrc.common.message.util.TestDataSample.{ TEST_BODY, TEST_SUBJECT }
 
 import java.time.LocalDate
 
@@ -88,6 +90,28 @@ class SecureMessageUtilSpec extends AnyWordSpecLike with MockitoSugar with Match
 
     "Successfully creates a secure message for the v3 message having the identifier as 'HMRC-MTD-VAT.VRN' " in {
       SecureMessageUtil.createSecureMessage(newMessage_withVRN) mustBe newMessageV4_withVRN
+    }
+
+    "successfully create a secure message for the v3 message containing source as gmc and all values for Details" in {
+      SecureMessageUtil.createSecureMessage(messageGmcWithDetails) mustBe messageGmcWithDetailsV4
+    }
+  }
+
+  "Content.contentFormat" must {
+    import Content.contentFormat
+
+    "read the json correctly" in {
+      Json.parse(contentJsonString).as[Content] mustBe content
+    }
+
+    "throw exception for the invalid json" in {
+      intercept[JsResultException] {
+        Json.parse(contentInvalidJsonString).as[Content]
+      }
+    }
+
+    "write the object correctly" in {
+      Json.toJson(content) mustBe Json.parse(contentJsonString)
     }
   }
 
@@ -157,4 +181,12 @@ trait TestData {
 
   val newMessageNonGmc: JsValue = Resources.readJson("messages/controller/v3/NON_GMC.json")
   val newMessageNonGmcV4: JsValue = Resources.readJson("messages/controller/v4/NON_GMC.json")
+
+  val messageGmcWithDetails: JsValue = Resources.readJson("messages/controller/v3/GMC_and_Details.json")
+  val messageGmcWithDetailsV4: JsValue = Resources.readJson("messages/controller/v4/GMC_and_Details.json")
+
+  val content: Content = Content(lang = "en", subject = TEST_SUBJECT, body = TEST_BODY)
+
+  val contentJsonString: String = """{"lang":"en","subject":"test_subject","body":"test_body"}""".stripMargin
+  val contentInvalidJsonString: String = """{"subject":"test_subject","body":"test_body"}""".stripMargin
 }

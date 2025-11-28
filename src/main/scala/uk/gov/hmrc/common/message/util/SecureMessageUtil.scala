@@ -198,6 +198,7 @@ object SecureMessageUtil {
   }
 
   case class Content(lang: String, subject: String, body: String)
+
   object Content {
     implicit val contentFormat: OFormat[Content] = Json.format[Content]
   }
