@@ -345,4 +345,39 @@ class RecipientSpec extends PlaySpec {
       Json.toJson(recipient) mustBe expectedJson
     }
   }
+
+  "RecipientNonQuadientErrorFormats.format" must {
+    import RecipientNonQuadientErrorFormats.format
+
+    "read the json correctly" ignore new Setup {
+      Json.parse(recipientJsonString).as[Recipient] mustBe recipient
+    }
+
+    "throw the exception for invalid json" in new Setup {
+      intercept[JsResultException] {
+        Json.parse(recipientInvalidJsonString).as[Recipient]
+      }
+    }
+
+    "write the object correctly" in new Setup {
+      Json.toJson(recipient) mustBe Json.parse(recipientJsonString)
+    }
+  }
+
+  trait Setup {
+    val taxPayerName: TaxpayerName = TaxpayerName()
+
+    val recipient: Recipient =
+      Recipient(
+        taxIdentifier = HmrcMtdItsa("1234567890"),
+        name = Some(taxPayerName),
+        email = Some(TEST_EMAIL),
+        regime = Some(Regime.itsa)
+      )
+
+    val recipientJsonString: String =
+      """{"taxIdentifier":{"HMRC-MTD-IT":"1234567890"},"name":{},"email":"test@test.com","regime":"itsa"}""".stripMargin
+
+    val recipientInvalidJsonString: String = """{}""".stripMargin
+  }
 }

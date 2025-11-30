@@ -171,23 +171,7 @@ class MessageSpec extends PlaySpec {
       import uk.gov.hmrc.common.message.model.MessageMongoFormats.DetailsFormatter.format
       val details = Json.parse(s"""{}""").as[Details]
 
-      details mustBe Details(
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None
-      )
+      details mustBe Details(form = None, `type` = None, suppressedAt = None, detailsId = None, issueDate = None)
     }
 
     // format: off
@@ -352,6 +336,24 @@ class MessageSpec extends PlaySpec {
     }
   }
 
+  "SendAlertResponse.format" should {
+    import SendAlertResponse.format
+
+    "read the json correctly" in new Setup {
+      Json.parse(sendAlertResponseJsonString).as[SendAlertResponse] mustBe sendAlertResponse
+    }
+
+    "throw exception for the invalid json" in new Setup {
+      intercept[JsResultException] {
+        Json.parse(sendAlertResponseInvalidJsonString).as[SendAlertResponse]
+      }
+    }
+
+    "write the object correctly" in new Setup {
+      Json.toJson(sendAlertResponse) mustBe Json.parse(sendAlertResponseJsonString)
+    }
+  }
+
   trait Setup {
     val msgContentParameters: MessageContentParameters =
       MessageContentParameters(data = JsNull, templateId = TEST_TEMPLATE_ID)
@@ -359,6 +361,8 @@ class MessageSpec extends PlaySpec {
     val msgStatus: MessageStatus = MessageStatus(envelopeId = Some(TEST_ENVELOP_ID), status = Some(Submitted))
 
     val adviser: Adviser = Adviser(pidId = TEST_ID)
+
+    val sendAlertResponse: SendAlertResponse = SendAlertResponse(sendAlert = true)
 
     val lifeCycleJsonString: String =
       """{
@@ -382,5 +386,8 @@ class MessageSpec extends PlaySpec {
 
     val adviserJsonString: String = """{"pidId":"test_id"}""".stripMargin
     val adviserInvalidJsonString: String = """{}""".stripMargin
+
+    val sendAlertResponseJsonString: String = """{"sendAlert":true}""".stripMargin
+    val sendAlertResponseInvalidJsonString: String = """{}""".stripMargin
   }
 }
