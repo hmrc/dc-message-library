@@ -26,10 +26,10 @@ import java.time.{ Instant, LocalDate }
 object TestData {
   val EMPTY_STRING = ""
 
-  val TWO = 2
-  val THREE = 3
-  val FIVE = 5
-  val SIX = 6
+  val COUNT_TWO = 2
+  val COUNT_THREE = 3
+  val COUNT_FIVE = 5
+  val COUNT_SIX = 6
 
   val TEST_ID = "test_id"
   val TEST_TEMPLATE_ID = "test_template"
@@ -42,7 +42,7 @@ object TestData {
   private val TEST_EPOCH_SECONDS = 112345678912334L
   val TEST_TIME_INSTANT: Instant = Instant.ofEpochSecond(TEST_EPOCH_SECONDS)
 
-  val TEST_NOTIFICATION: Notification = Notification(FIVE, TEST_TIME_INSTANT)
+  val TEST_NOTIFICATION: Notification = Notification(COUNT_FIVE, TEST_TIME_INSTANT)
 
   val TEST_LIFECYCLE_STATUS: LifecycleStatus =
     LifecycleStatus(name = Submitted, updated = TEST_TIME_INSTANT.plus(1, DAYS))

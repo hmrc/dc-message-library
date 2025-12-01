@@ -150,7 +150,7 @@ class MessageSpec extends PlaySpec {
     "return correct data" in new Setup {
       val auditData: Map[String, String] = message.auditData
 
-      auditData.size must be(THREE)
+      auditData.size must be(COUNT_THREE)
 
       auditData("issueDate") mustBe "2023-01-01"
       auditData("type") mustBe "tax-summary-notification"
@@ -161,7 +161,7 @@ class MessageSpec extends PlaySpec {
     "return correct data" in new Setup {
       val hardCopyAuditData: Map[String, String] = message.hardCopyAuditData
 
-      hardCopyAuditData.size must be(FIVE)
+      hardCopyAuditData.size must be(COUNT_FIVE)
 
       hardCopyAuditData("ctutr") mustBe "123412342134"
       hardCopyAuditData("validFrom") mustBe "2025-11-28"

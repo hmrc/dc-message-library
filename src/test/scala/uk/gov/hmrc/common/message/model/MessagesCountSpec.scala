@@ -18,16 +18,16 @@ package uk.gov.hmrc.common.message.model
 
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{ JsResultException, Json }
-import uk.gov.hmrc.common.message.util.TestData.{ FIVE, SIX, THREE, TWO }
+import uk.gov.hmrc.common.message.util.TestData.{ COUNT_FIVE, COUNT_SIX, COUNT_THREE, COUNT_TWO }
 
 class MessagesCountSpec extends PlaySpec {
 
   "(+)" must {
 
     "add both read and unread when + is applied" in {
-      MessagesCount(1, 0) + MessagesCount(FIVE, 0) mustBe MessagesCount(SIX, 0)
-      MessagesCount(0, 1) + MessagesCount(0, TWO) mustBe MessagesCount(0, THREE)
-      MessagesCount(1, 1) + MessagesCount(FIVE, TWO) mustBe MessagesCount(SIX, THREE)
+      MessagesCount(1, 0) + MessagesCount(COUNT_FIVE, 0) mustBe MessagesCount(COUNT_SIX, 0)
+      MessagesCount(0, 1) + MessagesCount(0, COUNT_TWO) mustBe MessagesCount(0, COUNT_THREE)
+      MessagesCount(1, 1) + MessagesCount(COUNT_FIVE, COUNT_TWO) mustBe MessagesCount(COUNT_SIX, COUNT_THREE)
     }
 
     "be the same when adding empty" in {
@@ -62,7 +62,7 @@ class MessagesCountSpec extends PlaySpec {
   }
 
   trait Setup {
-    val msgCount: MessagesCount = MessagesCount(total = FIVE, unread = TWO)
+    val msgCount: MessagesCount = MessagesCount(total = COUNT_FIVE, unread = COUNT_TWO)
 
     val msgCountJsonString: String = """{"total":5,"unread":2}""".stripMargin
     val msgCountInvalidJsonString: String = """{"unread":2}""".stripMargin
