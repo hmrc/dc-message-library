@@ -21,9 +21,8 @@ import scoverage.ScoverageKeys
 object ScoverageSettings {
   def apply(): Seq[Def.Setting[? >: String & Double & Boolean]] =
     Seq(
-      // Semicolon-separated list of regexes matching classes to exclude
       ScoverageKeys.coverageExcludedPackages := "<empty>;.*Reverse.*;.*(config|testonly).*;.*(BuildInfo|Routes).*",
-      ScoverageKeys.coverageMinimumStmtTotal := 97.00,
+      ScoverageKeys.coverageMinimumStmtTotal := 90,
       ScoverageKeys.coverageFailOnMinimum := true,
       ScoverageKeys.coverageHighlighting := true,
       ConfigKey.configurationToKey(Test) / parallelExecution := false

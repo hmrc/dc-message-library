@@ -1,0 +1,56 @@
+{
+  "externalRef": {
+    "id": "abcd1234",
+    "source": "gmc"
+  },
+  "recipient": {
+    "taxIdentifier": {
+      "name": "sautr",
+      "value": "5000061334"
+    },
+    "name": {
+      "title": "Dr",
+      "forename": "Bruce",
+      "secondForename": "Hulk",
+      "surname": "Banner",
+      "honours": "Green",
+      "line1": "Line1"
+    },
+    "regime":"sa"
+  },
+  "alertDetails": {
+    "data": {
+      "key 1": "value 1",
+      "key2": "value2"
+    }
+  },
+  "tags": {
+    "notificationType": "Direct Debit"
+  },
+  "messageType": "mailout-batch",
+  "content": [
+    {
+      "lang": "en",
+      "subject": "Reminder to file a Self Assessment return",
+      "body": "PGgxPlRlc3QgY29udGVudDwvaDE+IDxzY3JpcHQ+d2luZG93LmFsZXJ0KCJoZWxsbyIpPC9zY3JpcHQ+IDxwPmJvZHk8L3A+"
+    }
+  ],
+  "alertQueue": "DEFAULT",
+  "language": "en",
+  "details": {
+    "formId": "SA316",
+    "statutory": true,
+    "paperSent": false,
+    "sourceData": "abc",
+    "batchId": "1234",
+    "issueDate":"2024-07-16",
+    "replyTo":"test@test.com",
+    "threadId":"5c85a5000000000000000000",
+    "adviser":{"pidId":"test_id"},
+    "waitTime":"250",
+    "topic":"test_topic",
+    "properties":"test_property",
+    "enquiryType":"test_enquiry"
+  },
+  "validFrom": "2020-05-04"
+}

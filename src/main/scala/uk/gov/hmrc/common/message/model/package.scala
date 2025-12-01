@@ -43,4 +43,5 @@ package object model {
         )
     )
 }
+
 case class DateValidationException(message: String) extends RuntimeException(message)

@@ -25,7 +25,8 @@ object DateFormats {
 
   def formatLocalDateReads(pattern: String, corrector: String => String = identity): Reads[LocalDate] =
     new Reads[LocalDate] {
-      val df = if (pattern == "") DateTimeFormatter.ISO_DATE_TIME else DateTimeFormatter.ofPattern(pattern)
+      val df: DateTimeFormatter =
+        if (pattern == "") DateTimeFormatter.ISO_DATE_TIME else DateTimeFormatter.ofPattern(pattern)
 
       def reads(json: JsValue): JsResult[LocalDate] = json match {
         case JsString(s) =>
@@ -42,6 +43,7 @@ object DateFormats {
 
   def formatLocalDateWrites(pattern: String): Writes[LocalDate] = {
     val df = DateTimeFormatter.ofPattern(pattern)
+
     Writes[LocalDate] { d =>
       JsString(d.format(df))
     }
@@ -68,6 +70,7 @@ object DateFormats {
   def formatInstantWrites(): Writes[Instant] = {
     val df: DateTimeFormatter =
       DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").withZone(ZoneId.from(ZoneOffset.UTC))
+
     Writes[Instant] { d =>
       JsString(df.format(d))
     }

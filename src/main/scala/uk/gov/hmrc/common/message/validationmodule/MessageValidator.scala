@@ -47,7 +47,7 @@ object MessageValidator {
   def checkValidSourceData(message: Message): Try[Message] = message.sourceData match {
     case Some(data) if data.trim.isEmpty || !Base64.isBase64(data) =>
       Failure(new IllegalArgumentException("sourceData: invalid source data provided"))
-    case Some(data) if !data.trim.isEmpty || Base64.isBase64(data) => Success(message)
+    case Some(data) if data.trim.nonEmpty || Base64.isBase64(data) => Success(message)
     case None if !isGmc(message)                                   => Success(message)
     case _ => Failure(MessageValidationException("Invalid Message"))
   }
@@ -86,6 +86,12 @@ object MessageValidator {
     case _ => Success(message)
   }
 
+  def checkValidAlertQueue(message: Message): Try[Message] = message.alertQueue match {
+    case Some(alertQueue) if AlertQueueTypes.alertQueueTypes.contains(alertQueue) => Success(message)
+    case Some(_) => Failure(MessageValidationException("Invalid alert queue submitted"))
+    case _       => Success(message)
+  }
+
   def checkEmailPresentForVat(message: Message): Try[Message] = message.recipient.email match {
     case None if message.recipient.identifier.isInstanceOf[HmrcMtdVat] =>
       Failure(MessageValidationException("email: email address not provided"))
@@ -113,12 +119,6 @@ object MessageValidator {
         "HMRC-MTD-IT"
       )
     taxIdentifiers.contains(taxId)
-  }
-
-  def checkValidAlertQueue(message: Message): Try[Message] = message.alertQueue match {
-    case Some(alertQueue) if AlertQueueTypes.alertQueueTypes.contains(alertQueue) => Success(message)
-    case Some(_) => Failure(MessageValidationException("Invalid alert queue submitted"))
-    case _       => Success(message)
   }
 }
 

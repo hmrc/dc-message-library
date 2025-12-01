@@ -19,6 +19,7 @@ package uk.gov.hmrc.common.message.model
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.*
 import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmrcOssOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
+import uk.gov.hmrc.common.message.util.TestData.TEST_EMAIL
 import uk.gov.hmrc.domain.*
 
 class RecipientSpec extends PlaySpec {
@@ -28,27 +29,34 @@ class RecipientSpec extends PlaySpec {
     "work with valid paye value" in {
       JsString("paye").asOpt[Regime.Value].value mustBe Regime.paye
     }
+
     "work with valid sa value" in {
       JsString("sa").asOpt[Regime.Value].value mustBe Regime.sa
     }
+
     "work with valid fhdds value" in {
       JsString("fhdds").asOpt[Regime.Value].value mustBe Regime.fhdds
     }
+
     "work with valid vat value" in {
       JsString("vat").asOpt[Regime.Value].value mustBe Regime.vat
     }
     "work with valid epaye value" in {
       JsString("epaye").asOpt[Regime.Value].value mustBe Regime.epaye
     }
+
     "work with valid sdil value" in {
       JsString("sdil").asOpt[Regime.Value].value mustBe Regime.sdil
     }
+
     "work with valid itsa value" in {
       JsString("itsa").asOpt[Regime.Value].value mustBe Regime.itsa
     }
+
     "work with valid oss value" in {
       JsString("oss").asOpt[Regime.Value].value mustBe Regime.oss
     }
+
     "work with invalid value" in {
       implicitly[Reads[Regime.Value]].reads(JsString("invalid-regime")) mustBe JsError(
         Seq(JsPath() -> Seq(JsonValidationError("error.expected.validenumvalue")))
@@ -62,24 +70,31 @@ class RecipientSpec extends PlaySpec {
     "serialise Regime.paye to JsString" in {
       Json.toJson(Regime.paye) mustBe JsString("paye")
     }
+
     "serialise Regime.sa to JsString" in {
       Json.toJson(Regime.sa) mustBe JsString("sa")
     }
+
     "serialise Regime.fhdds to JsString" in {
       Json.toJson(Regime.fhdds) mustBe JsString("fhdds")
     }
+
     "serialise Regime.vat to JsString" in {
       Json.toJson(Regime.vat) mustBe JsString("vat")
     }
+
     "serialise Regime.epaye to JsString" in {
       Json.toJson(Regime.epaye) mustBe JsString("epaye")
     }
+
     "serialise Regime.sdil to JsString" in {
       Json.toJson(Regime.sdil) mustBe JsString("sdil")
     }
+
     "serialise Regime.itsa to JsString" in {
       Json.toJson(Regime.itsa) mustBe JsString("itsa")
     }
+
     "serialise Regime.oss to JsString" in {
       Json.toJson(Regime.oss) mustBe JsString("oss")
     }
@@ -298,5 +313,75 @@ class RecipientSpec extends PlaySpec {
         Recipient(taxIdentifier = HmrcPodsPpOrg("A2100006"), name = None, regime = Some(Regime.pods))
       )
     }
+
+    "throw exception for the invalid json" in {
+      import Recipient.format
+
+      val recipientJsonString: String = """{"name":{},"email":"test@test.com","regime":"itsa"}""".stripMargin
+
+      intercept[JsResultException] {
+        Json.parse(recipientJsonString).as[Recipient]
+      }
+    }
+  }
+
+  "Recipient Json serialisation" must {
+
+    "write the object correctly" in {
+      val taxPayerName = TaxpayerName()
+
+      val recipient: Recipient =
+        Recipient(
+          taxIdentifier = HmrcMtdItsa("1234567890"),
+          name = Some(taxPayerName),
+          email = Some(TEST_EMAIL),
+          regime = Some(Regime.itsa)
+        )
+
+      val expectedJson = Json.parse(
+        """{"taxIdentifier":{"HMRC-MTD-IT":"1234567890"},"name":{},"email":"test@test.com","regime":"itsa"}""".stripMargin
+      )
+
+      Json.toJson(recipient) mustBe expectedJson
+    }
+  }
+
+  "RecipientNonQuadientErrorFormats.format" must {
+    import RecipientNonQuadientErrorFormats.format
+
+    "read the json correctly" in new Setup {
+      Json.parse(recipientNonQuadientJsonString1).as[Recipient] mustBe recipient.copy(name = None)
+    }
+
+    "throw the exception for invalid json" in new Setup {
+      intercept[JsResultException] {
+        Json.parse(recipientInvalidJsonString).as[Recipient]
+      }
+    }
+
+    "write the object correctly" in new Setup {
+      Json.toJson(recipient) mustBe Json.parse(recipientJsonString)
+    }
+  }
+
+  trait Setup {
+    val taxPayerName: TaxpayerName = TaxpayerName()
+
+    val recipient: Recipient =
+      Recipient(
+        taxIdentifier = HmrcMtdItsa("1234567890"),
+        name = Some(taxPayerName),
+        email = Some(TEST_EMAIL),
+        regime = Some(Regime.itsa)
+      )
+
+    val recipientJsonString: String =
+      """{"taxIdentifier":{"HMRC-MTD-IT":"1234567890"},"name":{},"email":"test@test.com","regime":"itsa"}""".stripMargin
+
+    val recipientNonQuadientJsonString1: String =
+      """{"taxIdentifier":{"name":"HMRC-MTD-IT","value":"1234567890"},"email":"test@test.com","regime":"itsa"}""".stripMargin
+
+    val recipientInvalidJsonString: String =
+      """{"taxIdentifier":{"value":"1234567890"},"email":"test@test.com","regime":"itsa"}""".stripMargin
   }
 }
