@@ -23,7 +23,7 @@ import play.api.libs.json.{ JsNull, JsObject, JsResultException, JsString, JsVal
 import uk.gov.hmrc.common.message.model.LifecycleStatusType.Submitted
 import uk.gov.hmrc.common.message.model.MessageRESTFormats.*
 import uk.gov.hmrc.common.message.util.MessageFixtures.testMessageWithContent
-import uk.gov.hmrc.common.message.util.TestData.{ FIVE, TEST_BODY, TEST_ENVELOP_ID, TEST_HASH, TEST_ID, TEST_LIFECYCLE, TEST_LOCAL_DATE, TEST_RENDER_URL, TEST_SOURCE_DATA, TEST_SOURCE_MDTP, TEST_SUBJECT, TEST_TEMPLATE_ID, TEST_TIME_INSTANT, THREE }
+import uk.gov.hmrc.common.message.util.TestData.*
 import uk.gov.hmrc.domain.{ CtUtr, HmrcMtdItsa, Nino }
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
@@ -147,7 +147,7 @@ class MessageSpec extends PlaySpec {
   }
 
   "auditData" must {
-    "return correct value" in new Setup {
+    "return correct data" in new Setup {
       val auditData: Map[String, String] = message.auditData
 
       auditData.size must be(THREE)
@@ -158,7 +158,7 @@ class MessageSpec extends PlaySpec {
   }
 
   "hardCopyAuditData" must {
-    "return correct value" in new Setup {
+    "return correct data" in new Setup {
       val hardCopyAuditData: Map[String, String] = message.hardCopyAuditData
 
       hardCopyAuditData.size must be(FIVE)
