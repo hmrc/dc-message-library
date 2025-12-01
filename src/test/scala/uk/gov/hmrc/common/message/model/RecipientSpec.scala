@@ -19,7 +19,7 @@ package uk.gov.hmrc.common.message.model
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.*
 import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmrcOssOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
-import uk.gov.hmrc.common.message.util.TestDataSample.TEST_EMAIL
+import uk.gov.hmrc.common.message.util.TestData.TEST_EMAIL
 import uk.gov.hmrc.domain.*
 
 class RecipientSpec extends PlaySpec {
@@ -349,8 +349,8 @@ class RecipientSpec extends PlaySpec {
   "RecipientNonQuadientErrorFormats.format" must {
     import RecipientNonQuadientErrorFormats.format
 
-    "read the json correctly" ignore new Setup {
-      Json.parse(recipientJsonString).as[Recipient] mustBe recipient
+    "read the json correctly" in new Setup {
+      Json.parse(recipientNonQuadientJsonString1).as[Recipient] mustBe recipient.copy(name = None)
     }
 
     "throw the exception for invalid json" in new Setup {
@@ -378,6 +378,10 @@ class RecipientSpec extends PlaySpec {
     val recipientJsonString: String =
       """{"taxIdentifier":{"HMRC-MTD-IT":"1234567890"},"name":{},"email":"test@test.com","regime":"itsa"}""".stripMargin
 
-    val recipientInvalidJsonString: String = """{}""".stripMargin
+    val recipientNonQuadientJsonString1: String =
+      """{"taxIdentifier":{"name":"HMRC-MTD-IT","value":"1234567890"},"email":"test@test.com","regime":"itsa"}""".stripMargin
+
+    val recipientInvalidJsonString: String =
+      """{"taxIdentifier":{"value":"1234567890"},"email":"test@test.com","regime":"itsa"}""".stripMargin
   }
 }

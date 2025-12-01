@@ -23,8 +23,8 @@ import play.api.libs.json.{ JsNull, JsObject, JsResultException, JsString, JsVal
 import uk.gov.hmrc.common.message.model.LifecycleStatusType.Submitted
 import uk.gov.hmrc.common.message.model.MessageRESTFormats.*
 import uk.gov.hmrc.common.message.util.MessageFixtures.testMessageWithContent
-import uk.gov.hmrc.common.message.util.TestDataSample.{ TEST_ENVELOP_ID, TEST_ID, TEST_LIFECYCLE, TEST_TEMPLATE_ID }
-import uk.gov.hmrc.domain.{ HmrcMtdItsa, Nino }
+import uk.gov.hmrc.common.message.util.TestData.{ FIVE, TEST_BODY, TEST_ENVELOP_ID, TEST_HASH, TEST_ID, TEST_LIFECYCLE, TEST_LOCAL_DATE, TEST_RENDER_URL, TEST_SOURCE_DATA, TEST_SOURCE_MDTP, TEST_SUBJECT, TEST_TEMPLATE_ID, TEST_TIME_INSTANT, THREE }
+import uk.gov.hmrc.domain.{ CtUtr, HmrcMtdItsa, Nino }
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.Implicits.objectIdFormat
 
@@ -119,6 +119,54 @@ class MessageSpec extends PlaySpec {
       }"""
       val parsedMessage = Json.parse(expectedJson).as[Message]
       parsedMessage.tags.getOrElse(Map()).getOrElse("notificationType", "") must equal("Direct Debit")
+    }
+  }
+
+  "alertParams" must {
+    "return correct value" in new Setup {
+      message.alertParams mustBe Map("test_key" -> "test_value")
+    }
+  }
+
+  "alertTemplateName" must {
+    "return correct value" in new Setup {
+      message.alertTemplateName mustBe TEST_TEMPLATE_ID
+    }
+  }
+
+  "source" must {
+    "return correct value" in new Setup {
+      message.source mustBe Some(TEST_SOURCE_MDTP)
+    }
+  }
+
+  "taxPayerName" must {
+    "return correct value" in new Setup {
+      message.taxPayerName mustBe Some(recipientName)
+    }
+  }
+
+  "auditData" must {
+    "return correct value" in new Setup {
+      val auditData: Map[String, String] = message.auditData
+
+      auditData.size must be(THREE)
+
+      auditData("issueDate") mustBe "2023-01-01"
+      auditData("type") mustBe "tax-summary-notification"
+    }
+  }
+
+  "hardCopyAuditData" must {
+    "return correct value" in new Setup {
+      val hardCopyAuditData: Map[String, String] = message.hardCopyAuditData
+
+      hardCopyAuditData.size must be(FIVE)
+
+      hardCopyAuditData("ctutr") mustBe "123412342134"
+      hardCopyAuditData("validFrom") mustBe "2025-11-28"
+      hardCopyAuditData("issueDate") mustBe "2023-01-01"
+      hardCopyAuditData("type") mustBe "tax-summary-notification"
     }
   }
 
@@ -363,6 +411,38 @@ class MessageSpec extends PlaySpec {
     val adviser: Adviser = Adviser(pidId = TEST_ID)
 
     val sendAlertResponse: SendAlertResponse = SendAlertResponse(sendAlert = true)
+
+    val details: Details =
+      Details(
+        form = None,
+        `type` = Some("tax-summary-notification"),
+        suppressedAt = None,
+        detailsId = None,
+        issueDate = Some(LocalDate.parse("2023-01-01"))
+      )
+
+    val recipientName: TaxpayerName = TaxpayerName(title = Some(TEST_TEMPLATE_ID))
+
+    val alertDetails: AlertDetails = AlertDetails(
+      templateId = TEST_TEMPLATE_ID,
+      recipientName = Some(recipientName),
+      data = Map("test_key" -> "test_value")
+    )
+
+    val message: Message = Message(
+      recipient = TaxEntity(Regime.ct, CtUtr("123412342134"), None),
+      subject = TEST_SUBJECT,
+      body = Some(details),
+      validFrom = TEST_LOCAL_DATE,
+      alertFrom = None,
+      alertDetails = alertDetails,
+      lastUpdated = Some(TEST_TIME_INSTANT),
+      hash = TEST_HASH,
+      statutory = true,
+      renderUrl = TEST_RENDER_URL,
+      sourceData = Some(TEST_SOURCE_DATA),
+      externalRef = Some(ExternalRef(id = TEST_ID, source = TEST_SOURCE_MDTP))
+    )
 
     val lifeCycleJsonString: String =
       """{

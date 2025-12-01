@@ -18,7 +18,7 @@ package uk.gov.hmrc.common.message.model
 
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{ JsResultException, Json }
-import uk.gov.hmrc.common.message.util.TestDataSample.{ TEST_ID, TEST_SOURCE_GMC }
+import uk.gov.hmrc.common.message.util.TestData.{ TEST_ID, TEST_SOURCE_GMC }
 
 class ExternalRefSpec extends PlaySpec {
 

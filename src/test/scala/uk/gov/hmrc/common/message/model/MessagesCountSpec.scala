@@ -18,7 +18,7 @@ package uk.gov.hmrc.common.message.model
 
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{ JsResultException, Json }
-import uk.gov.hmrc.common.message.util.TestDataSample.{ FIVE, SIX, THREE, TWO }
+import uk.gov.hmrc.common.message.util.TestData.{ FIVE, SIX, THREE, TWO }
 
 class MessagesCountSpec extends PlaySpec {
 

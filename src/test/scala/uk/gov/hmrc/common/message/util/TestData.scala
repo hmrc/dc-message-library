@@ -23,7 +23,7 @@ import uk.gov.hmrc.domain.SaUtr
 
 import java.time.{ Instant, LocalDate }
 
-object TestDataSample {
+object TestData {
   val EMPTY_STRING = ""
 
   val TWO = 2
@@ -33,6 +33,7 @@ object TestDataSample {
 
   val TEST_ID = "test_id"
   val TEST_TEMPLATE_ID = "test_template"
+  val TEST_TITLE = "test_title"
   val TEST_TEMPLATE_ID_MAP: Map[String, String] = Map("SA309A_CY" -> "myTemplateId_cy", "SA309A" -> "myTemplateId")
   val TEST_ENVELOP_ID = "test_envelopeId"
   val TEST_SUBJECT = "test_subject"

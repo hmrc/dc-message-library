@@ -18,37 +18,23 @@ package uk.gov.hmrc.common.message.model
 
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{ JsString, Json }
-import uk.gov.hmrc.common.message.util.TestDataSample.{ TEST_LOCAL_DATE, TEST_TIME_INSTANT }
-
-import java.time.Instant
+import uk.gov.hmrc.common.message.util.TestData.{ TEST_LOCAL_DATE, TEST_TIME_INSTANT }
 
 class DateFormatsSpec extends PlaySpec {
 
   "formatLocalDateWrites" should {
     import DateFormats.formatLocalDateWrites
 
-    "write the input date correctly" in new Setup {
+    "write the input date correctly" in new {
       Json.toJson(TEST_LOCAL_DATE)(formatLocalDateWrites("yyyy-MM-dd")) mustBe JsString("2025-11-28")
-    }
-  }
-
-  "formatInstantReads" should {
-    import DateFormats.formatInstantReads
-
-    "read the valid Instant json correctly" ignore {
-      val dateCorrector: (String => String) = (_: String) => "yyyy-MM-dd"
-
-      Json.parse("20111203 10:15:30Z").as[Instant](formatInstantReads(dateCorrector)) mustBe TEST_TIME_INSTANT
     }
   }
 
   "formatInstantWrites" should {
     import DateFormats.formatInstantWrites
 
-    "write the input date correctly" in new Setup {
+    "write the input date correctly" in new {
       Json.toJson(TEST_TIME_INSTANT)(formatInstantWrites()) mustBe JsString("+3562062-11-03T15:12:14.000+0000")
     }
   }
-
-  trait Setup {}
 }

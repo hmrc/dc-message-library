@@ -25,11 +25,11 @@ import play.api.libs.json.{ JsResultException, JsValue, Json }
 import uk.gov.hmrc.common.message.model.*
 import uk.gov.hmrc.domain.HmrcMtdVat
 import uk.gov.hmrc.common.message.util.SecureMessageUtil.Content
-import uk.gov.hmrc.common.message.util.TestDataSample.{ TEST_BODY, TEST_SUBJECT }
+import uk.gov.hmrc.common.message.util.TestData.{ TEST_BODY, TEST_SUBJECT }
 
 import java.time.LocalDate
 
-class SecureMessageUtilSpec extends AnyWordSpecLike with MockitoSugar with Matchers with ScalaFutures with TestData {
+class SecureMessageUtilSpec extends AnyWordSpecLike with MockitoSugar with Matchers with ScalaFutures with Setup {
 
   "checkAndValidateContent" must {
     val message = Message(
@@ -117,7 +117,7 @@ class SecureMessageUtilSpec extends AnyWordSpecLike with MockitoSugar with Match
 
 }
 
-trait TestData {
+trait Setup {
   val legacyContent: String =
     """
       |<p>You need to file a Self Assessment tax return for the 2021 to 2022 tax year if you haven't already. The tax year ended on 5 April 2022.</p>

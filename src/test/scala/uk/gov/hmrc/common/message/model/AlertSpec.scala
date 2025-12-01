@@ -18,7 +18,7 @@ package uk.gov.hmrc.common.message.model
 
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{ JsResultException, Json }
-import uk.gov.hmrc.common.message.util.TestDataSample.{ TEST_TEMPLATE_ID, TEST_TEMPLATE_ID_MAP }
+import uk.gov.hmrc.common.message.util.TestData.{ TEST_TEMPLATE_ID, TEST_TEMPLATE_ID_MAP }
 
 class AlertSpec extends PlaySpec {
 

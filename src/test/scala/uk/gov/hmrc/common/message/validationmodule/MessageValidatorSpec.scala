@@ -26,7 +26,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.common.message.model.*
-import uk.gov.hmrc.common.message.util.TestDataSample.{ EMPTY_STRING, TEST_BATCH_ID, TEST_DETAILS_ID, TEST_EMAIL, TEST_EXTERNAL_REF, TEST_FORM_TYPE, TEST_HASH, TEST_LOCAL_DATE, TEST_MAIL_SUBJECT, TEST_RENDER_URL, TEST_SAUTR, TEST_SOURCE_DATA, TEST_SOURCE_GMC, TEST_TEMPLATE_ID, TEST_THREAD_ID }
+import uk.gov.hmrc.common.message.util.TestData.{ EMPTY_STRING, TEST_BATCH_ID, TEST_DETAILS_ID, TEST_EMAIL, TEST_EXTERNAL_REF, TEST_FORM_TYPE, TEST_HASH, TEST_LOCAL_DATE, TEST_MAIL_SUBJECT, TEST_RENDER_URL, TEST_SAUTR, TEST_SOURCE_DATA, TEST_SOURCE_GMC, TEST_TEMPLATE_ID, TEST_THREAD_ID }
 import uk.gov.hmrc.domain.{ HmrcMtdVat, SaUtr, SimpleName, TaxIdentifier }
 
 import scala.util.{ Failure, Success }
