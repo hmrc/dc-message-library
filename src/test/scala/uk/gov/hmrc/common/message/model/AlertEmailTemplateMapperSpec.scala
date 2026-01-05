@@ -109,7 +109,7 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
         "LPP2_ITSA_cy",
         "LPP4_ITSA_cy",
         "PAR1_ITSA_cy",
-        "ITSAORM_cy"
+        "ITSAORM1_cy"
       )
       welshFormIds.foreach { t =>
         emailTemplateFromMessageFormId(t) mustBe "new_message_alert_itsa_cy"
