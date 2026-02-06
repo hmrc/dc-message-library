@@ -182,6 +182,12 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
         emailTemplateFromMessageFormId(t) mustBe "new_message_alert_ioss_netp"
       }
     }
+
+    "map NIRef formIds to newMessageAlert_formId templates" in {
+      emailTemplateFromMessageFormId("NIRef1") mustBe "newMessageAlert_NIRef1"
+      emailTemplateFromMessageFormId("NIRef2") mustBe "newMessageAlert_NIRef2"
+      emailTemplateFromMessageFormId("NIRef3") mustBe "newMessageAlert_NIRef3"
+    }
   }
 
   "The alert email template mapper - Welsh" must {
@@ -265,6 +271,12 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
         val welshFormId = s"${t._1}_CY"
         emailTemplateFromMessageFormId(welshFormId) mustBe s"${t._2}_cy"
       }
+    }
+
+    "map NIRef welsh formIds to newMessageAlert_formId templates" in {
+      emailTemplateFromMessageFormId("NIRef1_cy") mustBe "newMessageAlert_NIRef1_cy"
+      emailTemplateFromMessageFormId("NIRef2_cy") mustBe "newMessageAlert_NIRef2_cy"
+      emailTemplateFromMessageFormId("NIRef3_cy") mustBe "newMessageAlert_NIRef3_cy"
     }
   }
 }
