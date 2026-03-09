@@ -21,7 +21,7 @@ val appName = "dc-message-library"
 ThisBuild / majorVersion := 1
 ThisBuild / scalaVersion := "3.3.6"
 
-val hmrcMongoVersion = "2.11.0"
+val hmrcMongoVersion = "2.12.0"
 
 val compileDependencies: Seq[ModuleID] = Seq(
   "uk.gov.hmrc"       %% "domain-play-30"                    % "13.0.0",
