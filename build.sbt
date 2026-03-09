@@ -26,7 +26,7 @@ val hmrcMongoVersion = "2.12.0"
 val compileDependencies: Seq[ModuleID] = Seq(
   "uk.gov.hmrc"       %% "domain-play-30"                    % "13.0.0",
   "uk.gov.hmrc.mongo" %% "hmrc-mongo-work-item-repo-play-30" % hmrcMongoVersion,
-  "uk.gov.hmrc"       %% "http-verbs-play-30"                % "15.7.0",
+  "uk.gov.hmrc"       %% "http-verbs-play-30"                % "15.8.0",
   "commons-codec"      % "commons-codec"                     % "1.20.0",
   "org.playframework" %% "play-json"                         % "3.0.6",
   "org.jsoup"          % "jsoup"                             % "1.18.3"
