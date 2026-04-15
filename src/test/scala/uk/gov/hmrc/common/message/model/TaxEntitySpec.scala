@@ -17,9 +17,9 @@
 package uk.gov.hmrc.common.message.model
 
 import org.scalatestplus.play.PlaySpec
-import uk.gov.hmrc.domain._
-
-import uk.gov.hmrc.common.message.model.TaxEntity._
+import play.api.libs.json.JsResultException
+import uk.gov.hmrc.domain.*
+import uk.gov.hmrc.common.message.model.TaxEntity.*
 import uk.gov.hmrc.common.message.util.MessageFixtures
 
 class TaxEntitySpec extends PlaySpec {
@@ -40,42 +40,58 @@ class TaxEntitySpec extends PlaySpec {
     "produce paye regime from Nino taxId" in {
       TaxEntity.regimeOf(Nino("AB123456C")) mustBe Regime.paye
     }
+
     "produce sa regime from SaUtr taxId" in {
       TaxEntity.regimeOf(SaUtr("123412342134")) mustBe Regime.sa
     }
+
     "produce ct regime from CtUtr taxId" in {
       TaxEntity.regimeOf(CtUtr("123412342134")) mustBe Regime.ct
     }
     "produce vat regime from HmrcMtdVat taxId" in {
       TaxEntity.regimeOf(HmrcMtdVat("123412342134")) mustBe Regime.vat
     }
+
     "produce vat regime from VRN taxId" in {
       TaxEntity.regimeOf(Vrn("123456789")) mustBe Regime.vat
     }
+
     "produce vat regime from HmceVatdecOrg taxId" in {
       TaxEntity.regimeOf(HmceVatdecOrg("123412342134")) mustBe Regime.vat
     }
+
     "produce epaye regime from Epaye taxId" in {
       TaxEntity.regimeOf(Epaye("840Pd00123456")) mustBe Regime.epaye
     }
+
     """produce sdil regime from HmrcObtdsOrg taxId and "SD" in the 3-d and 4-th charaters of the value""" in {
       TaxEntity.regimeOf(HmrcObtdsOrg("XZSD00000100024")) mustBe Regime.sdil
     }
+
     """produce fhdds regime from HmrcObtdsOrg taxId and "FH" in the 3-d and 4-th charaters of the value""" in {
       TaxEntity.regimeOf(HmrcObtdsOrg("XZFH00000100024")) mustBe Regime.fhdds
     }
+
     "produce itsa regime from HmrcMtdItsa taxId" in {
       TaxEntity.regimeOf(HmrcMtdItsa("X99999999999")) mustBe Regime.itsa
     }
+
     "produce ioss regime from HmrcIossOrg taxId" in {
       TaxEntity.regimeOf(HmrcIossOrg("XX9999999999")) mustBe Regime.ioss
     }
+
     "produce ioss regime from HmrcIossInt taxId" in {
       TaxEntity.regimeOf(HmrcIossInt("IN9001234567")) mustBe Regime.ioss
     }
+
     "produce ppt regime from HmrcPptOrg taxId" in {
       TaxEntity.regimeOf(HmrcPptOrg("XMPPT0000000001")) mustBe Regime.ppt
     }
+
+    "produce plr regime from HmrcPlrOrg taxId" in {
+      TaxEntity.regimeOf(HmrcPlrOrg("XTPLR0022103336")) mustBe Regime.plr
+    }
+
     "throw exception" in {
       val thrown = the[RuntimeException] thrownBy TaxEntity.regimeOf(HmrcObtdsOrg("foobar"))
       thrown.getMessage must include("unsupported identifier foobar")
@@ -177,6 +193,12 @@ class TaxEntitySpec extends PlaySpec {
         TaxEntity(Regime.oss, HmrcOssOrg("999 9999 99"), None),
         "HmrcOssOrg",
         Enrolments("HMRC-OSS-ORG~VRN~999 9999 99")
+      ),
+      (
+        "HMRC-PL",
+        TaxEntity(Regime.plr, HmrcPlrOrg("XTPLR0022103336"), None),
+        "HmrcPlrOrg",
+        Enrolments("HMRC-PILLAR2-ORG~PLRID~XTPLR0022103336")
       )
     )
 
@@ -185,6 +207,7 @@ class TaxEntitySpec extends PlaySpec {
         TaxEntity.getEnrolments(taxEntity) mustBe expected
       }
     }
+
     "throw exception" in {
       val thrown = the[RuntimeException] thrownBy TaxEntity.getEnrolments(TaxEntity(Regime.vat, HmrcObtdsOrg("foobar")))
       thrown.getMessage must include("unsupported tax entity")
@@ -249,6 +272,36 @@ class TaxEntitySpec extends PlaySpec {
   "HmrcIossInt toString" must {
     "return value" in {
       HmrcIossInt("IN9001234567").toString mustBe "IN9001234567"
+    }
+  }
+
+  "HmrcPlrOrg" must {
+    "return correct value for toString" in {
+      HmrcPlrOrg("XTPLR0022103336").toString mustBe "XTPLR0022103336"
+    }
+
+    "return the correct name" in {
+      HmrcPlrOrg("XTPLR0022103336").name mustBe "HMRC-PL"
+    }
+
+    import HmrcPlrOrg.hmrcPlRead
+    import play.api.libs.json.{ Json, JsString }
+
+    val jsonString: JsString = JsString("XTPLR0022103336")
+    val hmrcPl: HmrcPlrOrg = HmrcPlrOrg("XTPLR0022103336")
+
+    "read the json correctly" in {
+      jsonString.as[HmrcPlrOrg] mustBe hmrcPl
+    }
+
+    "throw exception for invalid json" in {
+      intercept[JsResultException] {
+        Json.parse("""{}""").as[HmrcPlrOrg]
+      }
+    }
+
+    "write the object correctly" in {
+      Json.toJson(hmrcPl) mustBe jsonString
     }
   }
 }

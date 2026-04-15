@@ -404,7 +404,8 @@ object MongoTaxIdentifierFormats {
         :+ SerialisableTaxId("HMRC-OSS-ORG", HmrcOssOrg.apply)
         :+ SerialisableTaxId("HMRC-AD-ORG", HmrcAdOrg.apply)
         :+ SerialisableTaxId("PSAID", HmrcPodsOrg.apply)
-        :+ SerialisableTaxId("PSPID", HmrcPodsPpOrg.apply))
+        :+ SerialisableTaxId("PSPID", HmrcPodsPpOrg.apply)
+        :+ SerialisableTaxId("HMRC-PL", HmrcPlrOrg.apply))
         .find(_.taxIdName == name)
         .map(_.build(value)) match {
         case Some(taxIdWithName) =>

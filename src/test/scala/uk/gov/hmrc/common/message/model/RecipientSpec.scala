@@ -18,7 +18,7 @@ package uk.gov.hmrc.common.message.model
 
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.*
-import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmrcOssOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
+import uk.gov.hmrc.common.message.model.TaxEntity.{ Epaye, HmrcOssOrg, HmrcPlrOrg, HmrcPodsOrg, HmrcPodsPpOrg, HmrcPptOrg }
 import uk.gov.hmrc.common.message.util.TestData.TEST_EMAIL
 import uk.gov.hmrc.domain.*
 
@@ -63,6 +63,9 @@ class RecipientSpec extends PlaySpec {
       )
     }
 
+    "return correct value for plr" in {
+      JsString("plr").asOpt[Regime.Value].value mustBe Regime.plr
+    }
   }
 
   "Regime Json serialisation" must {
@@ -99,6 +102,9 @@ class RecipientSpec extends PlaySpec {
       Json.toJson(Regime.oss) mustBe JsString("oss")
     }
 
+    "return correct value for plr" in {
+      Json.toJson(Regime.plr) mustBe JsString("plr")
+    }
   }
 
   "Recipient deserialisation" must {
@@ -312,6 +318,36 @@ class RecipientSpec extends PlaySpec {
         Recipient(taxIdentifier = HmrcPodsPpOrg("A2100006"), name = None, regime = Some(Regime.pods)),
         Recipient(taxIdentifier = HmrcPodsPpOrg("A2100006"), name = None, regime = Some(Regime.pods))
       )
+    }
+
+    "return correct object for pillar2" in {
+      val recipient = Json
+        .parse("""{
+                 |"taxIdentifier":{
+                 |"name":"HMRC-PL",
+                 |"value":"XTPLR0022103336"
+                 |},
+                 |"regime":"plr"
+             }""".stripMargin)
+        .as[Recipient]
+
+      recipient mustBe Recipient(taxIdentifier = HmrcPlrOrg("XTPLR0022103336"), name = None, regime = Some(Regime.plr))
+    }
+
+    "throw exception for the invalid json for pillar2 invalid identifier name" in {
+      import Recipient.format
+
+      val recipientInvalidPillar2JsonString = """{
+                                                |"taxIdentifier":{
+                                                |"name":"HMRC-PL3",
+                                                |"value":"XTPLR0022103336"
+                                                |},
+                                                |"regime":"plr"
+             }""".stripMargin
+
+      intercept[JsResultException] {
+        Json.parse(recipientInvalidPillar2JsonString).as[Recipient]
+      }
     }
 
     "throw exception for the invalid json" in {

@@ -21,13 +21,13 @@ import org.mongodb.scala.bson.ObjectId
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
-import uk.gov.hmrc.common.message.util.MessageFixtures._
+import uk.gov.hmrc.common.message.util.MessageFixtures.*
 import uk.gov.hmrc.common.message.util.{ MessageFixtures, Resources }
 import uk.gov.hmrc.domain.SaUtr
 
 class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
 
-  val taxPayername = TaxpayerName(
+  val taxPayername: TaxpayerName = TaxpayerName(
     title = Some("Dr"),
     forename = Some("Bruce"),
     secondForename = Some("Hulk"),
