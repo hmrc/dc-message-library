@@ -19,9 +19,10 @@ package uk.gov.hmrc.common.message.util
 import java.time.{ Instant, LocalDate, ZoneOffset }
 import org.mongodb.scala.bson.ObjectId
 import play.api.libs.json.{ JsString, JsValue, Reads, __ }
-import uk.gov.hmrc.common.message.model._
+import uk.gov.hmrc.common.message.model.*
+import uk.gov.hmrc.common.message.model.TaxEntity.HmrcPlrOrg
 import uk.gov.hmrc.domain.TaxIds.TaxIdWithName
-import uk.gov.hmrc.domain._
+import uk.gov.hmrc.domain.*
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus
 import uk.gov.hmrc.mongo.workitem.ProcessingStatus.ToDo
 
@@ -494,6 +495,7 @@ object MessageFixtures {
     case x: HmrcObtdsOrg => TaxEntity(Regime.fhdds, x)
     case x: HmrcMtdVat   => TaxEntity(Regime.vat, x)
     case x: Vrn          => TaxEntity(Regime.vat, x)
+    case x: HmrcPlrOrg   => TaxEntity(Regime.plr, x)
     case x               => throw new RuntimeException(s"unsupported identifier $x")
   }
 

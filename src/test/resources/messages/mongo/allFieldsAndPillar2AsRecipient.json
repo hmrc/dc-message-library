@@ -1,0 +1,53 @@
+{
+  "_id": {
+    "$oid": "55a921d84f573b6f14325b57"
+  },
+  "recipient": {
+    "regime": "plr",
+    "identifier": {
+      "name": "HMRC-PL",
+      "value": "XTPLR0022103336"
+    }
+  },
+  "subject": "Notice of Penalty Determination",
+  "body": {
+    "type": "tax-summary-notification",
+    "issueDate": "2020-05-04"
+  },
+  "validFrom": "2015-07-17",
+  "alertFrom": "2015-07-18",
+  "alertDetails": {
+    "templateId": "templateId",
+    "data": {
+      "key 1": "value 1",
+      "key2": "value2"
+    }
+  },
+  "alerts": {
+    "alertTime": {
+      "$date": {
+        "$numberLong": "1437147608829"
+      }
+    },
+    "success": false
+  },
+  "status": "todo",
+  "rescindment": {
+    "time": {
+      "$date": {
+        "$numberLong": "1437147608829"
+      }
+    },
+    "type": "GeneratedInError",
+    "ref": "blah"
+  },
+  "hash": "O4KWyUPKQySWUVzQVfoPswBEKfN1gLe9dXi7EzCwp5U=",
+  "statutory": false,
+  "renderUrl": {
+    "service": "sa-message-renderer",
+    "url": "/messages/sa/12345678/55a921d84f573b6f14325b57"
+  },
+  "tags": {
+    "notificationType": "Direct Debit"
+  }
+}
