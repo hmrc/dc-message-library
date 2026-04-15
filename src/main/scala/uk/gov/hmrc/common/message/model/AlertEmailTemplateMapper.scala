@@ -31,7 +31,8 @@ trait AlertEmailTemplateMapper extends TemplateId {
     "IgnorePaperFiling",
     "2WSM-question",
     "2WSM-reply",
-    "CA001"
+    "CA001",
+    "PL3"
   )
 
   lazy val itsaTemplates: Map[String, String] = Map(
