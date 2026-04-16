@@ -26,7 +26,7 @@ sealed trait Regime
 
 object Regime extends Enumeration {
   type Regime = Value
-  val paye, sa, ct, fhdds, vat, epaye, sdil, cds, itsa, ppt, pods, ad, ioss, oss = Value
+  val paye, sa, ct, fhdds, vat, epaye, sdil, cds, itsa, ppt, pods, ad, ioss, oss, plr = Value
 
   implicit val format: Format[Regime] = Json.formatEnum(this)
 }
@@ -148,6 +148,10 @@ object TaxIdentifierRESTV2Formats {
           Reads[TaxIdWithName] { _ =>
             JsSuccess(HmrcPodsPpOrg(value))
           }
+
+        case (Some("HMRC-PL"), Some(value)) =>
+          Reads[TaxIdWithName](_ => JsSuccess(HmrcPlrOrg(value)))
+
         case (None, _) =>
           Reads[TaxIdWithName] { _ =>
             JsError("The backend has rejected the message due to a missing tax identifier name.")

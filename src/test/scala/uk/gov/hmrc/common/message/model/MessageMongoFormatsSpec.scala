@@ -21,13 +21,14 @@ import org.mongodb.scala.bson.ObjectId
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
-import uk.gov.hmrc.common.message.util.MessageFixtures._
+import uk.gov.hmrc.common.message.model.TaxEntity.HmrcPlrOrg
+import uk.gov.hmrc.common.message.util.MessageFixtures.*
 import uk.gov.hmrc.common.message.util.{ MessageFixtures, Resources }
 import uk.gov.hmrc.domain.SaUtr
 
 class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
 
-  val taxPayername = TaxpayerName(
+  val taxPayername: TaxpayerName = TaxpayerName(
     title = Some("Dr"),
     forename = Some("Bruce"),
     secondForename = Some("Hulk"),
@@ -160,6 +161,51 @@ class MessageMongoFormatsSpec extends AnyWordSpecLike with Matchers {
         renderUrl = RenderUrl("sa-message-renderer", "/messages/sa/12345678/55a921d84f573b6f14325b57")
       )
       legacyJson.as[Message](MessageMongoFormats.messageMongoFormat) must be(messageStatutory)
+    }
+
+    "be able to read and write to the current mongo format with pillar2 as recipient" in {
+      import MessageMongoFormats.messageMongoFormat
+
+      val message: Message = Message(
+        id = new ObjectId("55a921d84f573b6f14325b57"),
+        recipient = MessageFixtures.createTaxEntity(HmrcPlrOrg("XTPLR0022103336")),
+        subject = "Notice of Penalty Determination",
+        body = Some(Details(None, Some("tax-summary-notification"), None, None, issueDate = Some(LocalDate.now))),
+        validFrom = LocalDate.parse("2015-07-17"),
+        alertFrom = Some(LocalDate.parse("2015-07-18")),
+        alertDetails = AlertDetails(
+          templateId = "templateId",
+          recipientName = None,
+          data = Map("key 1" -> "value 1", "key2" -> "value2")
+        ),
+        alerts = Some(
+          EmailAlert(
+            None,
+            ZonedDateTime.parse("2015-07-17T15:40:08.829Z").toInstant,
+            false,
+            None
+          )
+        ),
+        rescindment = Some(
+          Rescindment(
+            ZonedDateTime.parse("2015-07-17T15:40:08.829Z").toInstant,
+            RescindmentType.GeneratedInError,
+            "blah"
+          )
+        ),
+        lastUpdated = None,
+        hash = "O4KWyUPKQySWUVzQVfoPswBEKfN1gLe9dXi7EzCwp5U=",
+        statutory = false,
+        renderUrl = RenderUrl("sa-message-renderer", "/messages/sa/12345678/55a921d84f573b6f14325b57"),
+        sourceData = None,
+        tags = Some(Map("notificationType" -> "Direct Debit"))
+      )
+
+      val messageJson = updateIssueDate(Resources.readJson("messages/mongo/allFieldsAndPillar2AsRecipient.json"))
+
+      Json.toJson(message) must be(messageJson)
+
+      messageJson.as[Message] must be(message)
     }
   }
 }
