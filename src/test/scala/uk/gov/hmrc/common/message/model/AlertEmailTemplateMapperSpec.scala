@@ -190,7 +190,7 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
     }
 
     "map Pillar2 formIds to newMessageAlert_formId templates" in {
-      emailTemplateFromMessageFormId("PL3") mustBe "newMessageAlert_PL3"
+      emailTemplateFromMessageFormId("PL3") mustBe "new_message_alert_PL3"
     }
   }
 
