@@ -192,6 +192,13 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
     "map Pillar2 formIds to newMessageAlert_formId templates" in {
       emailTemplateFromMessageFormId("PL3") mustBe "new_message_alert_PL3"
     }
+
+    "map Low Earners Pension Payment (LEPP) form ids to newMessageAlert_<formId> templates" in {
+      emailTemplateFromMessageFormId("LEPP1") must be("newMessageAlert_LEPP1")
+      emailTemplateFromMessageFormId("LEPP2") must be("newMessageAlert_LEPP2")
+      emailTemplateFromMessageFormId("LEPP3") must be("newMessageAlert_LEPP3")
+      emailTemplateFromMessageFormId("LEPP4") must be("newMessageAlert_LEPP4")
+    }
   }
 
   "The alert email template mapper - Welsh" must {
@@ -281,6 +288,13 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
       emailTemplateFromMessageFormId("NIRef1_cy") mustBe "newMessageAlert_NIRef1_cy"
       emailTemplateFromMessageFormId("NIRef2_cy") mustBe "newMessageAlert_NIRef2_cy"
       emailTemplateFromMessageFormId("NIRef3_cy") mustBe "newMessageAlert_NIRef3_cy"
+    }
+
+    "map Low Earners Pension Payment (LEPP) Welsh form ids to newMessageAlert_<formId>_cy templates" in {
+      emailTemplateFromMessageFormId("LEPP1_cy") must be("newMessageAlert_LEPP1_cy")
+      emailTemplateFromMessageFormId("LEPP2_cy") must be("newMessageAlert_LEPP2_cy")
+      emailTemplateFromMessageFormId("LEPP3_cy") must be("newMessageAlert_LEPP3_cy")
+      emailTemplateFromMessageFormId("LEPP4_cy") must be("newMessageAlert_LEPP4_cy")
     }
   }
 }
