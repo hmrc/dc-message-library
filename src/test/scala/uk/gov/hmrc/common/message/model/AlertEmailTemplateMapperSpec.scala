@@ -91,6 +91,8 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
         "LPP1B_ITSA",
         "LPP2_ITSA",
         "LPP4_ITSA",
+        "LPP5_ITSA",
+        "LPP6_ITSA",
         "PAR1_ITSA",
         "ITSAORM1"
       )
@@ -103,6 +105,8 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
         "LSP2_ITSA_cy",
         "LSP3_ITSA_cy",
         "LSP4_ITSA_cy",
+        "LPP5_ITSA_cy",
+        "LPP6_ITSA_cy",
         "ITSAMIG1_cy",
         "LPP1A_ITSA_cy",
         "LPP1B_ITSA_cy",
