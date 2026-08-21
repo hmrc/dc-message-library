@@ -22,7 +22,7 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
 
   "The alert email template mapper" must {
 
-    "use custom templates for atsv2, SA309A, SA316, SA300, SS300, P800, PA302, AD message alerts" in {
+    "use custom templates for atsv2, SA309A, SA316, SA300, SS300, P800, PA302, AD, VPD1 message alerts" in {
       emailTemplateFromMessageFormId("atsv2") mustBe "annual_tax_summaries_message_alert"
       emailTemplateFromMessageFormId("SA309A") mustBe "newMessageAlert_SA309"
       emailTemplateFromMessageFormId("SA316") mustBe "newMessageAlert_SA316"
@@ -32,6 +32,7 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
       emailTemplateFromMessageFormId("PA302 2032") mustBe "newMessageAlert_PA302"
       emailTemplateFromMessageFormId("AD2") mustBe "newMessageAlert_AD"
       emailTemplateFromMessageFormId("AD3") mustBe "newMessageAlert_AD"
+      emailTemplateFromMessageFormId("VPD1") mustBe "newMessageAlert_VPD1"
     }
 
     "map all the SA not custom templates to `newMessageAlert_formId`" in {
@@ -212,7 +213,7 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
 
   "The alert email template mapper - Welsh" must {
 
-    "use custom templates for atsv2, SA309A, SA316, SA300, SS300, P800, PA302, AD message alerts" in {
+    "use custom templates for atsv2, SA309A, SA316, SA300, SS300, P800, PA302, AD, VPD1 message alerts" in {
       emailTemplateFromMessageFormId("atsv2_cy") mustBe "annual_tax_summaries_message_alert_cy"
       emailTemplateFromMessageFormId("SA309A_CY") mustBe "newMessageAlert_SA309"
       emailTemplateFromMessageFormId("SA316_CY") mustBe "newMessageAlert_SA316"
@@ -224,6 +225,7 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
       emailTemplateFromMessageFormId("LPI1_CY") mustBe "newMessageAlert_LPI1_cy"
       emailTemplateFromMessageFormId("AD2_CY") mustBe "newMessageAlert_AD_cy"
       emailTemplateFromMessageFormId("AD3_CY") mustBe "newMessageAlert_AD_cy"
+      emailTemplateFromMessageFormId("VPD1_CY") mustBe "newMessageAlert_VPD1_cy"
     }
 
     "map all the SA not custom templates to `newMessageAlert_formId`" in {
