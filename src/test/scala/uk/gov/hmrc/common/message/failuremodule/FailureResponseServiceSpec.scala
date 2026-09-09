@@ -288,6 +288,7 @@ class FailureResponseServiceSpec extends PlaySpec {
         errorResponseJson("Dependent systems are currently not responding.", INTERNAL_SERVER_ERROR)
       ) mustEqual """"Dependent systems are currently not responding.""""
     }
+
     "for Submission has not passed validation. Invalid payload. return BAD_REQUEST status code " in {
       val t: Result = errorResponseResult("Submission has not passed validation. Invalid payload.")
       t.header.status mustEqual BAD_REQUEST
@@ -305,10 +306,12 @@ class FailureResponseServiceSpec extends PlaySpec {
       )
       t.header.status mustEqual NOT_FOUND
     }
+
     "for Unauthorised. return status code UNAUTHORIZED" in {
       val t: Result = errorResponseResult("Unauthorised", UNAUTHORIZED)
       t.header.status mustEqual UNAUTHORIZED
     }
+
     "for The backend has rejected the message due to duplicated message content or external reference ID. return status code CONFLICT" in {
       val t: Result = errorResponseResult(
         "The backend has rejected the message due to duplicated message content or external reference ID.",
@@ -316,9 +319,37 @@ class FailureResponseServiceSpec extends PlaySpec {
       )
       t.header.status mustEqual CONFLICT
     }
+
     "for SERVICE_UNAVAILABLE for Dependent systems are currently not responding. return INTERNAL_SERVER_ERROR status code" in {
       val t: Result = errorResponseResult("Dependent systems are currently not responding.", INTERNAL_SERVER_ERROR)
       t.header.status mustEqual INTERNAL_SERVER_ERROR
+    }
+  }
+
+  "errorResponseResult" must {
+
+    "return Unauthorized Result with correct message" in {
+      val result: Result = errorResponseResult("Authentication information is missing or invalid", UNAUTHORIZED, true)
+
+      result.header.status mustEqual UNAUTHORIZED
+    }
+
+    "return FORBIDDEN Result with correct message" in {
+      val result: Result = errorResponseResult("Forbidden", FORBIDDEN, true)
+
+      result.header.status mustEqual FORBIDDEN
+    }
+
+    "return NOT_FOUND Result with correct message" in {
+      val result: Result = errorResponseResult("Not found", NOT_FOUND, true)
+
+      result.header.status mustEqual NOT_FOUND
+    }
+
+    "return REQUEST_TIMEOUT Result with correct message" in {
+      val result: Result = errorResponseResult("Timeout", REQUEST_TIMEOUT, true)
+
+      result.header.status mustEqual REQUEST_TIMEOUT
     }
   }
 }

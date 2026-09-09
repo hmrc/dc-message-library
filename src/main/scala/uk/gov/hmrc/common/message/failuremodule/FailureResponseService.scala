@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.common.message.failuremodule
 
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.http.Status
 import play.api.libs.json.{ JsValue, Json, Writes }
 import play.api.mvc.{ Result, Results }
-import play.api.mvc.Results.{ BadRequest, InternalServerError, NotFound, Ok, Unauthorized }
+import play.api.mvc.Results.{ BadRequest, Forbidden, InternalServerError, NotFound, Ok, RequestTimeout, Unauthorized }
 
 final case class FailureResponse(failureId: String, reason: String)
 
@@ -42,6 +42,9 @@ object FailureResponseService {
   val SERVER_ERROR = "SERVER_ERROR"
   val CONFLICT = "CONFLICT"
   val SERVICE_UNAVAILABLE = "SERVICE_UNAVAILABLE"
+  val MISSING_AUTHENTICATION_INFO = "MISSING_AUTHENTICATION_INFO"
+  val RESOURCE_NOT_FOUND = "NOT_FOUND"
+  val FORBIDDEN = "FORBIDDEN"
 
   val errorMessageMapping: Map[(Int, String), ErrorMessage] =
     Map(
@@ -190,7 +193,15 @@ object FailureResponseService {
           "The backend has rejected the message due to not being able to verify the email address.",
           EMAIL_NOT_VERIFIED
         ),
+      (NOT_FOUND, "Not found")       -> ErrorMessage(NOT_FOUND, "Not found", RESOURCE_NOT_FOUND),
       (UNAUTHORIZED, "Unauthorised") -> ErrorMessage(UNAUTHORIZED, "Unauthorised", SERVER_ERROR),
+      (UNAUTHORIZED, "Authentication information is missing or invalid") -> ErrorMessage(
+        UNAUTHORIZED,
+        "Authentication information is missing or invalid",
+        MISSING_AUTHENTICATION_INFO
+      ),
+      (Status.FORBIDDEN, "Forbidden") -> ErrorMessage(Status.FORBIDDEN, "Forbidden", FORBIDDEN),
+      (REQUEST_TIMEOUT, "Timeout")    -> ErrorMessage(REQUEST_TIMEOUT, "Timeout", SERVER_ERROR),
       (
         Status.CONFLICT,
         "The backend has rejected the message due to duplicated message content or external reference ID."
@@ -254,6 +265,8 @@ object FailureResponseService {
       case e @ ErrorMessage(BAD_REQUEST, _, _)           => BadRequest(getJson(e))
       case e @ ErrorMessage(NOT_FOUND, _, _)             => NotFound(getJson(e))
       case e @ ErrorMessage(UNAUTHORIZED, _, _)          => Unauthorized(getJson(e))
+      case e @ ErrorMessage(Status.FORBIDDEN, _, _)      => Forbidden(getJson(e))
+      case e @ ErrorMessage(REQUEST_TIMEOUT, _, _)       => RequestTimeout(getJson(e))
       case e @ ErrorMessage(Status.CONFLICT, _, _)       => Results.Conflict(getJson(e))
       case e @ ErrorMessage(INTERNAL_SERVER_ERROR, _, _) => InternalServerError(getJson(e))
       case e: ErrorMessage                               =>
