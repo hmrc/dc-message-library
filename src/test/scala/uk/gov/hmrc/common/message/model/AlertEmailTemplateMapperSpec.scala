@@ -205,7 +205,7 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
       emailTemplateFromMessageFormId("LEPP4") must be("newMessageAlert_LEPP4")
     }
 
-    "map CHA1708 form ids to newMessageAlert_<formId> templates" in {
+    "map CHA1700 and CHA1708 form ids to newMessageAlert_<formId> templates" in {
       emailTemplateFromMessageFormId("CHA1700") must be("newMessageAlert_CHA1700")
       emailTemplateFromMessageFormId("CHA1708") must be("newMessageAlert_CHA1708")
     }
