@@ -205,9 +205,9 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
       emailTemplateFromMessageFormId("LEPP4") must be("newMessageAlert_LEPP4")
     }
 
-    "map CH(A)1708 form ids to newMessageAlert_<formId> templates" in {
-      emailTemplateFromMessageFormId("CH(A)1700") must be("newMessageAlert_CH(A)1700")
-      emailTemplateFromMessageFormId("CH(A)1708") must be("newMessageAlert_CH(A)1708")
+    "map CHA1708 form ids to newMessageAlert_<formId> templates" in {
+      emailTemplateFromMessageFormId("CHA1700") must be("newMessageAlert_CHA1700")
+      emailTemplateFromMessageFormId("CHA1708") must be("newMessageAlert_CHA1708")
     }
   }
 
@@ -308,9 +308,9 @@ class AlertEmailTemplateMapperSpec extends PlaySpec with AlertEmailTemplateMappe
       emailTemplateFromMessageFormId("LEPP4_cy") must be("newMessageAlert_LEPP4_cy")
     }
 
-    "map CH(A)1708 Welsh form ids to newMessageAlert_<formId>_cy templates" in {
-      emailTemplateFromMessageFormId("ch(a)1700_cy") must be("newMessageAlert_ch(a)1700_cy")
-      emailTemplateFromMessageFormId("ch(a)1708_cy") must be("newMessageAlert_ch(a)1708_cy")
+    "map CHA1708 Welsh form ids to newMessageAlert_<formId>_cy templates" in {
+      emailTemplateFromMessageFormId("cha1700_cy") must be("newMessageAlert_cha1700_cy")
+      emailTemplateFromMessageFormId("cha1708_cy") must be("newMessageAlert_cha1708_cy")
     }
   }
 }
