@@ -130,6 +130,8 @@ trait AlertEmailTemplateMapper extends TemplateId {
       case (form, _) if form.startsWith("cha")                             => s"newMessageAlert_$formId"
       case (form, _) if form.startsWith("vpd1") && form.endsWith("_cy")    => s"newMessageAlert_VPD1_cy"
       case (form, _) if form.startsWith("vpd1")                            => s"newMessageAlert_$formId"
+      case (form, _) if form.startsWith("vpd-ca") && form.endsWith("_cy")  => s"newMessageAlert_VPD-CA_cy"
+      case (form, _) if form.startsWith("vpd-ca")                          => s"newMessageAlert_$formId"
       case (form, _) =>
         templatesToMapToNewMessageAlert.find(fId => form.startsWith(fId.toLowerCase)) match {
           case Some(formId)              => s"newMessageAlert_$formId"
